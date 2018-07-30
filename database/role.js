@@ -1,12 +1,16 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
+    return sequelize.define("role", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation:{
+        role_name:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        role_description:{
             type:DataTypes.STRING,
             allowNull:false
         },
@@ -19,12 +23,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         updated_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         is_active:{
             type:DataTypes.BOOLEAN,
@@ -33,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'designation',
+        tableName: 'role',
         timestamps: false,
         classMethods: {}
     });

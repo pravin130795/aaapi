@@ -34,7 +34,11 @@ let addDesignation = function (req, res) {
 
 
 let getDesignation = function (req, res) {
-    master.getDesignationLists().then((response) => {
+    let filter = {
+        search : req.query.search,
+        status : req.query.status
+    };
+    master.getDesignationLists(filter).then((response) => {
         res.status(200).send({
             code: 2000,
             messageKey: constants.messageKeys.code_2000,

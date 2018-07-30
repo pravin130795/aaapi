@@ -1,12 +1,12 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
+    return sequelize.define("menu", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation:{
+        menu:{
             type:DataTypes.STRING,
             allowNull:false
         },
@@ -19,21 +19,20 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         updated_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         is_active:{
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false
         }
-
     }, {
-        tableName: 'designation',
+        tableName: 'menu',
         timestamps: false,
         classMethods: {}
     });

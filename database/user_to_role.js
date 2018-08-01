@@ -34,4 +34,10 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {}
     });
+    user_to_role.belongsTo(sequelize.models.User, {
+        as: 'fk_user',
+        foreignKey: 'user_id'
+    });
+
+
 };

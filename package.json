@@ -8,6 +8,7 @@
 		"email": ""
 	},
 	"dependencies": {
+		"async": "^2.6.1",
 		"body-parser": "^1.15.2",
 		"compression": "^1.6.2",
 		"convict": "^1.4.0",
@@ -18,7 +19,7 @@
 		"helmet": "^2.2.0",
 		"jsdoc": "^3.5.5",
 		"jsonschema": "^1.0.2",
-		"lodash": "^4.16.2",
+		"lodash": "^4.17.10",
 		"moment": "^2.18.1",
 		"morgan": "^1.7.0",
 		"node-uuid": "^1.4.7",

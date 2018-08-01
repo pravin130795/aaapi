@@ -14,10 +14,6 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.INTEGER,
             allowNull:false
         },
-        role_id:{
-            type:DataTypes.INTEGER,
-            allowNull:false
-        },
         email:{
             type:DataTypes.STRING,
             allowNull:false
@@ -26,9 +22,14 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.STRING,
             allowNull:false
         },
-        mobile:{
+        confirm_password:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        mobile_no:{
+            type:DataTypes.STRING,
+            allowNull:false,
+            unique:true
         },
         approver_person:{
             type:DataTypes.STRING,

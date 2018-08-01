@@ -1,12 +1,12 @@
 module.exports = function(sequelize, DataTypes) {   
     return sequelize.define("designation", {
-        id: {
+        designation_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation:{
+        designation_name:{
             type:DataTypes.STRING,
             allowNull:false
         },

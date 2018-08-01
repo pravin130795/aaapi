@@ -10,6 +10,11 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.STRING,
             allowNull:false
         },
+        image: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            trim: true
+        },
         created_at:{
             type:DataTypes.DATE,
             defaultValue: DataTypes.NOW
@@ -19,12 +24,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,

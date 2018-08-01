@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("role_permission", {
-        id: {
+    const role_permission = sequelize.define("role_permission", {
+        role_permission_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
@@ -44,6 +44,16 @@ module.exports = function(sequelize, DataTypes) {
             allowNull:false,
             defaultValue:false
         },
+        can_reject:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false
+        },
+        can_export:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false
+        },
         created_at:{
             type:DataTypes.DATE,
             defaultValue: DataTypes.NOW
@@ -53,12 +63,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,
@@ -69,5 +79,12 @@ module.exports = function(sequelize, DataTypes) {
         tableName: 'role_permission',
         timestamps: false,
         classMethods: {}
+
     });
+    role_permission.belongsTo(sequelize.models.role, {
+        as: 'role_details', 
+        targetKey:'role_id',
+        foreignKey: 'role_id'
+    });
+    return role_permission;
 };

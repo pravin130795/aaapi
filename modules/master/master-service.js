@@ -32,6 +32,32 @@ let addDesignation = function (req, res) {
     }
 }
 
+let updateDesignation = function (req, res) {
+    let updateDesignationData = common.sanitize(req.body, schemas.updateDesignationDetail);
+    if (schemas.validate(updateDesignationData, schemas.updateDesignationDetail)) {
+        master.updateDesignationDetail(updateDesignationData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            logger.info(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
 
 let getDesignation = function (req, res) {
     let filter = {
@@ -58,5 +84,6 @@ let getDesignation = function (req, res) {
 
 module.exports = {
     addDesignation: addDesignation,
-    getDesignation: getDesignation
+    getDesignation: getDesignation,
+    updateDesignation: updateDesignation
 }

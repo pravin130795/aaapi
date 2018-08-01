@@ -1,0 +1,19 @@
+module.exports = function(sequelize, DataTypes) {   
+    const actionMaster = sequelize.define("actionMaster", {
+        action_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true
+        },
+        action_name: {
+            type: DataTypes.STRING(20),
+            allowNull: false
+        }
+    },
+    {
+        tableName: 'actions_master',
+        timestamps: false,
+        classMethods: {}
+    });
+    return actionMaster;
+};

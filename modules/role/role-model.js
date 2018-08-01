@@ -107,7 +107,7 @@ role.updateRoleDetails = function (options) {
                                 upObj.can_reject = page.reject; // 1- true, 0- false
                                 upObj.can_export = page.export; // 1- true, 0- false
                                 upObj.updated_by = options.current_user_id;
-                                upObj.updated_at = new SYSDATETIMEOFFSET();
+                                upObj.updated_at = new Date();
                                 upObj.is_active = 1;
                                 permissionExist.update(upObj).then(updatedPage => {
                                     return callback(updatedPage);

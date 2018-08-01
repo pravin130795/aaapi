@@ -2,9 +2,9 @@ let service = require('./master-service');
 
 module.exports = function (app) {
     // To Insert Designation Details To Database
-    app.post('/master/designation', service.addDesignation);
-    app.get('/master/designation', service.getDesignation);
-    
+    app.post('/master/adddesignation', service.addDesignation);
+    app.get('/master/getdesignation', service.getDesignation);
+    app.put('/master/updatedesignation',service.updateDesignation)
     /* Specs Heading Master */
     /* To Insert into Specification Heading Master */
     app.post('/master/addspecsheading', service.addSpecsHeading);

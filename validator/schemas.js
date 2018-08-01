@@ -24,16 +24,16 @@ schemas.customerDetails = {
             'required': true
         },
         'address': {
-            'type': 'object',
+            'type':'object',
             '$ref': '/addressDetails',
-            'required': true
+            'required' : true
         }
     }
 }
 schemas.addressDetails = {
     'id': '/addressDetails',
     'type': 'object',
-    'required': true,
+    'required':true,
     'properties': {
         'homeAddress': {
             'type': 'string',
@@ -42,6 +42,9 @@ schemas.addressDetails = {
     }
 }
 
+_validator.addSchema(schemas.addressDetails, '/addressDetails');
+
+
 schemas.designationDetail = {
     'id': '/designationDetail',
     'type': 'object',
@@ -49,145 +52,263 @@ schemas.designationDetail = {
         'designation_name': {
             'type': 'string',
             'required': true
-        },
-        'current_user_id': {
-            'type': 'integer',
-            'required': true
-        },
-    }
-}
-
-schemas.updateDesignationDetail = {
-    'id': '/updateDesignationDetail',
-    'type': 'object',
-    'properties': {
-        'designation_id': {
-            'type': 'integer',
-            'required': true
-        },
-        'designation_name': {
-            'type': 'string',
-            'required': true
-        },
-        'current_user_id': {
-            'type': 'integer',
-            'required': true
         }
     }
 }
 
-schemas.roleDetails = {
-    'id': '/roleDetails',
-    'type': 'object',
-    'properties': {
-        'role_name': {
-            'type': 'string',
-            'required': true
-        },
-        'role_description': {
-            'type': 'string',
-            'required': true
-        },
-        'current_user_id': {
-            'type': 'integer',
-            'required': true
-        },
-        'page_access': {
-            'type': 'array',
-            'item':{
-                '$ref': '/pageDetails',
-            },
-            'required': true
-        }
-    }
-}
-
-schemas.pageDetails = {
-    'id': '/pageDetails',
+schemas.specsHeading = {
+    'name': '/specsHeadingDetails',
     'type': 'object',
     'required': true,
     'properties': {
-        'menu_item_id': {
-            'type': 'integer',
-            'required': true
-        },
-        'menu_item_name': {
+        'name': {
             'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
             'required': true
         },
-        'view': {
-            'type': 'bit',
+        'sequence': {
+            'type': 'number',
             'required': true
         },
-        'add': {
-            'type': 'bit',
+        'created_by': {
+            'type': 'number',
             'required': true
         },
-        'edit': {
-            'type': 'bit',
-            'required': true
-        },
-        'report': {
-            'type': 'bit',
-            'required': true
-        },
-        'delete': {
-            'type': 'bit',
-            'required': true
-        },
-        'process_approval': {
-            'type': 'bit',
-            'required': true
-        },
-        'reject': {
-            'type': 'bit',
-            'required': true
-        },
-        'export': {
-            'type': 'bit',
+        'updated_by': {
+            'type': 'number',
             'required': true
         }
     }
 }
 
-
-schemas.userDetails = {
-    'id': '/userDetails',
+schemas.updateSpecsHeading = {
+    'name': '/updateSpecsHeading',
     'type': 'object',
+    'required': true,
     'properties': {
-        'user_name': {
+        'specs_heading_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
             'type': 'string',
-            'required': true
+            'required': false
         },
-        'email': {
-            'type': 'string',
-            'required': true
+        'is_active': {
+            'type': 'boolean',
+            'required': false
         },
-        'password': {
-            'type': 'string',
-            'required': true
+        'sequence': {
+            'type': 'number',
+            'required': false
         },
-        'mobile_no': {
-            'type': 'string',
+        'updated_by': {
+            'type': 'number',
             'required': true
-        },
-        'approver_person': {
-            'type': 'string',
-            'required': true
-        },
-        'designation_id': {
-            'type': 'integer',
-            'required': true
-        },
-        'current_user_id': {
-            'type': 'integer',
-            'required': true
-        },
+        }
     }
 }
 
-_validator.addSchema(schemas.addressDetails, '/addressDetails');
-_validator.addSchema(schemas.pageDetails, '/pageDetails');
+schemas.specsDetails = {
+    'name': '/specsDetails',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true
+        },
+        'specs_heading_id': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'value': {
+            'type': 'string',
+            'required': true
+        }
+    }
+}
+
+schemas.updateSpecs = {
+    'name': '/updateSpecs',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'specs_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false
+        },
+        'specs_heading_id': {
+            'type': 'number',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'value': {
+            'type': 'string',
+            'required': false
+        }
+    }
+}
+
+schemas.addYears = {
+    'name': '/yearMasterDetails',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'year': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'type': {
+            'type': 'string',
+            'required': true
+        }
+    }
+}
+
+schemas.updateYear = {
+    'name': '/updateYearMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'year_id': {
+            'type': 'number',
+            'required': true
+        },
+        'year': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'type': {
+            'type': 'string',
+            'required': false
+        }
+    }
+}
+
+schemas.accessoryCat = {
+    'name': '/accessoryCategory',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'sequence': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+
+schemas.updateAccessoryCat = {
+    'name': '/updateAccessoryCategory',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'accessory_cat_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'sequence': {
+            'type': 'number',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+schemas.responseStatus = {
+    'name': '/responseStatus',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'status': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.updateResponseStatus = {
+    'name': '/updateResponseStatus',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'rsp_status_id': {
+            'type': 'number',
+            'required': true
+        },
+        'status': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
 
 schemas.validate = function (object, schema) {
     var errors = _validator.validate(object, schema).errors;

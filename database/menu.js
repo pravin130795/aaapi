@@ -1,14 +1,19 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
-        designation_id: {
+    return sequelize.define("menu", {
+        id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation_name:{
+        menu:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        image: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            trim: true
         },
         created_at:{
             type:DataTypes.DATE,
@@ -31,9 +36,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull:false,
             defaultValue:false
         }
-
     }, {
-        tableName: 'designation',
+        tableName: 'menu',
         timestamps: false,
         classMethods: {}
     });

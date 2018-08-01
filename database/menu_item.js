@@ -1,14 +1,24 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
-        designation_id: {
+    return sequelize.define("menu_item", {
+        id: {//menu_item_id
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation_name:{
-            type:DataTypes.STRING,
+        menu_id:{
+            type:DataTypes.INTEGER,
             allowNull:false
+        },
+        name: {
+            type: DataTypes.STRING(50),
+            allowNull: false,
+            trim: true
+        },
+        image: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            trim: true
         },
         created_at:{
             type:DataTypes.DATE,
@@ -31,10 +41,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull:false,
             defaultValue:false
         }
-
     }, {
-        tableName: 'designation',
+        tableName: 'menu_item',
         timestamps: false,
         classMethods: {}
+    });
+    menu_item.belongsTo(sequelize.models.menu, {
+        foreignKey: 'menu_id'
     });
 };

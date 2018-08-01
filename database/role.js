@@ -1,12 +1,16 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
-        designation_id: {
+    const role = sequelize.define("role", {
+        role_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        designation_name:{
+        role_name:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        role_description:{
             type:DataTypes.STRING,
             allowNull:false
         },
@@ -33,8 +37,9 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'designation',
+        tableName: 'role',
         timestamps: false,
         classMethods: {}
-    });
+        });
+    return role;
 };

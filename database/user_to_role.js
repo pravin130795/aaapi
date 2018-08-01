@@ -1,13 +1,11 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("designation", {
-        designation_id: {
-            type: DataTypes.INTEGER,
-            primaryKey:true,
-            autoIncrement:true,
-            allowNull: false
+    return sequelize.define("user_role", {
+        role_id:{
+            type:DataTypes.INTEGER,
+            allowNull:false
         },
-        designation_name:{
-            type:DataTypes.STRING,
+        user_id:{
+            type:DataTypes.INTEGER,
             allowNull:false
         },
         created_at:{
@@ -19,22 +17,27 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         updated_by:{
-            type:DataTypes.INTEGER,
-            defaultValue: 0
+            type:DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
         is_active:{
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false
         }
-
     }, {
-        tableName: 'designation',
+        tableName: 'user_role',
         timestamps: false,
         classMethods: {}
     });
+    user_to_role.belongsTo(sequelize.models.User, {
+        as: 'fk_user',
+        foreignKey: 'user_id'
+    });
+
+
 };

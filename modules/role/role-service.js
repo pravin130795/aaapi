@@ -51,8 +51,8 @@ let updateRole = function (req, res) {
 
 let getRolesLists = function (req, res) {
     let filter = {
-        search : req.query.search,
-        status : req.query.status
+        search: req.query.search,
+        status: req.query.status
     };
     role.getRoleLists(filter).then((response) => {
         res.status(200).send({

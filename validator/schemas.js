@@ -93,8 +93,10 @@ schemas.roleDetails = {
             'required': true
         },
         'page_access': {
-            'type': 'object',
-            '$ref': '/pageDetails',
+            'type': 'array',
+            'item':{
+                '$ref': '/pageDetails',
+            },
             'required': true
         }
     }

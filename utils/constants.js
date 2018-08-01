@@ -6,6 +6,10 @@ var constants = {
 	},
 	tables: {
 		userTable: 'user'
+	},
+	moduleNames: {
+		customer: 'customer',
+		model: 'models'
 	}
 };
 

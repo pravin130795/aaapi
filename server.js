@@ -6,7 +6,7 @@ const config = require('./configurations/config');
 const logger = require('./utils/logger');
 const middlewares = require('./middlewares/index');
 const routes = require('./routes/index');
-const db = require('./database/index');
+const db = require('./database/sql');
 let app = express();
 
 //Global Variable Declarations

@@ -1,5 +1,5 @@
 const common = require('../../utils/common');
-const schemas = require('../../validator/schemas');
+const schemas = require('./role-schema');
 const role = require('./role-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')

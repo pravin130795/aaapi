@@ -1,5 +1,5 @@
 const common = require('../../utils/common');
-const schemas = require('../../validator/schemas');
+const schemas = require('./master-schema');
 const master = require('./master-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
@@ -35,8 +35,8 @@ let addDesignation = function (req, res) {
 
 let getDesignation = function (req, res) {
     let filter = {
-        search : req.query.search,
-        status : req.query.status
+        search: req.query.search,
+        status: req.query.status
     };
     master.getDesignationLists(filter).then((response) => {
         res.status(200).send({
@@ -109,8 +109,8 @@ let addSpecsHeading = function (req, res) {
 }
 let getSpecsHeading = function (req, res) {
     let filter = {
-        search : req.query.search,
-        status : req.query.status
+        search: req.query.search,
+        status: req.query.status
     };
     master.getSpecsHeadingLists(filter).then((response) => {
         res.status(200).send({
@@ -253,8 +253,8 @@ let addYear = function (req, res) {
 }
 let getYear = function (req, res) {
     let filter = {
-        year : req.query.year,
-        status : req.query.status,
+        year: req.query.year,
+        status: req.query.status,
         type: req.query.type
     };
     master.getYearLists(filter).then((response) => {

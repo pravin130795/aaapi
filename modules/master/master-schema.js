@@ -294,13 +294,8 @@ schemas.updateResponseStatus = {
     }
 }
 
-<<<<<<< HEAD:validator/schemas.js
 schemas.addAreaRqst = {
     'name': '/areaMaster',
-=======
-schemas.bankEmiMaster = {
-    'name': '/bankEmiMaster',
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
     'type': 'object',
     'required': true,
     'properties': {
@@ -309,15 +304,9 @@ schemas.bankEmiMaster = {
             'required': true,
             'unique': true
         },
-<<<<<<< HEAD:validator/schemas.js
         'type': {
             'type': 'string',
             'required': true,
-=======
-        'emi': {
-            'type': 'float',
-            'required': true
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
         },
         'is_active': {
             'type': 'boolean',
@@ -333,21 +322,12 @@ schemas.bankEmiMaster = {
         }
     }
 }
-<<<<<<< HEAD:validator/schemas.js
 schemas.updateAreaRqst = {
     'name': '/updateAreaRqst',
     'type': 'object',
     'required': true,
     'properties': {
         'area_id': {
-=======
-schemas.updateBankEmiMaster = {
-    'name': '/updateBankEmiMaster',
-    'type': 'object',
-    'required': true,
-    'properties': {
-        'bank_id' : {
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
             'type': 'number',
             'required': true
         },
@@ -356,13 +336,8 @@ schemas.updateBankEmiMaster = {
             'required': false,
             'unique': true
         },
-<<<<<<< HEAD:validator/schemas.js
         'type': {
             'type': 'string',
-=======
-        'emi': {
-            'type': 'float',
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
             'required': false
         },
         'is_active': {
@@ -396,7 +371,6 @@ schemas.addLookupRqst = {
             'required': true
         },
         'created_by': {
-<<<<<<< HEAD:validator/schemas.js
             'type': 'number',
             'required': true
         },
@@ -497,10 +471,6 @@ schemas.updateFromToPriceRqst = {
         'is_active': {
             'type': 'boolean',
             'required': false
-=======
-            'type': 'boolean',
-            'required': true
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
         },
         'updated_by': {
             'type': 'number',
@@ -509,11 +479,118 @@ schemas.updateFromToPriceRqst = {
     }
 }
 
-<<<<<<< HEAD:validator/schemas.js
-=======
+schemas.updateContactsRqst = {
+    'name': '/updateContactsRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'contact_id': {
+            'type': 'number',
+            'required': true
+        },
+        'module_name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'contact_no': {
+            'type': 'string',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateEmailRqst = {
+    'name': '/updateEmailRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'email_id': {
+            'type': 'number',
+            'required': true
+        },
+        'module_name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'emp_name': {
+            'type': 'string',
+            'required': false
+        },
+        'email': {
+            'type': 'string',
+            'required': false
+        },
+        'contact_no': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addKmRqst = {
+    'name': '/addKmRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'km_value': {
+            'type': 'number',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true,
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateKmRqst = {
+    'name': '/updateKmRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'km_id': {
+            'type': 'number',
+            'required': true
+        },
+        'km_value': {
+            'type': 'number',
+            'required': false,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
 _validator.addSchema(schemas.pageDetails, '/pageDetails');
 
->>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;
     if (errors.length > 0) {

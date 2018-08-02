@@ -640,6 +640,160 @@ let updateFromToPrice = function (req, res) {
     }
 }
 
+/* Contacts Master */
+let getContacts = function (req, res) {
+    master.getContactsList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateContacts = function (req, res) {
+    let contactsData = req.body;
+    if (schemas.validate(contactsData, schemas.updateContactsRqst)) {
+        master.updateContactDetail(contactsData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Contacts Master */
+let getEmailDetail = function (req, res) {
+    master.getEmailsList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateEmailDetails = function (req, res) {
+    let emailData = req.body;
+    if (schemas.validate(emailData, schemas.updateEmailRqst)) {
+        master.updateEmailDetail(emailData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Km master */
+let addKmMaster = (req, res) => {
+    let kmData = common.sanitize(req.body, schemas.addKmRqst);
+    if (schemas.validate(kmData, schemas.addKmRqst)) {
+        master.addKmDetails(kmData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getKmMaster = function (req, res) {
+    master.getKmList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateKmMaster = function (req, res) {
+    let kmData = req.body;
+    if (schemas.validate(kmData, schemas.updateKmRqst)) {
+        master.updateKmDetail(kmData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
 module.exports = {
     addDesignation: addDesignation,
     getDesignation: getDesignation,
@@ -668,7 +822,11 @@ module.exports = {
     addFromToPrice: addFromToPrice,
     getFromToPrice: getFromToPrice,
     updateFromToPrice: updateFromToPrice,
-    addBankEmi: addBankEmi,
-    getBankEmi: getBankEmi,
-    updateBankEmi: updateBankEmi,
+    getContacts: getContacts,
+    updateContacts: updateContacts,
+    getEmailDetail: getEmailDetail,
+    updateEmailDetails: updateEmailDetails,
+    addKmMaster: addKmMaster,
+    getKmMaster: getKmMaster,
+    updateKmMaster: updateKmMaster
 }

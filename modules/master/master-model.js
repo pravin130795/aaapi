@@ -589,4 +589,139 @@ master.updateFromToPriceDetail = function (options) {
     });
 }
 
+/**
+ * API To Get Contacts Master Details from the Database
+ * @param {string} module_name - Represents the name of the Response for Filter.
+ */
+master.getContactsList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { search } = options;
+        if (typeof search != 'undefined' && search != '') {
+            Condition['module_name'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.contactsMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Contacts Master Details to the Database
+ * @param {number} contact_id - Represents the Id of the Module 
+ * @param {enum} module_name - Represents the name of Module.
+ * @param {string} contact_no - Represents the type of Contact no of module
+ * @param {number} updated_by - Represents the User Id for user who updated
+ */
+master.updateContactDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.contactsMaster.update(options,{where: {contact_id: options.contact_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+} 
+
+/**
+ * API To Get Email Master Details from the Database
+ * @param {string} module_name - Represents the name of the Response for Filter.
+ */
+master.getEmailsList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { search } = options;
+        if (typeof search != 'undefined' && search != '') {
+            Condition['module_name'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.emailMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Email Master Details to the Database
+ * @param {number} contact_id - Represents the Id of the Module 
+ * @param {enum} module_name - Represents the name of Module.
+ * @param {string} emp_name - Name of the employee for that module
+ * @param {string} email - Email to contact that module
+ * @param {string} contact_no - Represents the type of Contact no of module
+ * @param {number} updated_by - Represents the User Id for user who updated
+ */
+master.updateEmailDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.emailMaster.update(options,{where: {email_id: options.email_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* Km Master */
+/**
+ * API To Insert Km Master Details to the Database
+ * @param {number} km_value - Represents the Km value
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addKmDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.kmMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get From To Price Master Details from the Database
+ * @param {string} body_name - Represents the name of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getKmList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof search != 'undefined' && search != '') {
+            Condition['km_value'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.kmMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Lookup Master Details to the Database
+ * @param {number} lookup_id - Represents the Id of the Response Status
+ * @param {string} body_name - Represents the name of Vehicle.
+ * @param {enum} type - Represents the type of Vehicle(CPOV, New Car)
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.updateKmDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.kmMaster.update(options,{where: {km_id: options.km_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
 module.exports = master;

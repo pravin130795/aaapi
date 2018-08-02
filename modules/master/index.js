@@ -53,4 +53,16 @@ module.exports = function (app) {
     app.get('/master/getfromtoprice', service.getFromToPrice);
     app.put('/master/updatefromtoprice', service.updateFromToPrice);
 
+    /* Contact Master */
+    app.get('/master/getcontacts', service.getContacts);
+    app.put('/master/updatecontacts', service.updateContacts);
+
+    /* Email Setup Master */
+    app.get('/master/getemail', service.getEmailDetail);
+    app.put('/master/updateemail', service.updateEmailDetails);
+
+    /* Km Master */
+    app.post('/master/addkmdetails', service.addKmMaster);
+    app.get('/master/getkmdetails', service.getKmMaster);
+    app.put('/master/updatekmdetails', service.updateKmMaster);
 }

@@ -4,7 +4,7 @@ module.exports = function (app) {
     // To Insert Designation Details To Database
     app.post('/master/adddesignation', service.addDesignation);
     app.get('/master/getdesignation', service.getDesignation);
-    app.put('/master/updatedesignation',service.updateDesignation)
+    app.put('/master/updatedesignation', service.updateDesignation)
     /* Specs Heading Master */
     /* To Insert into Specification Heading Master */
     app.post('/master/addspecsheading', service.addSpecsHeading);
@@ -32,4 +32,12 @@ module.exports = function (app) {
     app.post('/master/addresponsestatus', service.addResponseStatus);
     app.get('/master/getresponsestatus', service.getResponseStatus);
     app.put('/master/updateresponsestatus', service.updateResponseStatus);
+
+    // Bank master
+    app.post('/master/addbankemi', service.addBankEmi);
+    app.get('/master/getbankemi', service.getBankEmi);
+    app.put('/master/updatebankemi', service.updateBankEmi)
+
+    /* Lookup master */
+    app.post('/master/addlookup', service.addLookup);
 }

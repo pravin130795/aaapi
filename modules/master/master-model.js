@@ -106,7 +106,11 @@ master.addSpecsHeadingDetail = function (options) {
         sqlInstance.specsHeadingMaster.create(options).then((response) => {
             resolve(response)
         }).catch((error) => {
-            reject(error);
+            if(error.name === "SequelizeUniqueConstraintError"){
+                resolve({message:'specification heading name should be unique'})
+            }else{
+                reject(error);
+            }        
         })
     });
 }
@@ -304,7 +308,11 @@ master.addAccessoryCategory = (options) => {
         sqlInstance.accessoryCatMaster.create(options).then(response => {
             resolve(response)
         }).catch(error => {
-            reject(error);
+            if(error.name === "SequelizeUniqueConstraintError"){
+                resolve({message:'Accessory category name should be unique'})
+            }else{
+                reject(error);
+            }
         })
     });
 }
@@ -371,7 +379,7 @@ master.addResponseStatus = (options) => {
 /**
  * API To Get Response Status Master Details from the Database
  * @param {string} status - Represents the name of the Response for Filter.
- * @param {bit} is_active - Represents the Status of the Response for Filter
+ * @param {bit} rspStatus - Represents the Status of the Response for Filter
  */
 master.getResponseStatusList = (options) => {
     return new Promise((resolve, reject) => {
@@ -407,4 +415,65 @@ master.updateResponseStatus = function (options) {
         })
     });
 }
+
+/* Bank EMI Master */
+/**
+ * API To Insert Response Status Master Details to the Database
+ * @param {string} name - Represents the name of Bank.
+ * @param {float} emi - Represents the EMI % offered by the Bank
+ * @param {bit} is_active - Represents the Bank status
+ * @param {number} created_by - Represents the User Id for user who created Bank
+ * @param {number} updated_by - Represents the User Id for user who updated Bank
+ */
+master.addBankDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.bankMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Bank EMI Master Details from the Database
+ * @param {string} name - Represents the name of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getBankEmiList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { $like: '%' + name + '%' };
+        }
+        sqlInstance.bankMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Bank Master Details to the Database
+ * @param {number} bank_id - Represents the Id of the Bank
+ * @param {string} name - Represents the name of Bank.
+ * @param {float} emi - Represents the EMI % offered by the Bank 
+ * @param {bit} is_active - Represents the Bank status
+ * @param {number} updated_by - Represents the User Id for user who updated Bank
+ */
+master.updateBankemiDetails = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.bankMaster.update(options,{where: {bank_id: options.bank_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
 module.exports = master;

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Op = global.sqlInstance.sequelize.Op;
 
 const constants = require('../../utils/constants');
 
@@ -18,15 +19,16 @@ const sqlInstance = global.sqlInstance.sequelize.models;
 master.addDesignationDetail = function (options) {
     return new Promise((resolve, reject) => {
         global.sqlInstance.sequelize.models.designation.findOrCreate({
-            where: {designation_name: options.designation_name},
-             defaults: {designation_name: options.designation_name,created_by:options.current_user_id,updated_by:options.current_user_id}})
-        .spread((user, created) => {
-          if(created){
-            return resolve(user);
-          }else{
-             return resolve('designation already in use, retry with new.');
-          }
+            where: { designation_name: options.designation_name },
+            defaults: { designation_name: options.designation_name, created_by: options.current_user_id, updated_by: options.current_user_id }
         })
+            .spread((user, created) => {
+                if (created) {
+                    return resolve(user);
+                } else {
+                    return resolve('designation already in use, retry with new.');
+                }
+            })
     });
 }
 
@@ -45,10 +47,11 @@ master.updateDesignationDetail = function (options) {
             }
         }).then(designationExist => {
             if (!_.isEmpty(designationExist)) {
-                designationExist.update({ 
+                designationExist.update({
                     designation_name: options.designation_name,
-                    updated_at:new Date(),
-                    updated_by:options.current_user_id })
+                    updated_at: new Date(),
+                    updated_by: options.current_user_id
+                })
                     .then(response => resolve(response))
                     .catch(error => reject(error))
             } else {
@@ -66,21 +69,22 @@ master.updateDesignationDetail = function (options) {
  * @returns {Array} - Designation Lists
  */
 master.getDesignationLists = function (options) {
+    console.log("====>",options);
     return new Promise((resolve, reject) => {
         var whereOrConditon = [];
         var includeObj = [];
         if (typeof options.search != 'undefined' && options.search != '') {
             whereOrConditon.push(
-                { designation_name: { $like: '%' + options.search + '%' } }
+                { designation_name: { [Op.like]: '%' + options.search + '%' } }
             );
         }
         if (typeof options.status != 'undefined' && options.stauts != '') {
             whereOrConditon.push(
-                { is_active: { $like: '%' + options.status + '%' } }
+                { is_active: { [Op.like]: '%' + options.status + '%' } }
             );
         }
         if (whereOrConditon.length > 0) {
-            includeObj.push({ $or: whereOrConditon });
+            includeObj.push({ [Op.or]: whereOrConditon });
         }
         global.sqlInstance.sequelize.models.designation.findAll({ where: includeObj })
             .then((response) => {
@@ -106,7 +110,11 @@ master.addSpecsHeadingDetail = function (options) {
         sqlInstance.specsHeadingMaster.create(options).then((response) => {
             resolve(response)
         }).catch((error) => {
-            reject(error);
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'specification heading name should be unique' })
+            } else {
+                reject(error);
+            }
         })
     });
 }
@@ -118,19 +126,19 @@ master.addSpecsHeadingDetail = function (options) {
 master.getSpecsHeadingLists = function (options) {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, search } = options;
+        let { status, search } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
             Condition['name'] = { $like: '%' + search + '%' }
         }
-        sqlInstance.specsHeadingMaster.findAll({where :Condition })
-        .then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(error);
-        });
+        sqlInstance.specsHeadingMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
     });
 }
 /**
@@ -144,8 +152,9 @@ master.getSpecsHeadingLists = function (options) {
  */
 master.updateSpecsHeadingDetail = function (options) {
     return new Promise((resolve, reject) => {
-        sqlInstance.specsHeadingMaster.update(options,{where: {specs_heading_id: options.specs_heading_id}
-    }).then(response => {
+        sqlInstance.specsHeadingMaster.update(options, {
+            where: { specs_heading_id: options.specs_heading_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);
@@ -181,7 +190,7 @@ master.addSpecsDetail = (options) => {
 master.getSpecificationDetails = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, name, heading } = options;
+        let { status, name, heading } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
@@ -192,19 +201,19 @@ master.getSpecificationDetails = (options) => {
             Condition['specs_heading_id'] = Number(heading);
         }
         sqlInstance.specsMaster.findAll({
-            where :Condition,
+            where: Condition,
             attributes: ['name', 'value', 'value_arabic', 'is_active'],
             include: [{
                 model: sqlInstance.specsHeadingMaster,
-                as:'specs_heading',
+                as: 'specs_heading',
                 attributes: ['name']
             }]
         })
-        .then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(error);
-        });
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
     });
 }
 /**
@@ -219,8 +228,9 @@ master.getSpecificationDetails = (options) => {
  */
 master.updateSpecsDetail = (options) => {
     return new Promise((resolve, reject) => {
-        sqlInstance.specsMaster.update(options,{where: {specs_id: options.specs_id}
-    }).then(response => {
+        sqlInstance.specsMaster.update(options, {
+            where: { specs_id: options.specs_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);
@@ -253,7 +263,7 @@ master.addYearDetail = function (options) {
 master.getYearLists = function (options) {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, type, year } = options;
+        let { status, type, year } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
@@ -263,12 +273,12 @@ master.getYearLists = function (options) {
         if (typeof type != 'undefined' && type != '') {
             Condition['type'] = { $like: '%' + type + '%' }
         }
-        sqlInstance.yearMaster.findAll({where :Condition })
-        .then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(error);
-        });
+        sqlInstance.yearMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
     });
 }
 /**
@@ -280,8 +290,9 @@ master.getYearLists = function (options) {
  */
 master.updateYearDetail = function (options) {
     return new Promise((resolve, reject) => {
-        sqlInstance.yearMaster.update(options,{where: {year_id: options.year_id}
-    }).then(response => {
+        sqlInstance.yearMaster.update(options, {
+            where: { year_id: options.year_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);
@@ -304,7 +315,11 @@ master.addAccessoryCategory = (options) => {
         sqlInstance.accessoryCatMaster.create(options).then(response => {
             resolve(response)
         }).catch(error => {
-            reject(error);
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'Accessory category name should be unique' })
+            } else {
+                reject(error);
+            }
         })
     });
 }
@@ -316,19 +331,19 @@ master.addAccessoryCategory = (options) => {
 master.getAccessoryCatDetails = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, name } = options;
+        let { status, name } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
         if (typeof name != 'undefined' && name != '') {
             Condition['name'] = { $like: '%' + name + '%' };
         }
-        sqlInstance.accessoryCatMaster.findAll({where :Condition})
-        .then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(error);
-        });
+        sqlInstance.accessoryCatMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
     });
 }
 /**
@@ -341,8 +356,9 @@ master.getAccessoryCatDetails = (options) => {
  */
 master.updateAccessoryCategory = function (options) {
     return new Promise((resolve, reject) => {
-        sqlInstance.accessoryCatMaster.update(options,{where: {accessory_cat_id: options.accessory_cat_id}
-    }).then(response => {
+        sqlInstance.accessoryCatMaster.update(options, {
+            where: { accessory_cat_id: options.accessory_cat_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);
@@ -376,19 +392,19 @@ master.addResponseStatus = (options) => {
 master.getResponseStatusList = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, rspStatus } = options;
+        let { status, rspStatus } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
         if (typeof rspStatus != 'undefined' && rspStatus != '') {
             Condition['status'] = { $like: '%' + rspStatus + '%' };
         }
-        sqlInstance.responseStatusMaster.findAll({where :Condition})
-        .then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(error);
-        });
+        sqlInstance.responseStatusMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
     });
 }
 /**
@@ -399,8 +415,9 @@ master.getResponseStatusList = (options) => {
  */
 master.updateResponseStatus = function (options) {
     return new Promise((resolve, reject) => {
-        sqlInstance.responseStatusMaster.update(options,{where: {rsp_status_id: options.rsp_status_id}
-    }).then(response => {
+        sqlInstance.responseStatusMaster.update(options, {
+            where: { rsp_status_id: options.rsp_status_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);
@@ -434,7 +451,7 @@ master.addAreaDetails = (options) => {
 master.getAreaList = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let {status, name } = options;
+        let { status, name } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }

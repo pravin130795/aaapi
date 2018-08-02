@@ -30,6 +30,10 @@ schemas.userDetails = {
             'type': 'string',
             'required': true
         },
+        'module_name': {
+            'type': 'string',
+            'required': true
+        },
         'designation_id': {
             'type': 'integer',
             'required': true

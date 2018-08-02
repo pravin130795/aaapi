@@ -9,7 +9,10 @@ var constants = {
 	},
 	moduleNames: {
 		customer: 'customer',
-		model: 'models'
+		model: 'models',
+		user: 'user',
+		role: 'role',
+		master: 'master'
 	}
 };
 

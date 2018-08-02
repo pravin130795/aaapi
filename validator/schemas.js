@@ -310,6 +310,191 @@ schemas.updateResponseStatus = {
     }
 }
 
+schemas.addAreaRqst = {
+    'name': '/areaMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': true,
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateAreaRqst = {
+    'name': '/updateAreaRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'area_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addLookupRqst = {
+    'name': '/addLookupRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'body_name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateLookupRqst = {
+    'name': '/updateLookupRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'lookup_id': {
+            'type': 'number',
+            'required': true
+        },
+        'body_name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addFromToPriceRqst = {
+    'name': '/addFromToPriceRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'from_price': {
+            'type': 'decimal',
+            'required': true,
+            'unique': true
+        },
+        'to_price': {
+            'type': 'decimal',
+            'required': true,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateFromToPriceRqst = {
+    'name': '/updateFromToPriceRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'from_to_price_id': {
+            'type': 'number',
+            'required': true
+        },
+        'from_price': {
+            'type': 'decimal',
+            'required': false,
+            'unique': true
+        },
+        'to_price': {
+            'type': 'decimal',
+            'required': false,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
 schemas.validate = function (object, schema) {
     var errors = _validator.validate(object, schema).errors;
     if (errors.length > 0) {

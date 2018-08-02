@@ -404,6 +404,210 @@ let updateResponseStatus = function (req, res) {
     }
 }
 
+/* Area Master */
+let addArea = (req, res) => {
+    let areaData = common.sanitize(req.body, schemas.areaMaster);
+    if (schemas.validate(areaData, schemas.areaMaster)) {
+        master.addAreaDetails(areaData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getArea = function (req, res) {
+    master.getAreaList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateArea = function (req, res) {
+    let areaData = req.body;
+    if (schemas.validate(areaData, schemas.updateAreaRqst)) {
+        master.updateAreaDetail(areaData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+/* Lookup Master */
+let addLookup = (req, res) => {
+    let lookupData = common.sanitize(req.body, schemas.addLookupRqst);
+    if (schemas.validate(lookupData, schemas.addLookupRqst)) {
+        master.addLookupDetails(lookupData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getLookup = function (req, res) {
+    master.getLookupList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateLookup = function (req, res) {
+    let lookupData = req.body;
+    if (schemas.validate(lookupData, schemas.updateLookupRqst)) {
+        master.updateLookupdetail(lookupData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* From To Price */
+let addFromToPrice = (req, res) => {
+    let fromToPriceData = common.sanitize(req.body, schemas.addFromToPriceRqst);
+    if (schemas.validate(fromToPriceData, schemas.addFromToPriceRqst)) {
+        master.addFromToPriceDetails(fromToPriceData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getFromToPrice = function (req, res) {
+    master.getFromToPriceList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateFromToPrice = function (req, res) {
+    let lookupData = req.body;
+    if (schemas.validate(lookupData, schemas.updateFromToPriceRqst)) {
+        master.updateFromToPriceDetail(lookupData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
 
 module.exports = {
     addDesignation: addDesignation,
@@ -422,5 +626,14 @@ module.exports = {
     updateAccessoryCat: updateAccessoryCat,
     addResponseStatus: addResponseStatus,
     getResponseStatus: getResponseStatus,
-    updateResponseStatus: updateResponseStatus
+    updateResponseStatus: updateResponseStatus,
+    addArea: addArea,
+    getArea: getArea,
+    updateArea: updateArea,
+    addLookup: addLookup,
+    getLookup: getLookup,
+    updateLookup: updateLookup,
+    addFromToPrice: addFromToPrice,
+    getFromToPrice: getFromToPrice,
+    updateFromToPrice: updateFromToPrice
 }

@@ -32,4 +32,24 @@ module.exports = function (app) {
     app.post('/master/addresponsestatus', service.addResponseStatus);
     app.get('/master/getresponsestatus', service.getResponseStatus);
     app.put('/master/updateresponsestatus', service.updateResponseStatus);
+
+    /* Area Master */
+    app.post('/master/addarea', service.addArea);
+    app.get('/master/getarea', service.getArea);
+    app.put('/master/updatearea', service.updateArea);
+
+    // Bank master
+    /* app.post('/master/addbankemi', service.addBankEmi);
+    app.get('/master/getbankemi', service.getBankEmi);
+    app.put('/master/updatebankemi', service.updateBankEmi) */
+
+    /* Lookup master  */
+    app.post('/master/addlookup', service.addLookup);
+    app.get('/master/getlookup', service.getLookup);
+    app.put('/master/updatelookup', service.updateLookup);
+
+    /* From to Price master */
+    app.post('/master/addfromtoprice', service.addFromToPrice);
+    app.get('/master/getfromtoprice', service.getFromToPrice);
+    app.put('/master/updatefromtoprice', service.updateFromToPrice);
 }

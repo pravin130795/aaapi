@@ -407,4 +407,186 @@ master.updateResponseStatus = function (options) {
         })
     });
 }
+
+/* Area Master */
+/**
+ * API To Insert Area Master Details to the Database
+ * @param {string} name - Represents the name of Area.
+ * @param {string} type - Represents the type of Deilvery/Service for the Area
+ * @param {bit} is_active - Represents the status of the Area
+ * @param {number} created_by - Represents the User Id for user who created response
+ * @param {number} updated_by - Represents the User Id for user who updated response
+ */
+master.addAreaDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.areaMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Area Master Details from the Database
+ * @param {string} name - Represents the name of the Area for Filter.
+ * @param {bit} status - Represents the Status of the Area for Filter
+ */
+master.getAreaList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { $like: '%' + name + '%' };
+        }
+        sqlInstance.areaMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Area Master Details to the Database
+ * @param {number} area_id - Represents the Id of the Area
+ * @param {string} name - Represents the name of Area.
+ * @param {string} type - Represents the type of Deilvery/Service for the Area
+ * @param {bit} is_active - Represents the status of the Area
+ * @param {number} updated_by - Represents the User Id for user who updated response
+ */
+master.updateAreaDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.areaMaster.update(options,{where: {area_id: options.area_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* Lookup Master */
+/**
+ * API To Insert Lookup Master Details to the Database
+ * @param {string} body_name - Represents the name of Vehicle.
+ * @param {enum} type - Represents the type of Vehicle(CPOV, New Car)
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addLookupDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.lookupMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Lookup Master Details from the Database
+ * @param {string} body_name - Represents the name of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getLookupList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, body_name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof body_name != 'undefined' && body_name != '') {
+            Condition['body_name'] = { $like: '%' + body_name + '%' };
+        }
+        sqlInstance.lookupMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Lookup Master Details to the Database
+ * @param {number} lookup_id - Represents the Id of the Response Status
+ * @param {string} body_name - Represents the name of Vehicle.
+ * @param {enum} type - Represents the type of Vehicle(CPOV, New Car)
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.updateLookupdetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.lookupMaster.update(options,{where: {lookup_id: options.lookup_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* From To Price Master */
+/**
+ * API To Insert From To Price Master Details to the Database
+ * @param {decimal} from_price - Represents the From Price
+ * @param {decimal} to_price - Represents the To Price
+ * @param {enum} type - Represents type of vehicle(CPOV, New Car)
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addFromToPriceDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.fromToPriceMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get From To Price Master Details from the Database
+ * @param {string} body_name - Represents the name of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getFromToPriceList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof search != 'undefined' && search != '') {
+            Condition['from_price'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.fromToPriceMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Lookup Master Details to the Database
+ * @param {number} lookup_id - Represents the Id of the Response Status
+ * @param {string} body_name - Represents the name of Vehicle.
+ * @param {enum} type - Represents the type of Vehicle(CPOV, New Car)
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.updateFromToPriceDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.fromToPriceMaster.update(options,{where: {from_to_price_id: options.from_to_price_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
 module.exports = master;

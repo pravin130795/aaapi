@@ -1,14 +1,9 @@
-// specified in WORKER_COUNT.
-//
-// The master will respond to SIGHUP, which will trigger
-// restarting all the workers and reloading the app.
+const cluster = require('cluster');
+const util = require('util');
+const config = require('./configurations/config');
+const logger = require('./utils/logger');
 
-var cluster = require('cluster');
-var util = require('util');
-var config = require('./configurations/config');
-var logger = require('./utils/logger');
-
-var workerCount = config.get('cluster.workerCount');
+let workerCount = config.get('cluster.workerCount');
 
 // Defines what each worker needs to run
 // In this case, it's server.js a simple node http app
@@ -17,27 +12,27 @@ cluster.setupMaster({ exec: 'server.js' });
 // Gets the count of active workers
 function numWorkers() { return Object.keys(cluster.workers).length; }
 
-var stopping = false;
+let stopping = false;
 
 // Forks off the workers unless the server is stopping
 function forkNewWorkers() {
     if (!stopping) {
-        for (var i = numWorkers(); i < workerCount; i++) { cluster.fork(); }
+        for (let i = numWorkers(); i < workerCount; i++) { cluster.fork(); }
     }
 }
 
 // A list of workers queued for a restart
-var workersToStop = [];
+let workersToStop = [];
 
 // Stops a single worker
 // Gives 60 seconds after disconnect before SIGTERM
 function stopWorker(worker) {
     logger.info(util.format('stopping worker pid:%s', worker.process.pid));
     worker.disconnect();
-    var killTimer = setTimeout(function () {
+    let killTimer = setTimeout(function () {
         worker.kill();
     }, 60000);
-    
+
     // Ensure we don't stay up just for this setTimeout
     killTimer.unref();
 }
@@ -46,8 +41,8 @@ function stopWorker(worker) {
 // This will allow the process to finish it's work
 // for 60 seconds before sending SIGTERM
 function stopNextWorker() {
-    var i = workersToStop.pop();
-    var worker = cluster.workers[i];
+    let i = workersToStop.pop();
+    let worker = cluster.workers[i];
     if (worker) stopWorker(worker);
 }
 
@@ -55,7 +50,7 @@ function stopNextWorker() {
 function stopAllWorkers() {
     stopping = true;
     logger.info('stopping all workers');
-    for (var id in cluster.workers) {
+    for (let id in cluster.workers) {
         stopWorker(cluster.workers[id]);
     }
 }

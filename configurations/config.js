@@ -1,7 +1,7 @@
-var convict = require('convict');
-var fs = require('fs');
+const convict = require('convict');
+const fs = require('fs');
 
-var config = convict({
+let config = convict({
 	env: {
 		doc: 'The applicaton environment.',
 		format: ['production', 'development', 'local'],
@@ -20,7 +20,7 @@ var config = convict({
 		port: {
 			doc: 'HTTP port to bind',
 			format: 'port',
-			default: 3000,
+			default: 3003,
 			env: 'PORT'
 		},
 		enableHttpLogging: {
@@ -36,7 +36,7 @@ var config = convict({
 		enableStatic: {
 			doc: 'Enable Express static server',
 			format: Boolean,
-			default: false
+			default: true
 		},
 		enablePassportAuthentication: {
 			doc: 'Enable Passport authentication',
@@ -47,6 +47,11 @@ var config = convict({
 			doc: 'Enable Redis session storage',
 			format: Boolean,
 			default: false
+		},
+		staticDirectory: {
+			doc: 'Path To Static Directory',
+			format: String,
+			default: 'public'
 		},
 		enableCSRFSecurity: {
 			doc: 'Enable CSRF security',

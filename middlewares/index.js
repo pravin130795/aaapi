@@ -1,30 +1,28 @@
-var bodyParser = require('body-parser');
-var compression = require('compression');
-var cookieParser = require('cookie-parser');
-var helmet = require('helmet');
-var config = require('../configurations/config');
-var logger = require('../utils/logger');
-var util = require('util');
-var constants = require('../utils/constants');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const config = require('../configurations/config');
+const logger = require('../utils/logger');
+const util = require('util');
+const constants = require('../utils/constants');
 
-module.exports = function(app) {
+module.exports = function (app) {
 
 	// To catch uncaught exception and give an appropriate response to the user
-	app.use(function(err, req, res, next) {
+	app.use(function (err, req, res, next) {
 		// The error id is attached to `res.sentry` to be returned
 		// and optionally displayed to the user for support.
 		logger.error(util.format('Uncaught exception caught, error:- %j', err));
 		return res.status(500).send({
-			code : 5002,
-			messageKey : constants.messageKeys.code_5002,
-			data : {}
+			code: 5002,
+			messageKey: constants.messageKeys.code_5002,
+			data: {}
 		});
 	});
-
-	app.get('/', function mainHandler(req, res) {
-		throw new Error('Broke!');
-	});
-
+	
 	// Enable http logging
 	if (config.get('server.enableHttpLogging'))
 		app.use(logger.startHttpLogger());
@@ -72,17 +70,17 @@ module.exports = function(app) {
 
 	// Enable paths that we want to have it served statically
 	if (config.get('server.enableStatic'))
-		app.use(express.static(path.join(root, config.get('server.staticDirectory'))));
+		app.use(express.static(path.join(__dirname, config.get('server.staticDirectory'))));
 
 	// Enable request body parsing
 	app.use(bodyParser.urlencoded({
-		extended : true,
-		limit : config.get('server.bodyParser.limit')
+		extended: true,
+		limit: config.get('server.bodyParser.limit')
 	}));
 
 	// Enable request body parsing in JSON format
 	app.use(bodyParser.json({
-		limit : config.get('server.bodyParser.limit')
+		limit: config.get('server.bodyParser.limit')
 	}));
 
 	// Enable cookie parsing

@@ -12,26 +12,27 @@ let user = function () {
  */
 user.addUserDetail = function (options) {
     return new Promise((resolve, reject) => {
-        return global.sqlInstance.sequelize.models.role
-            .findOne({ where: { 'mobile_no': options.mobile_no } })
-            .then(function (obj) {
-                if (obj) { // data already exist
-                    return resolve(obj)
-                }
-                else { // insert
-                    return global.sqlInstance.sequelize.models.user.create({
-                        user_name: options.user_name,
-                        email: options.email,
-                        password:options.password,
-                        confirm_password:options.confirm_password,
-                        mobile_no:options.mobile_no,
-                        approver_person:options.approver_person,
-                        designation_id:options.designation_id
-                    })
-                        .then(response => resolve(response))
-                        .catch(error => reject(error))
-                }
-            })
+
+        global.sqlInstance.sequelize.models.user.findOrCreate({
+            where: { mobile_no: options.mobile_no },
+             defaults: {
+                user_name: options.user_name,
+                email: options.email,
+                password:options.password,
+                mobile_no:options.mobile_no,
+                approver_person:options.approver_person,
+                designation_id:options.designation_id,
+                updated_by:options.current_user_id,
+                created_by:options.current_user_id
+            }})
+        .spread((user, created) => {
+          if(created){
+            return resolve(user);
+          }else{
+             return resolve('user already in use, retry with new.');
+          }
+        })
+
     })
 
 },

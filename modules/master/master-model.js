@@ -66,6 +66,7 @@ master.updateDesignationDetail = function (options) {
  * @returns {Array} - Designation Lists
  */
 master.getDesignationLists = function (options) {
+    console.log("====>",options);
     return new Promise((resolve, reject) => {
         var whereOrConditon = [];
         var includeObj = [];

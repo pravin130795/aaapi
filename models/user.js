@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("user", {
+    return sequelize.define("users", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         confirm_password:{
             type:DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
         mobile_no:{
             type:DataTypes.STRING,
@@ -33,6 +33,10 @@ module.exports = function(sequelize, DataTypes) {
         },
         approver_person:{
             type:DataTypes.STRING,
+            allowNull:false
+        },
+        module_name:{
+            type:DataTypes.ENUM('New Car', 'CPOV', 'After sale'),
             allowNull:false
         },
         created_at:{

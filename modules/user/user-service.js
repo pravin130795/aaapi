@@ -6,7 +6,7 @@ const logger = require('../../utils/logger')
 
 
 let addUser = function (req, res) {
-    let userData = common.sanitize(req.body, schemas.userDetails);
+    let userData = common.sanitize(req.body, schemas.userDetails,constants.moduleNames.user);
     if (schemas.validate(userData, schemas.userDetails)) {
         user.addUserDetail(userData).then((response) => {
             res.status(200).send({

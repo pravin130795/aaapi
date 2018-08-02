@@ -34,19 +34,11 @@
 			"charset": "",
 			"collate": ""
 		},
-		"operatorsAliases": {
-			"$and": "$and",
-			"$or": "$or",
-			"$eq": "$eq",
-			"$gt": "$gt",
-			"$lt": "$lt",
-			"$lte": "$lte",
-			"$like": "$like"
-		},
 		"dialectOptions": {
 			"encrypt": true,
 			"multipleStatements": true
 		},
-		"logging": false
+		"logging": false,
+		"operatorsAliases": false
 	}
 }

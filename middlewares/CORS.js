@@ -4,7 +4,7 @@ exports = module.exports = function (app) {
 		// / if
 		// (config.get('server.CORS.allowedHosts').indexOf(req.headers.origin)
 		// !== -1) {
-		res.header('Access-Control-Allow-Origin', '/*');
+		res.header('Access-Control-Allow-Origin', req.headers.origin);
 		res.header('Access-Control-Allow-Methods', config.get('server.CORS.allowedMethods'));
 		res.header('Access-Control-Allow-Headers', config.get('server.CORS.allowedHeaders'));
 		res.header('Access-Control-Allow-Credentials', true);

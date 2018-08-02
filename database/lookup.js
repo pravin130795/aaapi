@@ -1,18 +1,18 @@
 module.exports = function(sequelize, DataTypes) {   
-    let bankMaster = sequelize.define("bankMaster", {
-        bank_id: {
+    let lookupMaster = sequelize.define("lookupMaster", {
+        lookup_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        name:{
+        body_name:{
             type:DataTypes.STRING(40),
             allowNull:false,
             unique: true
         },
-        emi:{
-            type:DataTypes.FLOAT,
+        type:{
+            type:DataTypes.ENUM('CPOV', 'New Car'),
             allowNull:false
         },
         created_at:{
@@ -40,9 +40,9 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'bank_emi_master',
+        tableName: 'lookup_master',
         timestamps: false,
         classMethods: {}
     });
-    return bankMaster;
+    return lookupMaster;
 };

@@ -435,6 +435,100 @@ let updateResponseStatus = function (req, res) {
     }
 }
 
+/* Bank EMI Master */
+let addBankEmi = function (req, res) {
+    let bankData = common.sanitize(req.body, schemas.bankEmiMaster);
+    if (schemas.validate(bankData, schemas.bankEmiMaster)) {
+        master.addBankDetails(bankData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getBankEmi = function (req, res) {
+    master.getBankEmiList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateBankEmi = function (req, res) {
+    let bankData = req.body;
+    if (schemas.validate(bankData, schemas.updateBankEmiMaster)) {
+        master.updateBankemiDetails(bankData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Lookup Master */
+let addLookup = function (req, res) {
+    let lookupData = common.sanitize(req.body, schemas.addLookupRqst);
+    if (schemas.validate(lookupData, schemas.addLookupRqst)) {
+        master.addLookupDetails(lookupData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
 
 module.exports = {
     addDesignation: addDesignation,
@@ -454,5 +548,9 @@ module.exports = {
     updateAccessoryCat: updateAccessoryCat,
     addResponseStatus: addResponseStatus,
     getResponseStatus: getResponseStatus,
-    updateResponseStatus: updateResponseStatus
+    updateResponseStatus: updateResponseStatus,
+    addBankEmi: addBankEmi,
+    getBankEmi: getBankEmi,
+    updateBankEmi: updateBankEmi,
+    addLookup: addLookup
 }

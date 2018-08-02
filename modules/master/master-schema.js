@@ -294,6 +294,95 @@ schemas.updateResponseStatus = {
     }
 }
 
+schemas.bankEmiMaster = {
+    'name': '/bankEmiMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'emi': {
+            'type': 'float',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateBankEmiMaster = {
+    'name': '/updateBankEmiMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'bank_id' : {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'emi': {
+            'type': 'float',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addLookupRqst = {
+    'name': '/addLookupRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'body_name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'type': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'boolean',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+_validator.addSchema(schemas.pageDetails, '/pageDetails');
+
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;
     if (errors.length > 0) {

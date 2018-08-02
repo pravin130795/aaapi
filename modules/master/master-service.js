@@ -1,5 +1,5 @@
 const common = require('../../utils/common');
-const schemas = require('../../validator/schemas');
+const schemas = require('./master-schema');
 const master = require('./master-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
@@ -34,7 +34,11 @@ let addDesignation = function (req, res) {
 
 
 let getDesignation = function (req, res) {
-    master.getDesignationLists().then((response) => {
+    let filter = {
+        search: req.query.search,
+        status: req.query.status
+    };
+    master.getDesignationLists(filter).then((response) => {
         res.status(200).send({
             code: 2000,
             messageKey: constants.messageKeys.code_2000,
@@ -48,6 +52,33 @@ let getDesignation = function (req, res) {
             data: error
         });
     });
+}
+
+let updateDesignation = function (req, res) {
+    let updateDesignationData = common.sanitize(req.body, schemas.updateDesignationDetail);
+    if (schemas.validate(updateDesignationData, schemas.updateDesignationDetail)) {
+        master.updateDesignationDetail(updateDesignationData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            logger.info(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
 }
 
 //Specification Heading Master
@@ -78,8 +109,8 @@ let addSpecsHeading = function (req, res) {
 }
 let getSpecsHeading = function (req, res) {
     let filter = {
-        search : req.query.search,
-        status : req.query.status
+        search: req.query.search,
+        status: req.query.status
     };
     master.getSpecsHeadingLists(filter).then((response) => {
         res.status(200).send({
@@ -222,8 +253,8 @@ let addYear = function (req, res) {
 }
 let getYear = function (req, res) {
     let filter = {
-        year : req.query.year,
-        status : req.query.status,
+        year: req.query.year,
+        status: req.query.status,
         type: req.query.type
     };
     master.getYearLists(filter).then((response) => {
@@ -612,6 +643,7 @@ let updateFromToPrice = function (req, res) {
 module.exports = {
     addDesignation: addDesignation,
     getDesignation: getDesignation,
+    updateDesignation: updateDesignation,
     addSpecsHeading: addSpecsHeading,
     getSpecsHeading: getSpecsHeading,
     updateSpecsHeading: updateSpecsHeading,
@@ -635,5 +667,8 @@ module.exports = {
     updateLookup: updateLookup,
     addFromToPrice: addFromToPrice,
     getFromToPrice: getFromToPrice,
-    updateFromToPrice: updateFromToPrice
+    updateFromToPrice: updateFromToPrice,
+    addBankEmi: addBankEmi,
+    getBankEmi: getBankEmi,
+    updateBankEmi: updateBankEmi,
 }

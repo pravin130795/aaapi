@@ -1,17 +1,17 @@
 module.exports = function(sequelize, DataTypes) {   
-    let MasterBank = sequelize.define("bank_EMI", {
+    let MasterArea = sequelize.define("master_area", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        bank_name:{
+        area_name:{
             type:DataTypes.STRING,
             allowNull:false
         },
-        emi:{
-            type:DataTypes.DECIMAL(10,2),
+        area_type:{
+            type:DataTypes.STRING,
             allowNull:false
         },
         created_at:{
@@ -40,5 +40,5 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {}
     });
-    return MasterBank;
+    return MasterArea;
 };

@@ -1,5 +1,5 @@
 const common = require('../../utils/common');
-const schemas = require('../../validator/schemas');
+const schemas = require('./user-schema');
 const user = require('./user-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
@@ -51,8 +51,8 @@ let updateUser = function (req, res) {
 
 let getUsers = function (req, res) {
     let filter = {
-        search : req.query.search,
-        status : req.query.status
+        search: req.query.search,
+        status: req.query.status
     };
     user.getRoleLists(filter).then((response) => {
         res.status(200).send({

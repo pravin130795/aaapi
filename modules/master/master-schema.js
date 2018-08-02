@@ -1,49 +1,10 @@
-var util = require('util');
-var Validator = require('jsonschema').Validator;
-var logger = require('../utils/logger');
-var constants = require('../utils/constants');
-var _validator = new Validator();
+const util = require('util');
+const Validator = require('jsonschema').Validator;
+const logger = require('../../utils/logger');
+const _validator = new Validator();
 
-var schemas = function () {
+let schemas = function () {
 };
-
-schemas.customerDetails = {
-    'id': '/customerDetails',
-    'type': 'object',
-    'properties': {
-        'id': {
-            'type': 'number',
-            'required': true
-        },
-        'customerName': {
-            'type': 'string',
-            'required': true
-        },
-        'customerNumber': {
-            'type': 'string',
-            'required': true
-        },
-        'address': {
-            'type':'object',
-            '$ref': '/addressDetails',
-            'required' : true
-        }
-    }
-}
-schemas.addressDetails = {
-    'id': '/addressDetails',
-    'type': 'object',
-    'required':true,
-    'properties': {
-        'homeAddress': {
-            'type': 'string',
-            'required': true
-        }
-    }
-}
-
-_validator.addSchema(schemas.addressDetails, '/addressDetails');
-
 
 schemas.designationDetail = {
     'id': '/designationDetail',
@@ -51,6 +12,29 @@ schemas.designationDetail = {
     'properties': {
         'designation_name': {
             'type': 'string',
+            'required': true
+        },
+        'current_user_id': {
+            'type': 'integer',
+            'required': true
+        },
+    }
+}
+
+schemas.updateDesignationDetail = {
+    'id': '/updateDesignationDetail',
+    'type': 'object',
+    'properties': {
+        'designation_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'designation_name': {
+            'type': 'string',
+            'required': true
+        },
+        'current_user_id': {
+            'type': 'integer',
             'required': true
         }
     }
@@ -310,8 +294,13 @@ schemas.updateResponseStatus = {
     }
 }
 
+<<<<<<< HEAD:validator/schemas.js
 schemas.addAreaRqst = {
     'name': '/areaMaster',
+=======
+schemas.bankEmiMaster = {
+    'name': '/bankEmiMaster',
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
     'type': 'object',
     'required': true,
     'properties': {
@@ -320,9 +309,15 @@ schemas.addAreaRqst = {
             'required': true,
             'unique': true
         },
+<<<<<<< HEAD:validator/schemas.js
         'type': {
             'type': 'string',
             'required': true,
+=======
+        'emi': {
+            'type': 'float',
+            'required': true
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
         },
         'is_active': {
             'type': 'boolean',
@@ -338,12 +333,21 @@ schemas.addAreaRqst = {
         }
     }
 }
+<<<<<<< HEAD:validator/schemas.js
 schemas.updateAreaRqst = {
     'name': '/updateAreaRqst',
     'type': 'object',
     'required': true,
     'properties': {
         'area_id': {
+=======
+schemas.updateBankEmiMaster = {
+    'name': '/updateBankEmiMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'bank_id' : {
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
             'type': 'number',
             'required': true
         },
@@ -352,8 +356,13 @@ schemas.updateAreaRqst = {
             'required': false,
             'unique': true
         },
+<<<<<<< HEAD:validator/schemas.js
         'type': {
             'type': 'string',
+=======
+        'emi': {
+            'type': 'float',
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
             'required': false
         },
         'is_active': {
@@ -387,6 +396,7 @@ schemas.addLookupRqst = {
             'required': true
         },
         'created_by': {
+<<<<<<< HEAD:validator/schemas.js
             'type': 'number',
             'required': true
         },
@@ -487,6 +497,10 @@ schemas.updateFromToPriceRqst = {
         'is_active': {
             'type': 'boolean',
             'required': false
+=======
+            'type': 'boolean',
+            'required': true
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
         },
         'updated_by': {
             'type': 'number',
@@ -495,8 +509,13 @@ schemas.updateFromToPriceRqst = {
     }
 }
 
+<<<<<<< HEAD:validator/schemas.js
+=======
+_validator.addSchema(schemas.pageDetails, '/pageDetails');
+
+>>>>>>> fa6057ca4078412392716f4a4ea194608770ae2b:modules/master/master-schema.js
 schemas.validate = function (object, schema) {
-    var errors = _validator.validate(object, schema).errors;
+    let errors = _validator.validate(object, schema).errors;
     if (errors.length > 0) {
         logger.error(util.format('Schema validation failed for id:- %s errors:- %j', schema.id, errors));
     }

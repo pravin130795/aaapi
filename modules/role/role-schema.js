@@ -75,7 +75,50 @@ schemas.pageDetails = {
     }
 }
 
+schemas.roleMapUserDetails = {
+    'id': '/roleMapUserDetails',
+    'type': 'object',
+    'properties': {
+        'user_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'roles': {
+            'type': 'array',
+            'item': {
+                '$ref': '/roleIdDetails',
+            },
+            'required': true
+        }
+    }
+}
+
+
+schemas.roleIdDetails = {
+    'id': '/roleIdDetails',
+    'type': 'object',
+    'properties': {
+        'role_id': {
+            'type': 'integer',
+            'required': true
+        }
+    }
+}
+
+
+schemas.roleUserListDetails = {
+    'id': '/roleUserListDetails',
+    'type': 'object',
+    'properties': {
+        'user_id': {
+            'type': 'integer',
+            'required': true
+        }
+    }
+}
+
 _validator.addSchema(schemas.pageDetails, '/pageDetails');
+_validator.addSchema(schemas.roleMapUserDetails, '/roleMapUserDetails');
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

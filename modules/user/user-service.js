@@ -33,7 +33,7 @@ let addUser = function (req, res) {
 }
 
 let updateUser = function (req, res) {
-    user.updateRoleDetails(req.body).then((response) => {
+    user.updateUserDetails(req.body).then((response) => {
         res.status(200).send({
             code: 2000,
             messageKey: constants.messageKeys.code_2000,
@@ -54,7 +54,7 @@ let getUsers = function (req, res) {
         search: req.query.search,
         status: req.query.status
     };
-    user.getRoleLists(filter).then((response) => {
+    user.getUserLists(filter).then((response) => {
         res.status(200).send({
             code: 2000,
             messageKey: constants.messageKeys.code_2000,

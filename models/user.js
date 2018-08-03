@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("users", {
-        id: {
+    let users = sequelize.define("users", {
+        user_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
@@ -21,10 +21,6 @@ module.exports = function(sequelize, DataTypes) {
         password:{
             type:DataTypes.STRING,
             allowNull:false
-        },
-        confirm_password:{
-            type:DataTypes.STRING,
-            allowNull:true
         },
         mobile_no:{
             type:DataTypes.STRING,
@@ -48,12 +44,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,
@@ -62,8 +58,14 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'user',
+        tableName: 'users',
         timestamps: false,
         classMethods: {}
     });
+    users.belongsTo(sequelize.models.designation, {
+        as: 'designation_details', 
+        targetKey:'designation_id',
+        foreignKey: 'designation_id'
+    });
+    return users;
 };

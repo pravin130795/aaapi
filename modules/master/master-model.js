@@ -69,24 +69,31 @@ master.updateDesignationDetail = function (options) {
  * @returns {Array} - Designation Lists
  */
 master.getDesignationLists = function (options) {
-    console.log("====>",options);
     return new Promise((resolve, reject) => {
-        var whereOrConditon = [];
-        var includeObj = [];
-        if (typeof options.search != 'undefined' && options.search != '') {
-            whereOrConditon.push(
-                { designation_name: { [Op.like]: '%' + options.search + '%' } }
-            );
+        let Condition = {};
+        let { status, search } = options;
+
+        if (typeof status != 'undefined') {
+            if (status != '') {
+                Condition['is_active'] = status;
+            }
         }
-        if (typeof options.status != 'undefined' && options.stauts != '') {
-            whereOrConditon.push(
-                { is_active: { [Op.like]: '%' + options.status + '%' } }
-            );
+        if (search != '') {
+            let whereCondition = {
+                [Op.and]: new Array()
+            };
+            if (typeof search != 'undefined') {
+                let orCondition = {
+                    [Op.or]: new Array({
+                        'designation_name': { [Op.like]: '%' + search + '%' }
+                    }
+                    )
+                };
+                whereCondition[Op.and].push(orCondition, { is_active: status });
+                Condition = whereCondition;
+            }
         }
-        if (whereOrConditon.length > 0) {
-            includeObj.push({ [Op.or]: whereOrConditon });
-        }
-        global.sqlInstance.sequelize.models.designation.findAll({ where: includeObj })
+        global.sqlInstance.sequelize.models.designation.findAll({ where: Condition })
             .then((response) => {
                 resolve(response);
             }).catch((error) => {

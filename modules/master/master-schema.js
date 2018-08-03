@@ -540,6 +540,148 @@ schemas.updateEmailRqst = {
     }
 }
 
+schemas.updateStockRqst = {
+    'name': '/updateStockRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'stock_id': {
+            'type': 'number',
+            'required': true
+        },
+        'stock': {
+            'type': 'string',
+            'required': false
+        },
+        'limit': {
+            'type': 'string',
+            'required': false
+        },
+        'range': {
+            'type': 'number',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addSocialRqst = {
+    'name': '/addSocialRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'url': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateSocialRqst = {
+    'name': '/updateSocialRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'social_id': {
+            'type': 'number',
+            'required': true,
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'url': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addNotifyRqst = {
+    'name': '/addNotifyRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'expiry': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateNotifyRqst = {
+    'name': '/updateNotifyRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'notify_id': {
+            'type': 'number',
+            'required': true,
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'expiry': {
+            'type': 'number',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
 schemas.addKmRqst = {
     'name': '/addKmRqst',
     'type': 'object',
@@ -577,6 +719,69 @@ schemas.updateKmRqst = {
             'type': 'number',
             'required': false,
             'unique': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addMerchandiseCatRqst = {
+    'name': '/addMerchandiseCatRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'sequence': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateMerchandiseCatRqst = {
+    'name': '/updateMerchandiseCatRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'merchandise_cat_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'sequence': {
+            'type': 'number',
+            'required': false
         },
         'is_active': {
             'type': 'boolean',

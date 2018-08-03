@@ -72,4 +72,31 @@ module.exports = function (app) {
     app.post('/master/addkmdetails', service.addKmMaster);
     app.get('/master/getkmdetails', service.getKmMaster);
     app.put('/master/updatekmdetails', service.updateKmMaster);
+
+    /* Stock Master */
+    app.get('/master/getstock', service.getStockDetails);
+    app.put('/master/updatestock', service.updateStockDetails);
+
+    /* Social Media Links Master */
+    app.post('/master/addsocialmedialinks', service.addSocialLinks);
+    app.get('/master/getsocialmedialinks', service.getSocialLinks);
+    app.put('/master/updatesocialmedialinks', service.updateSocialLinks);
+
+    /* Social Media Links Master */
+    app.post('/master/addnotification', service.addNotification);
+    app.get('/master/getnotification', service.getNotification);
+    app.put('/master/updatenotification', service.updateNotification);
+
+    /* Merchandise Category Master */
+    app.post('/master/addmerchandisecategory', service.addMerchandiseCat);
+    app.get('/master/getmerchandisecategory', service.getMerchandiseCat);
+    app.put('/master/updatemerchandisecategory', service.updateMerchandiseCat);
+
+    /* Autoline Status Master */
+    /* app.get('/master/getautolinestatus', service.getAutoLineStatus); */
+
+    /* Status Listing Master */
+    /* app.post('/master/addstatuslisting', service.addStatusListing);
+    app.get('/master/getstatuslisting', service.getStatusListing);
+    app.put('/master/updatestatuslisting', service.updateStatusListing); */
 }

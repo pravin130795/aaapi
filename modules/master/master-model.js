@@ -152,6 +152,7 @@ master.getSpecsHeadingLists = function (options) {
  */
 master.updateSpecsHeadingDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.specsHeadingMaster.update(options, {
             where: { specs_heading_id: options.specs_heading_id }
         }).then(response => {
@@ -228,6 +229,7 @@ master.getSpecificationDetails = (options) => {
  */
 master.updateSpecsDetail = (options) => {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.specsMaster.update(options, {
             where: { specs_id: options.specs_id }
         }).then(response => {
@@ -290,6 +292,7 @@ master.getYearLists = function (options) {
  */
 master.updateYearDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.yearMaster.update(options, {
             where: { year_id: options.year_id }
         }).then(response => {
@@ -356,6 +359,7 @@ master.getAccessoryCatDetails = (options) => {
  */
 master.updateAccessoryCategory = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.accessoryCatMaster.update(options, {
             where: { accessory_cat_id: options.accessory_cat_id }
         }).then(response => {
@@ -415,6 +419,7 @@ master.getResponseStatusList = (options) => {
  */
 master.updateResponseStatus = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.responseStatusMaster.update(options, {
             where: { rsp_status_id: options.rsp_status_id }
         }).then(response => {
@@ -476,6 +481,7 @@ master.getAreaList = (options) => {
  */
 master.updateAreaDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.areaMaster.update(options,{where: {area_id: options.area_id}
     }).then(response => {
             resolve(response)
@@ -536,6 +542,7 @@ master.getLookupList = (options) => {
  */
 master.updateLookupdetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.lookupMaster.update(options,{where: {lookup_id: options.lookup_id}
     }).then(response => {
             resolve(response)
@@ -597,6 +604,7 @@ master.getFromToPriceList = (options) => {
  */
 master.updateFromToPriceDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.fromToPriceMaster.update(options,{where: {from_to_price_id: options.from_to_price_id}
     }).then(response => {
             resolve(response)
@@ -634,6 +642,7 @@ master.getContactsList = (options) => {
  */
 master.updateContactDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.contactsMaster.update(options,{where: {contact_id: options.contact_id}
     }).then(response => {
             resolve(response)
@@ -673,6 +682,7 @@ master.getEmailsList = (options) => {
  */
 master.updateEmailDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.emailMaster.update(options,{where: {email_id: options.email_id}
     }).then(response => {
             resolve(response)
@@ -732,8 +742,236 @@ master.getKmList = (options) => {
  */
 master.updateKmDetail = function (options) {
     return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
         sqlInstance.kmMaster.update(options,{where: {km_id: options.km_id}
     }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+} 
+
+/**
+ * API To Get Email Master Details from the Database
+ * @param {string} module_name - Represents the name of the Response for Filter.
+ */
+master.getStockList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { search } = options;
+        if (typeof search != 'undefined' && search != '') {
+            Condition['current_id'] = search;
+        }
+        sqlInstance.stockMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Email Master Details to the Database
+ * @param {number} contact_id - Represents the Id of the Module 
+ * @param {enum} module_name - Represents the name of Module.
+ * @param {string} emp_name - Name of the employee for that module
+ * @param {string} email - Email to contact that module
+ * @param {string} contact_no - Represents the type of Contact no of module
+ * @param {number} updated_by - Represents the User Id for user who updated
+ */
+master.updateStockDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.stockMaster.update(options,{where: {stock_id: options.stock_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}  
+
+/* Social Media Links Master */
+/**
+ * API To Insert Social Media Master Details to the Database
+ * @param {string} name - Represents the Social Media name
+ * @param {string} url - Represents the url
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addSocialDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.socialMediaMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Social Media Master Details from the Database
+ * @param {string} search - Represents the name of the Social media for Filter.
+ * @param {bit} status - Represents the Status of the Social media for Filter
+ */
+master.getSocialList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof search != 'undefined' && search != '') {
+            Condition['name'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.socialMediaMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Socail Media Master Details to the Database
+ * @param {number} social_id - Represents the Id of the Social Media
+ * @param {string} name - Represents the Social Media name
+ * @param {string} url - Represents the url
+ * @param {bit} is_active - Represents the status of the Social media
+ * @param {number} updated_by - Represents the User Id for user who updated social media
+ */
+master.updateSocialDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.socialMediaMaster.update(options,{where: {social_id: options.social_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+} 
+
+/* Notification Master */
+/**
+ * API To Insert Social Media Master Details to the Database
+ * @param {string} name - Represents the Notification name
+ * @param {number} expiry - Represents the expiry time in hrs
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addNotifyDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.notifyMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Social Media Master Details from the Database
+ * @param {string} search - Represents the name of the Social media for Filter.
+ * @param {bit} status - Represents the Status of the Social media for Filter
+ */
+master.getNotifyList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let {status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof search != 'undefined' && search != '') {
+            Condition['name'] = { $like: '%' + search + '%' };
+        }
+        sqlInstance.notifyMaster.findAll({where :Condition})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Socail Media Master Details to the Database
+ * @param {number} social_id - Represents the Id of the Social Media
+ * @param {string} name - Represents the Social Media name
+ * @param {string} url - Represents the url
+ * @param {bit} is_active - Represents the status of the Social media
+ * @param {number} updated_by - Represents the User Id for user who updated social media
+ */
+master.updateNotifyDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.notifyMaster.update(options,{where: {notify_id: options.notify_id}
+    }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+} 
+
+/* Merchandise Category Master */
+/**
+ * API To Insert Accessory Category Master Details to the Database
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.addMerchandiseCategory = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.merchandiseCatMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'Merchandise category name should be unique' })
+            } else {
+                reject(error);
+            }
+        })
+    });
+}
+/**
+ * API To Get Merchandise Category Master Details from the Database
+ * @param {string} name - Represents the name of the Category for Filter.
+ * @param {bit} is_active - Represents the Status of the Category for Filter
+ */
+master.getMerchandiseCatDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { $like: '%' + name + '%' };
+        }
+        sqlInstance.merchandiseCatMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+/**
+ * API To Update Merchandise Category Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Category
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.updateMerchandiseCategory = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.merchandiseCatMaster.update(options, {
+            where: { merchandise_cat_id: options.merchandise_cat_id }
+        }).then(response => {
             resolve(response)
         }).catch(error => {
             reject(error);

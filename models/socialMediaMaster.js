@@ -1,31 +1,31 @@
 module.exports = function (sequelize, DataTypes) {
-    const stockMaster = sequelize.define("stockMaster", {
-        stock_id: {
+    const socialMediaMaster = sequelize.define("socialMediaMaster", {
+        social_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false
         },
-        is_variant: {
+        name: {
+            type: DataTypes.STRING(40),
+            allowNull: false
+        },
+        url: {
+            type: DataTypes.STRING(40),
+            allowNull: false
+        },
+        is_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
-        current_id: {
+        created_by: {
             type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        created_at: {
+            type: DataTypes.DATE,
             allowNull: false,
-            unique: true
-        },
-        stock: {
-            type: DataTypes.ENUM('Available', 'Running Low', 'Out of Stock'),
-            allowNull: false
-        },
-        limit: {
-            type: DataTypes.ENUM('Greater than', 'Less than'),
-            allowNull: false
-        },
-        range: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            defaultValue: DataTypes.NOW
         },
         updated_by: {
             type: DataTypes.INTEGER,
@@ -37,9 +37,9 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         }
     }, {
-        tableName: 'stock_master',
+        tableName: 'social_media_links',
         timestamps: false,
         classMethods: {}
     });
-    return stockMaster;
+    return socialMediaMaster;
 };

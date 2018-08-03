@@ -792,6 +792,253 @@ let updateKmMaster = function (req, res) {
             data: {}
         });
     }
+} 
+
+/* Contacts Master */
+let getStockDetails = function (req, res) {
+    master.getStockList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateStockDetails = function (req, res) {
+    let stockData = req.body;
+    if (schemas.validate(stockData, schemas.updateStockRqst)) {
+        master.updateStockDetail(stockData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Social Media Master */
+let addSocialLinks = (req, res) => {
+    let socialData = common.sanitize(req.body, schemas.addSocialRqst);
+    if (schemas.validate(socialData, schemas.addSocialRqst)) {
+        master.addSocialDetails(socialData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getSocialLinks = function (req, res) {
+    master.getSocialList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateSocialLinks = function (req, res) {
+    let socialData = req.body;
+    if (schemas.validate(socialData, schemas.updateSocialRqst)) {
+        master.updateSocialDetail(socialData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}  
+
+/* Notifications Master */
+let addNotification = (req, res) => {
+    let notifyData = common.sanitize(req.body, schemas.addNotifyRqst);
+    if (schemas.validate(notifyData, schemas.addNotifyRqst)) {
+        master.addNotifyDetails(notifyData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getNotification = function (req, res) {
+    master.getNotifyList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateNotification = function (req, res) {
+    let notifyData = req.body;
+    if (schemas.validate(notifyData, schemas.updateNotifyRqst)) {
+        master.updateNotifyDetail(notifyData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+//Accessory Category Master
+let addMerchandiseCat = function (req, res) {
+    let merchandiseCatData = common.sanitize(req.body, schemas.addMerchandiseCatRqst);
+    if (schemas.validate(merchandiseCatData, schemas.addMerchandiseCatRqst)) {
+        master.addMerchandiseCategory(merchandiseCatData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getMerchandiseCat = function (req, res) {
+    master.getMerchandiseCatDetails(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateMerchandiseCat = function (req, res) {
+    let merchandiseCatData = req.body;
+    if (schemas.validate(merchandiseCatData, schemas.updateMerchandiseCatRqst)) {
+        master.updateMerchandiseCategory(merchandiseCatData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
 }
 
 module.exports = {
@@ -828,5 +1075,16 @@ module.exports = {
     updateEmailDetails: updateEmailDetails,
     addKmMaster: addKmMaster,
     getKmMaster: getKmMaster,
-    updateKmMaster: updateKmMaster
+    updateKmMaster: updateKmMaster,
+    getStockDetails: getStockDetails,
+    updateStockDetails: updateStockDetails,
+    addSocialLinks: addSocialLinks,
+    getSocialLinks: getSocialLinks,
+    updateSocialLinks: updateSocialLinks,
+    addNotification: addNotification,
+    getNotification: getNotification,
+    updateNotification: updateNotification,
+    addMerchandiseCat: addMerchandiseCat,
+    getMerchandiseCat: getMerchandiseCat,
+    updateMerchandiseCat: updateMerchandiseCat
 }

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const async = require('async');
 const constants = require('../../utils/constants');
+const Op = global.sqlInstance.sequelize.Op;
 
 /** @namespace */
 let role = function () {
@@ -50,7 +51,11 @@ role.addRoleDetail = function (options) {
                     } else {
                        return reject('Role creation Failed');
                     }
-                });
+                })
+                 .catch((error) => {
+                    logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+                    return reject(error)
+                 })
             }else{
                return reject('Role name already in use, retry with new.');
             }
@@ -139,9 +144,10 @@ role.updateRoleDetails = function (options) {
                     });
 
                 })
-                    .catch(error => {
-                        reject(error)
-                    })
+                 .catch((error) => {
+                    logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+                    return reject(error)
+                 })
             } else {
                 // role is not exist
                 return reject("role is not exist");
@@ -169,19 +175,19 @@ role.getRoleLists = function (options) {
         }
         if (search != '') {
             let whereCondition = {
-                '$and': new Array()
+                [Op.and]: new Array()
             };
             if (typeof search != 'undefined') {
                 let orCondition = {
-                    "$or": new Array({
-                        'role_name': { $like: '%' + search + '%' }
+                    [Op.or]: new Array({
+                        'role_name': { [Op.like]: '%' + search + '%' }
                     },
                         {
-                            'role_description': { $like: '%' + search + '%' }
+                            'role_description': { [Op.like]: '%' + search + '%' }
                         }
                     )
                 };
-                whereCondition['$and'].push(orCondition, { is_active: status });
+                whereCondition[Op.and].push(orCondition, { is_active: status });
                 Condition = whereCondition;
             }
         }
@@ -193,11 +199,75 @@ role.getRoleLists = function (options) {
                     where: Condition
                 }]
         })
-            .then((response) => {
-                resolve(response);
-            }).catch((error) => {
-                reject(error);
-            });
+        .then((response) => {
+            return resolve(response)
+         })
+         .catch((error) => {
+            logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+            return reject(error)
+         })
+    });
+}
+
+
+role.RoleMapToUser = function (options) {
+    return new Promise((resolve, reject) => {
+
+        let dataObj = {};
+        async.map(options.roles, function (role, callback) {
+
+            global.sqlInstance.sequelize.models.user_role.findOne({
+                where: {
+                    user_id: options.user_id,
+                    role_id: role.role_id
+                }
+            }).then(roleMapExist => {
+                if (_.isEmpty(roleMapExist)) {
+                    dataObj.role_id = role.role_id;
+                    dataObj.user_id = options.user_id;
+
+                    return callback(null, global.sqlInstance.sequelize.models.user_role.create(dataObj))
+                } else {
+                    return resolve('Role is already assign to current user');
+                }
+            })
+        }, function (err, results) {
+            if (err) {
+                logger.error(util.format("TYPE THE EXCEPTION. %j",err))
+                return reject(err);
+            } else {
+                return resolve('Role map to user successfully');
+            }
+        });
+
+    })
+}
+
+
+role.getUserRoleLists = function (options) {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { user_id } = options;
+        if (typeof user_id != 'undefined') {
+            if (user_id != '') {
+                Condition['user_id'] = user_id;
+            }
+        }
+        global.sqlInstance.sequelize.models.user_role.findAll({
+            where: Condition,
+            include: [
+                {
+                    model: global.sqlInstance.sequelize.models.role, as: 'role_details', required: true,
+                    attributes: ['role_name', 'role_description', 'is_active']
+                }]
+        })
+        .then((response) => {
+            return resolve(response)
+         })
+         .catch((error) => {
+            logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+            return reject(error)
+         })
     });
 }
 

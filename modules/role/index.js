@@ -12,4 +12,10 @@ module.exports = function (app) {
 
     // To update role details and role permission
     app.put('/role/update', service.updateRole);
+
+    // To Map roles to User
+    app.post('/role/mappinguser',service.mappingUser);
+
+    // To list user role list
+    app.get('/role/userrolelist',service.userRoleList);
 }

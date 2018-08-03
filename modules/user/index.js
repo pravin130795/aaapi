@@ -7,9 +7,10 @@ module.exports = function (app) {
     // To Add user details
     app.post('/adduser', service.addUser);
     
-    
-    
-    // app.get('/users', service.getUsers);
-    // app.put('/updateuser', service.updateUser);
+    // To get Users Lists
+     app.get('/users', service.getUsers);
+
+    //To update user details
+     app.put('/updateuser', service.updateUser);
 
 }

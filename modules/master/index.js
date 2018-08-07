@@ -120,5 +120,15 @@ module.exports = function (app) {
     /* Monthly Magazine Master */
     app.post('/master/addmagazine', service.addMonthlyMagazine);
     app.get('/master/getmagazine', service.getMonthlyMagazine);
-    app.put('/master/updatemagazine', service.updateMonthlyMagazine)
+    app.put('/master/updatemagazine', service.updateMonthlyMagazine);
+
+    //Service master 
+    app.post('/master/addservice', service.addService);
+    app.get('/master/getservice', service.getServices);
+    app.put('/master/updateservice', service.updateService);
+
+    //service type master
+    app.post('/master/addservicetype', service.addServiceType);
+    app.get('/master/getservicetype', service.getServiceType);
+    app.put('/master/updateservicetype', service.updateServiceType)
 }

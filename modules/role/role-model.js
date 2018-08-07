@@ -1,5 +1,7 @@
 const _ = require('lodash');
 const async = require('async');
+const util = require('util');
+const logger = require('../../utils/logger');
 const constants = require('../../utils/constants');
 const Op = global.sqlInstance.sequelize.Op;
 
@@ -172,9 +174,7 @@ role.getRoleLists = function (options) {
         let Condition ="";
         let { status, search } = options;
         if (typeof status != 'undefined' && status != '') {
-            Condition +='rol.is_active =' +Number(status);
-        }else{
-            Condition +="rol.is_active =" +"''";
+            Condition +='AND rol.is_active =' +Number(status);
         }
 
         if (typeof search != 'undefined' && search != '') {
@@ -190,7 +190,9 @@ role.getRoleLists = function (options) {
             +"WHERE rol.role_id = role_p.role_id \n"
             +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS menu  \n"
             +"from role as rol \n"
-            +"WHERE "+Condition
+            +"WHERE 1 = 1 \n"
+            +Condition
+            console.log(query)
         global.sqlInstance.sequelize.query(query,{ type:  global.sqlInstance.sequelize.QueryTypes.SELECT}).then(function(users) {
                 resolve(users);
           })

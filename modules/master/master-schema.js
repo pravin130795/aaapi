@@ -395,44 +395,17 @@ schemas.updateBankEmiMaster = {
     'name': '/updateBankEmiMaster',
     'type': 'object',
     'properties': {
-        'service_type_english': {
+        'bank_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
             'type': 'string',
-            'required': true
-        },
-        'service_type_arabic': {
-            'type': 'string',
-            'required': true
-        },
-        'show_price': {
-            'type': 'bit',
-            'required': true
-        },
-        'is_active': {
-            'type': 'boolean',
             'required': false
-        }
-    }
-}
-
-schemas.updateServiceTypeDetail = {
-    'id': '/updateServiceTypeDetail',
-    'type': 'object',
-    'properties': {
-        'service_type_id': {
-            'type': 'integer',
-            'required': true
         },
-        'service_type_english': {
-            'type': 'string',
-            'required': true
-        },
-        'service_type_arabic': {
-            'type': 'string',
-            'required': true
-        },
-        'show_price': {
-            'type': 'bit',
-            'required': true
+        'emi': {
+            'type': 'float',
+            'required': false
         },
         'is_active': {
             'type': 'boolean',
@@ -1158,7 +1131,160 @@ schemas.updateMagazineRqst = {
     }
 }
 
+schemas.addServiceTypeDetail = {
+    'id': '/addServiceTypeDetail',
+    'type': 'object',
+    'properties': {
+        'service_type_english': {
+            'type': 'string',
+            'required': true
+        },
+        'service_type_arabic': {
+            'type': 'string',
+            'required': true
+        },
+        'show_price': {
+            'type': 'bit',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+schemas.updateServiceTypeDetail = {
+    'id': '/updateServiceTypeDetail',
+    'type': 'object',
+    'properties': {
+        'service_type_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'service_type_english': {
+            'type': 'string',
+            'required': true
+        },
+        'service_type_arabic': {
+            'type': 'string',
+            'required': true
+        },
+        'show_price': {
+            'type': 'bit',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+schemas.addServiceDetail = {
+    'id': '/addServiceDetail',
+    'type': 'object',
+    'properties': {
+        'service_english': {
+            'type': 'string',
+            'required': true
+        },
+        'service_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'price': {
+            'type': 'decimal',
+            'required': true
+        },
+        'service_type_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'locations': {
+            'type': 'array',
+            'item': {
+                '$ref': '/locationDetails',
+            },
+            'required': true
+        }
+    }
+}
+
+schemas.locationDetails = {
+    'name': '/locationDetails',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'location_id': {
+            'type': 'integer',
+            'required': true
+        }
+    }
+}
+
+
+schemas.updateServiceDetail = {
+    'id': '/addServiceDetail',
+    'type': 'object',
+    'properties': {
+        'service_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'service_english': {
+            'type': 'string',
+            'required': true
+        },
+        'service_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'price': {
+            'type': 'decimal',
+            'required': true
+        },
+        'service_type_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'locations': {
+            'type': 'array',
+            'item': {
+                '$ref': '/updateLocationDetails',
+            },
+            'required': true
+        }
+    }
+}
+
+schemas.updateLocationDetails = {
+    'name': '/updateLocationDetails',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'location_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'prev_location_id': {
+            'type': 'integer',
+            'required': true
+        }
+    }
+}
+
 _validator.addSchema(schemas.autolineColors, '/autolineColors');
+_validator.addSchema(schemas.locationDetails, '/locationDetails');
+_validator.addSchema(schemas.updateLocationDetails, '/updateLocationDetails');
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

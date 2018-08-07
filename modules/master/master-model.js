@@ -1354,4 +1354,315 @@ master.updateMagazineDetail = function (options) {
     });
 }
 
+
+
+
+/* Service Type Master */
+/**
+ * API To Insert Service Type Master Details to the Database
+ * @param {string} service_type_english - Represents the name of service type in english.
+ * @param {float} service_type_arabic - Represents the name of service type in arabic.
+ * @param {bit} show_price - Represents the price status for show.
+ * @return {object} - service type details
+ */
+master.addServiceTypeDetails = function (options) {
+    return new Promise((resolve, reject) => {
+        options.created_by = 1;//options.current_user_id;
+        options.updated_by = 1;//options.current_user_id;
+        global.sqlInstance.sequelize.models.service_type.findOrCreate({
+            where: { service_type_english: options.service_type_english },
+            defaults: options
+        })
+            .spread((service_type, created) => {
+                if (created) {
+                    return resolve(service_type);
+                } else {
+                    return resolve('service type already in use, retry with new.');
+                }
+            })
+    });
+}
+
+/**
+ * API To Update Service Type Master Details to the Database
+ * @param {string} service_type_english - Represents the name of service type in english.
+ * @param {float} service_type_arabic - Represents the name of service type in arabic.
+ * @param {bit} show_price - Represents the price status for show.
+ * @param {bit} is_active - Represents the status of data.
+ * @return {object} - service type details
+ */
+master.updateServiceTypeDetails = function (options) {
+
+    return new Promise((resolve, reject) => {
+        global.sqlInstance.sequelize.models.service_type.findOne({
+            where: {
+                service_type_id: options.service_type_id
+            }
+        }).then(serviceTypeExist => {
+            if (!_.isEmpty(serviceTypeExist)) {
+                options.updated_at = new Date(),
+                    options.updated_by = 1;//options.current_user_id
+                serviceTypeExist.update(options)
+                    .then((response) => {
+                        return resolve(response)
+                    })
+                    .catch((error) => {
+                        return reject(error)
+                    })
+            } else {
+                return resolve('Service Type does not exist')
+            }
+        })
+    });
+}
+
+/**
+ * API To Get Service type Master Details from the Database
+ * @param {string} search - Represents the search of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getServiceTypeLists = function (options) {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, search } = options;
+
+        if (typeof status != 'undefined') {
+            if (status != '') {
+                Condition['is_active'] = status;
+            }
+        }
+        if (search != '') {
+            let whereCondition = {
+                [Op.and]: new Array()
+            };
+            if (typeof search != 'undefined') {
+                let orCondition = {
+                    [Op.or]: new Array({
+                        'service_type_english': { [Op.like]: '%' + search + '%' }
+                    },
+                        {
+                            'service_type_arabic': { [Op.like]: '%' + search + '%' }
+                        }
+                    )
+                };
+                whereCondition[Op.and].push(orCondition, { is_active: status });
+                Condition = whereCondition;
+            }
+        }
+        global.sqlInstance.sequelize.models.service_type.findAll({ where: Condition })
+            .then((response) => {
+                return resolve(response);
+            }).catch((error) => {
+
+                return reject(error);
+            });
+    });
+}
+
+// Service Master
+/**
+ * API To Insert Service Master Details to the Database
+ * @param {string} service_english - Represents the name of service type in english.
+ * @param {float} service_arabic - Represents the name of service type in arabic.
+ * @param {bit} price - Represents the price status for show.
+ * @param {integer} service_type_id - Represents the service type.
+ * @param {array} locations - Represents the location ids
+ * @return {object} - service type details
+ */
+master.addServiceDetails = function (options) {
+    return new Promise((resolve, reject) => {
+
+            options.created_by = 1;//options.current_user_id;
+            options.updated_by = 1;//options.current_user_id;
+            return global.sqlInstance.sequelize.models.service_master.findOne({
+                where: { service_english: options.service_english }
+            })
+                .then((service) => {
+                    if (_.isEmpty(service)) {
+                        let serviceDataObj = {};
+                        serviceDataObj.service_english = options.service_english;
+                        serviceDataObj.service_arabic = options.service_arabic;
+                        serviceDataObj.price = options.price;
+                        serviceDataObj.is_active = options.is_active;
+                        serviceDataObj.service_type_id = options.service_type_id;
+                        serviceDataObj.updated_by = 1;//options.current_user_id;
+                        serviceDataObj.created_by = 1;//options.current_user_id;
+
+                        return global.sqlInstance.sequelize.models.service_master.create(serviceDataObj)
+                            .then((serviceData) => {
+                                return insertServiceLocation(options.locations, serviceData.service_id).then((result) => {
+                                    if (!_.isEmpty(result)) {
+                                        return resolve("service create successfully");
+                                    } else {
+                                        return reject("something went worng in location creation");
+                                    }
+                                })
+                                .catch((error) => {
+                                    return reject(error);
+                                })
+                            })
+                            .catch((error) => {
+                                logger.error(util.format("Exception. %j", error))
+                                return reject(error);
+                            })
+                    } else {
+                        return resolve('service already in use, retry with new.');
+                    }
+                })
+
+    });
+}
+
+// function for add locations of service
+let insertServiceLocation = function (locations, service_id, finalResult = {}) {
+    return new Promise((resolve, reject) => {
+        let dataObj = {};
+        if (locations.length > 0) {
+            let object = locations.pop();
+            dataObj.location_id = object.location_id;
+            dataObj.service_id = service_id;
+            global.sqlInstance.sequelize.models.service_to_location.create(dataObj)
+                .then((response) => {
+                    finalResult.result = response;
+                    insertServiceLocation(locations, service_id, finalResult).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                })
+                .catch((error) => {
+                    reject(error);
+                })
+        } else {
+            resolve(finalResult);
+        }
+    });
+}
+
+
+/**
+ * API To Update Service Master Details to the Database
+ * @param {integer} service_id - Represents the service id.
+ * @param {string} service_english - Represents the name of service in english.
+ * @param {float} service_arabic - Represents the name of service in arabic.
+ * @param {bit} price - Represents the price status for show.
+ * @param {bit} is_active - Represents the status of data.
+ * @param {array} locations - Represents the location ids
+ * @return {object} - service type details
+ */
+master.updateServiceDetails = function (options) {
+
+    return new Promise((resolve, reject) => {
+        global.sqlInstance.sequelize.models.service_master.findOne({
+            where: {
+                service_id: options.service_id
+            }
+        }).then(serviceExist => {
+            if (!_.isEmpty(serviceExist)) {
+                options.updated_at = new Date();
+                options.updated_by = 1;//options.current_user_id
+                serviceExist.update(options)
+                    .then((response) => {
+                        return updateServiceLocation(options.locations, options.service_id).then((result) => {
+                            if (!_.isEmpty(result)) {
+                                return resolve("service update successfully");
+                            } else {
+                                return reject("something went worng in location updation");
+                            }
+                        })
+                            .catch((error) => {
+                                return reject(error);
+                            })
+                    })
+                    .catch((error) => {
+                        return reject(error)
+                    })
+            } else {
+                return resolve('Service does not exist')
+            }
+        })
+    });
+}
+
+// function for update locations of service
+let updateServiceLocation = function (locations, service_id, finalResult = {}) {
+    return new Promise((resolve, reject) => {
+        let dataObj = {};
+        if (locations.length > 0) {
+            let object = locations.pop();
+            global.sqlInstance.sequelize.models.service_to_location.find({
+                where: {
+                    service_id: service_id,
+                    location_id: object.prev_location_id
+                }
+            }).then(serviceLocationExist => {
+                if (!_.isEmpty(serviceLocationExist)) {
+                    dataObj.location_id = object.location_id
+                    global.sqlInstance.sequelize.models.service_to_location.update({ location_id: object.location_id },
+                        { where: { service_id: service_id, location_id: object.prev_location_id } }
+                    )
+                        .then((response) => {
+                            finalResult.result = response;
+                            updateServiceLocation(locations, service_id, finalResult).then((result) => {
+                                resolve(result);
+                            }).catch((error) => {
+                                reject(error);
+                            });
+                        })
+                        .catch((error) => {
+                            return reject(error)
+                        })
+                } else {
+                    return resolve('Service location does not exist')
+                }
+            })
+        } else {
+            resolve(finalResult);
+        }
+    });
+}
+
+/**
+ * API To Get Service Master Details from the Database
+ * @param {string} search - Represents the search of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ * @param {integer} service_type_id - Represents the service type id for filter
+ */
+master.getServiceLists = function (options) {
+    return new Promise((resolve, reject) => {
+        let Condition ="";
+        let { status, search,service_type_id } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition +='AND col.is_active =' +Number(status);
+        }
+
+        if (typeof search != 'undefined' && search != '') {
+            Condition += "AND col.service_english LiKE '%"+search+"%'" ;
+        }
+        if (typeof service_type_id != 'undefined' && service_type_id != '') {
+            Condition += "AND mst.service_type_id ="+service_type_id+"" ;
+        }
+        let query = "";
+        query = "select  col.service_id, col.service_english as service_name,  mst.service_type_english,col.service_arabic, col.price, STUFF(( \n"
+            +"SELECT ',' + atc.location_name \n"
+            +"FROM master_location as atc \n"
+            +"left join service_to_location as stl on stl.service_id = col.service_id \n"
+            +"WHERE atc.location_id = stl.location_id \n"
+            +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS locations \n"
+            +"from master_service AS col \n"
+            +"join master_service_type as mst on mst.service_type_id = col.service_type_id \n"
+            +"WHERE 1 = 1 \n"
+            +Condition
+            console.log("---->",query);
+        global.sqlInstance.sequelize.query(query,{ type:  global.sqlInstance.sequelize.QueryTypes.SELECT}).then(function(users) {
+                resolve(users);
+          })
+          .catch((error) => {
+            logger.error(util.format("EXCEPTION FOR GET SERVICE LIST. %j",error))
+             reject(error)
+         })
+       
+    });
+}
+
 module.exports = master;

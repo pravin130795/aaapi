@@ -1375,7 +1375,135 @@ let updateMonthlyMagazine = function (req, res) {
     }
 }
 
-/* let getServices = function (req, res) {
+let addServiceType = function (req, res) {
+    let addServiceTypeData = common.sanitize(req.body, schemas.addServiceTypeDetail, constants.moduleNames.master);
+    if (schemas.validate(addServiceTypeData, schemas.addServiceTypeDetail)) {
+        master.addServiceTypeDetails(addServiceTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+let updateServiceType = function (req, res) {
+    let updateServiceTypeData = common.sanitize(req.body, schemas.updateServiceTypeDetail, constants.moduleNames.master);
+    if (schemas.validate(updateServiceTypeData, schemas.updateServiceTypeDetail)) {
+        master.updateServiceTypeDetails(updateServiceTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+let getServiceType = function (req, res) {
+    let filter = {
+        search: req.query.search,
+        status: req.query.status,
+    };
+    master.getServiceTypeLists(filter).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+} 
+
+
+let addService = function (req, res) {
+    let addServiceData = common.sanitize(req.body, schemas.addServiceDetail, constants.moduleNames.master);
+    if (schemas.validate(addServiceData, schemas.addServiceDetail)) {
+        master.addServiceDetails(addServiceData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+let updateService = function (req, res) {
+    let updateServiceData = common.sanitize(req.body, schemas.updateServiceDetail, constants.moduleNames.master);
+    if (schemas.validate(updateServiceData, schemas.updateServiceDetail)) {
+        master.updateServiceDetails(updateServiceData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+ let getServices = function (req, res) {
     let filter = {
         search: req.query.search,
         status: req.query.status,
@@ -1395,7 +1523,7 @@ let updateMonthlyMagazine = function (req, res) {
             data: error
         });
     });
-} */
+} 
 
 module.exports = {
     addDesignation: addDesignation,
@@ -1458,10 +1586,10 @@ module.exports = {
     addMonthlyMagazine: addMonthlyMagazine,
     getMonthlyMagazine: getMonthlyMagazine,
     updateMonthlyMagazine: updateMonthlyMagazine,
-    /* addServiceType: addServiceType,
+    addServiceType: addServiceType,
     updateServiceType: updateServiceType,
     getServiceType: getServiceType,
     addService: addService,
     updateService: updateService,
-    getServices:getServices */
+    getServices:getServices
 }

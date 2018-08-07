@@ -6,6 +6,21 @@ const _validator = new Validator();
 let schemas = function () {
 };
 
+schemas.userLoginDetails = {
+    'id': '/userLoginDetails',
+    'type': 'object',
+    'properties': {
+        'user_name': {
+            'type': 'string',
+            'required': true
+        },
+        'password': {
+            'type': 'string',
+            'required': true
+        }
+    }
+},
+
 schemas.userDetails = {
     'id': '/userDetails',
     'type': 'object',

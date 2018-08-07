@@ -1,12 +1,55 @@
 const _ = require('lodash');
 const util = require('util');
 const logger = require('../../utils/logger');
-const Op = global.sqlInstance.sequelize.Op;
+const bcrypt = require('bcrypt');
 const constants = require('../../utils/constants');
+const config = require('../../configurations/config');
+
+const Op = global.sqlInstance.sequelize.Op;
 
 /** @namespace */
 let user = function () {
 
+};
+
+
+/**
+ * API To check User login Details to the Database
+ * @param {string} user_name - Represents the User Name.
+ * @param {string} password - Represents the User password.
+ * @returns {object} response - User details
+ */
+user.checkUserLoginDetail = function (options){
+    return new Promise ((resolve, reject) => {
+        global.sqlInstance.sequelize.models.users.findOne({
+            where: {
+                user_name: options.user_name
+            }
+        }).then(userExist => {
+            if (!_.isEmpty(userExist)) {
+                let current_password =getEncryptedPasswordWithSalt(options.password);
+                let db_password = userExist.password;
+                if(current_password === db_password){
+                    resolve(userExist)
+                }else{
+                    return resolve("paswword does not match please enter correct password");
+                }
+            } else {
+                return resolve('user does not exist')
+            }
+        })
+        .catch((error) => {
+            logger.error(util.format("EXCEPTION OF LOGIN USER DETAILS. %j",error))
+            return reject(error)
+         })
+    })
+}
+
+let getEncryptedPasswordWithSalt = function (password) {
+    let salt = config.get('salt');
+    let passwordHashWithSalt = bcrypt.hashSync(password, salt);
+    let passwordHash = passwordHashWithSalt.substring(29);
+    return passwordHash;
 };
 
 /**
@@ -25,13 +68,12 @@ let user = function () {
  */
 user.addUserDetail = function (options) {
     return new Promise((resolve, reject) => {
-
         global.sqlInstance.sequelize.models.users.findOrCreate({
-            where: { mobile_no: options.mobile_no },
+            where: { user_name: options.user_name },
             defaults: {
                 user_name: options.user_name,
                 email: options.email,
-                password: options.password,
+                password: getEncryptedPasswordWithSalt(options.password),
                 mobile_no: options.mobile_no,
                 approver_person: options.approver_person,
                 designation_id: options.designation_id,
@@ -43,7 +85,7 @@ user.addUserDetail = function (options) {
         })
         .spread((user, created) => {
             if (created) {
-                return resolve(user);
+                return resolve("user create successfully");
             } else {
                 return resolve('user already in use, retry with new.');
             }

@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const sequelize = require('sequelize');
+const models = require('../../database/sql');
 const Op = global.sqlInstance.sequelize.Op;
 
 const constants = require('../../utils/constants');
@@ -109,7 +111,6 @@ master.getDesignationLists = function (options) {
  * @param {string} name - Represents the Specification Heading Name.
  * @param {string} name_arabic - Represents the Specification Heading Name in Arabic.
  * @param {number} sequence - Represents the Sequence value.
- * @param {number} created_by - Represents the Id of the user who created the value.
  * @param {bit} is_active - Represents the Status of the Specification Heading
  */
 master.addSpecsHeadingDetail = function (options) {
@@ -118,7 +119,7 @@ master.addSpecsHeadingDetail = function (options) {
             resolve(response)
         }).catch((error) => {
             if (error.name === "SequelizeUniqueConstraintError") {
-                resolve({ message: 'specification heading name should be unique' })
+                reject({ message: 'Specification Heading name should be unique' })
             } else {
                 reject(error);
             }
@@ -138,7 +139,7 @@ master.getSpecsHeadingLists = function (options) {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
-            Condition['name'] = { $like: '%' + search + '%' }
+            Condition['name'] = { [Op.like]: '%' + search + '%' }
         }
         sqlInstance.specsHeadingMaster.findAll({ where: Condition })
             .then((response) => {
@@ -162,9 +163,9 @@ master.updateSpecsHeadingDetail = function (options) {
         options.updated_at = new Date();
         sqlInstance.specsHeadingMaster.update(options, {
             where: { specs_heading_id: options.specs_heading_id }
-        }).then(response => {
-            resolve(response)
-        }).catch(error => {
+        }).then((response) => {
+            resolve({ message: 'Specification Heading Updated successfully..!!' });
+        }).catch((error) => {
             reject(error);
         })
     });
@@ -185,7 +186,11 @@ master.addSpecsDetail = (options) => {
         sqlInstance.specsMaster.create(options).then(response => {
             resolve(response)
         }).catch(error => {
-            reject(error);
+            if (error.name === "SequelizeUniqueConstraintError") {
+                reject({ message: 'Specification Name should be unique' })
+            } else {
+                reject(error);
+            }
         })
     });
 }
@@ -198,12 +203,12 @@ master.addSpecsDetail = (options) => {
 master.getSpecificationDetails = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let { status, name, heading } = options;
+        let { status, search, heading } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
-        if (typeof name != 'undefined' && name != '') {
-            Condition['name'] = { $like: '%' + name + '%' };
+        if (typeof search != 'undefined' && search != '') {
+            Condition['name'] = { [Op.like]: '%' + search + '%' };
         }
         if (typeof heading != 'undefined' && heading != '') {
             Condition['specs_heading_id'] = Number(heading);
@@ -240,7 +245,7 @@ master.updateSpecsDetail = (options) => {
         sqlInstance.specsMaster.update(options, {
             where: { specs_id: options.specs_id }
         }).then(response => {
-            resolve(response)
+            resolve({ message: 'Specification Master Updated successfully..!!' });
         }).catch(error => {
             reject(error);
         })
@@ -277,10 +282,10 @@ master.getYearLists = function (options) {
             Condition['is_active'] = Number(status);
         }
         if (typeof year != 'undefined' && year != '') {
-            Condition['year'] = { $like: '%' + Number(year) + '%' }
+            Condition['year'] = { [Op.like]: '%' + Number(year) + '%' }
         }
         if (typeof type != 'undefined' && type != '') {
-            Condition['type'] = { $like: '%' + type + '%' }
+            Condition['type'] = { [Op.like]: '%' + type + '%' }
         }
         sqlInstance.yearMaster.findAll({ where: Condition })
             .then((response) => {
@@ -346,7 +351,7 @@ master.getAccessoryCatDetails = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof name != 'undefined' && name != '') {
-            Condition['name'] = { $like: '%' + name + '%' };
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
         }
         sqlInstance.accessoryCatMaster.findAll({ where: Condition })
             .then((response) => {
@@ -408,7 +413,7 @@ master.getResponseStatusList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof rspStatus != 'undefined' && rspStatus != '') {
-            Condition['status'] = { $like: '%' + rspStatus + '%' };
+            Condition['status'] = { [Op.like]: '%' + rspStatus + '%' };
         }
         sqlInstance.responseStatusMaster.findAll({ where: Condition })
             .then((response) => {
@@ -468,7 +473,7 @@ master.getAreaList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof name != 'undefined' && name != '') {
-            Condition['name'] = { $like: '%' + name + '%' };
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
         }
         sqlInstance.areaMaster.findAll({where :Condition})
         .then((response) => {
@@ -492,6 +497,71 @@ master.updateAreaDetail = function (options) {
         sqlInstance.areaMaster.update(options,{where: {area_id: options.area_id}
     }).then(response => {
             resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+// Bank EMI Master
+/**
+ * API To Insert Response Status Master Details to the Database
+ * @param {string} name - Represents the name of Bank.
+ * @param {float} emi - Represents the EMI % offered by the Bank
+ * @param {bit} is_active - Represents the Bank status
+ * @param {number} created_by - Represents the User Id for user who created Bank
+ * @param {number} updated_by - Represents the User Id for user who updated Bank
+ */
+master.addBankDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.bankMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                reject({ message: 'Bank Name should be unique' })
+            } else {
+                reject(error);
+            }
+        })
+    });
+}
+/**
+ * API To Get Bank EMI Master Details from the Database
+ * @param {string} name - Represents the name of the Response for Filter.
+ * @param {bit} status - Represents the Status of the Response for Filter
+ */
+master.getBankEmiList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof search != 'undefined' && search != '') {
+            Condition['name'] = { [Op.like]: '%' + search + '%' };
+        }
+        sqlInstance.bankMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+/**
+ * API To Update Bank Master Details to the Database
+ * @param {number} bank_id - Represents the Id of the Bank
+ * @param {string} name - Represents the name of Bank.
+ * @param {float} emi - Represents the EMI % offered by the Bank 
+ * @param {bit} is_active - Represents the Bank status
+ * @param {number} updated_by - Represents the User Id for user who updated Bank
+ */
+master.updateBankemiDetails = function (options) {
+    return new Promise((resolve, reject) => {
+        sqlInstance.bankMaster.update(options, {
+            where: { bank_id: options.bank_id }
+        }).then(response => {
+            resolve({ message: 'Bank Detail Updated successfully..!!' });
         }).catch(error => {
             reject(error);
         })
@@ -529,7 +599,7 @@ master.getLookupList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof body_name != 'undefined' && body_name != '') {
-            Condition['body_name'] = { $like: '%' + body_name + '%' };
+            Condition['body_name'] = { [Op.like]: '%' + body_name + '%' };
         }
         sqlInstance.lookupMaster.findAll({where :Condition})
         .then((response) => {
@@ -591,7 +661,7 @@ master.getFromToPriceList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
-            Condition['from_price'] = { $like: '%' + search + '%' };
+            Condition['from_price'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.fromToPriceMaster.findAll({where :Condition})
         .then((response) => {
@@ -630,7 +700,7 @@ master.getContactsList = (options) => {
         let Condition = {};
         let { search } = options;
         if (typeof search != 'undefined' && search != '') {
-            Condition['module_name'] = { $like: '%' + search + '%' };
+            Condition['module_name'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.contactsMaster.findAll({where :Condition})
         .then((response) => {
@@ -668,7 +738,7 @@ master.getEmailsList = (options) => {
         let Condition = {};
         let { search } = options;
         if (typeof search != 'undefined' && search != '') {
-            Condition['module_name'] = { $like: '%' + search + '%' };
+            Condition['module_name'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.emailMaster.findAll({where :Condition})
         .then((response) => {
@@ -729,7 +799,7 @@ master.getKmList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
-            Condition['km_value'] = { $like: '%' + search + '%' };
+            Condition['km_value'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.kmMaster.findAll({where :Condition})
         .then((response) => {
@@ -830,7 +900,7 @@ master.getSocialList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
-            Condition['name'] = { $like: '%' + search + '%' };
+            Condition['name'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.socialMediaMaster.findAll({where :Condition})
         .then((response) => {
@@ -891,7 +961,7 @@ master.getNotifyList = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof search != 'undefined' && search != '') {
-            Condition['name'] = { $like: '%' + search + '%' };
+            Condition['name'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.notifyMaster.findAll({where :Condition})
         .then((response) => {
@@ -955,7 +1025,7 @@ master.getMerchandiseCatDetails = (options) => {
             Condition['is_active'] = Number(status);
         }
         if (typeof name != 'undefined' && name != '') {
-            Condition['name'] = { $like: '%' + name + '%' };
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
         }
         sqlInstance.merchandiseCatMaster.findAll({ where: Condition })
             .then((response) => {
@@ -978,6 +1048,306 @@ master.updateMerchandiseCategory = function (options) {
         options.updated_at = new Date();
         sqlInstance.merchandiseCatMaster.update(options, {
             where: { merchandise_cat_id: options.merchandise_cat_id }
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* Autoline Color Master */
+/**
+ * API To Get CEM Color Master Details from the Database
+ */
+master.getAutolineColorList = () => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.autolinenewsMaster.findAll()
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+/* CEM Color Master */
+
+/* CEM Color Master */
+/**
+ * API To Insert Accessory Category Master Details to the Database
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.addColorDetail = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.colorMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'Color name should be unique' })
+            } else {
+                reject(error);
+            }
+        })
+    });
+}
+/**
+ * API To Get Merchandise Category Master Details from the Database
+ * @param {string} name - Represents the name of the Category for Filter.
+ * @param {bit} is_active - Represents the Status of the Category for Filter
+ */
+master.getColorList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
+        }
+        global.sqlInstance.sequelize.query("select  col.color_id, col.name as CEM_color, col.name_arabic, col.color_code, col.is_active, STUFF(("
+            +"SELECT ',' + atc.name FROM autoline_color as atc "
+            +"left join autoline_to_color as cta on cta.color_id = col.color_id "
+            +"WHERE atc.autoline_color_id = cta.autoline_color_id "
+            +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS autoline_colors "
+            +"from colors AS col", {type: global.sqlInstance.sequelize.QueryTypes.SELECT})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Merchandise Category Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Category
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.updateColorDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.colorMaster.update(options, {
+            where: { color_id: options.color_id }
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* Autoline Color Map */
+/**
+ * API To Insert Accessory Category Master Details to the Database
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.addColorMapDetail = (options) => {
+    return new Promise((resolve, reject) => {
+        mapColorDetails(options.autoline_colors, options.color_id).then((result) => {
+            if (!_.isEmpty(result)) {
+                resolve("Color mapped successfully");
+            } else {
+                reject("something went worng..!");
+            }
+        })
+    })
+}
+
+let mapColorDetails = function (autoline_colors, color_id, finalResult = {}) {
+    return new Promise((resolve, reject) => {
+        let dataObj ={};
+        if (autoline_colors.length > 0) {
+            let object = autoline_colors.pop();
+            dataObj.autoline_color_id = object.autoline_color_id;
+            dataObj.color_id = color_id;
+            sqlInstance.autolineColorMap.create(dataObj)
+                .then((response) => {
+                    finalResult.result = response;
+                    mapColorDetails(autoline_colors, color_id, finalResult).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                })
+                .catch((error) => {
+                    reject(error);
+                })
+        } else {
+           resolve(finalResult);
+        }
+    });
+}
+/**
+ * API To Update Merchandise Category Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Category
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.updateColorMapDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        return models.sequelize.transaction({autocommit: false}).then((t) => {
+            sqlInstance.autolineColorMap.destroy({
+                where: {
+                    color_id: options.color_id
+                },
+                transaction: t
+            },{transaction: t}).then((result) => {
+                mapColorDetails(options.autoline_colors, options.color_id).then((result) => {
+                    if (!_.isEmpty(result)) {
+                        t.commit();
+                        resolve("Color mapping changed successfully");
+                    } else {
+                        t.rollback();
+                        reject("something went worng..!");
+                    }
+                })
+                .catch(error => {
+                    t.rollback();
+                    reject(error);
+                })
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    });
+}
+
+/* Monthly News Master */
+/**
+ * API To Insert News Master Details to the Database
+ * @param {string} name - Represents the name of the News.
+ * @param {string} name_arabic - Represents the name of the News in arabic
+ * @param {number} sequence - Represents the sequence of the News
+ * @param {bit} is_active - Represents the Status of the News
+ */
+master.addNewsDetail = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.newsMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'News name should be unique' })
+            } else {
+                reject(error);
+            }
+        })
+    });
+}
+
+/**
+ * API To Get News Master Details from the Database
+ * @param {string} name - Represents the name of the News for Filter.
+ * @param {bit} is_active - Represents the Status of the News for Filter
+ */
+master.getNewsList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
+        }
+        sqlInstance.newsMaster.findAll({ where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+/**
+ * API To Update News Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the News
+ * @param {string} name - Represents the name of the News.
+ * @param {string} name_arabic - Represents the name of the News in arabic
+ * @param {number} sequence - Represents the sequence of the News
+ * @param {bit} is_active - Represents the Status of the News
+ */
+master.updateNewsDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.newsMaster.update(options, {
+            where: { news_id: options.news_id }
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+
+/* Monthly Magazine Master */
+/**
+ * API To Insert Magazine Master Details to the Database
+ * @param {string} name - Represents the name of the Magazine.
+ * @param {string} name_arabic - Represents the name of the Magazine in arabic
+ * @param {number} sequence - Represents the sequence of the Magazine
+ * @param {bit} is_active - Represents the Status of the Magazine
+ */
+master.addMagazineDetail = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.magazineMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'Magazine name should be unique' })
+            } else {
+                reject(error);
+            }
+        })
+    });
+}
+
+/**
+ * API To Get Magazine Master Details from the Database
+ * @param {string} name - Represents the name of the Magazine for Filter.
+ * @param {bit} is_active - Represents the Status of the Magazine for Filter
+ */
+master.getMagazineList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = {};
+        let { status, name } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition['is_active'] = Number(status);
+        }
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { [Op.like]: '%' + name + '%' };
+        }
+        sqlInstance.magazineMaster.findAll({where: Condition })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+/**
+ * API To Update Magazine Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Magazine
+ * @param {string} name - Represents the name of the Magazine.
+ * @param {string} name_arabic - Represents the name of the Magazine in arabic
+ * @param {number} sequence - Represents the sequence of the Magazine
+ * @param {bit} is_active - Represents the Status of the Magazine
+ */
+master.updateMagazineDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.magazineMaster.update(options, {
+            where: { news_id: options.news_id }
         }).then(response => {
             resolve(response)
         }).catch(error => {

@@ -6,7 +6,7 @@ const logger = require('../../utils/logger')
 
 
 let addDesignation = function (req, res) {
-    let designationData = common.sanitize(req.body, schemas.designationDetail);
+    let designationData = common.sanitize(req.body, schemas.designationDetail, constants.moduleNames.master);
     if (schemas.validate(designationData, schemas.designationDetail)) {
         master.addDesignationDetail(designationData).then((response) => {
             res.status(200).send({
@@ -83,7 +83,7 @@ let updateDesignation = function (req, res) {
 
 //Specification Heading Master
 let addSpecsHeading = function (req, res) {
-    let specsData = common.sanitize(req.body, schemas.specsHeading);
+    let specsData = common.sanitize(req.body, schemas.specsHeading, constants.moduleNames.master);
     if (schemas.validate(specsData, schemas.specsHeading)) {
         master.addSpecsHeadingDetail(specsData).then((response) => {
             res.status(200).send({
@@ -155,7 +155,7 @@ let updateSpecsHeading = function (req, res) {
 
 //Specifications Master
 let addSpecs = function (req, res) {
-    let specsData = common.sanitize(req.body, schemas.specsDetails);
+    let specsData = common.sanitize(req.body, schemas.specsDetails, constants.moduleNames.master );
     if (schemas.validate(specsData, schemas.specsDetails)) {
         master.addSpecsDetail(specsData).then((response) => {
             res.status(200).send({
@@ -180,10 +180,6 @@ let addSpecs = function (req, res) {
     }
 }
 let getSpecs = function (req, res) {
-    /* let filter = {
-        search : req.query.search,
-        status : req.query.status
-    }; */
     master.getSpecificationDetails(req.query).then((response) => {
         res.status(200).send({
             code: 2000,
@@ -227,7 +223,7 @@ let updateSpecs = function (req, res) {
 
 //Year Master
 let addYear = function (req, res) {
-    let yearData = common.sanitize(req.body, schemas.addYears);
+    let yearData = common.sanitize(req.body, schemas.addYears, constants.moduleNames.master);
     if (schemas.validate(yearData, schemas.addYears)) {
         master.addYearDetail(yearData).then((response) => {
             res.status(200).send({
@@ -300,7 +296,7 @@ let updateYear = function (req, res) {
 
 //Accessory Category Master
 let addAccessoryCat = function (req, res) {
-    let accessoryCatData = common.sanitize(req.body, schemas.accessoryCat);
+    let accessoryCatData = common.sanitize(req.body, schemas.accessoryCat, constants.moduleNames.master);
     if (schemas.validate(accessoryCatData, schemas.accessoryCat)) {
         master.addAccessoryCategory(accessoryCatData).then((response) => {
             res.status(200).send({
@@ -369,7 +365,7 @@ let updateAccessoryCat = function (req, res) {
 
 /* Response Status Master */
 let addResponseStatus = function (req, res) {
-    let rspStatusData = common.sanitize(req.body, schemas.responseStatus);
+    let rspStatusData = common.sanitize(req.body, schemas.responseStatus, constants.moduleNames.master);
     if (schemas.validate(rspStatusData, schemas.responseStatus)) {
         master.addResponseStatus(rspStatusData).then((response) => {
             res.status(200).send({
@@ -437,7 +433,7 @@ let updateResponseStatus = function (req, res) {
 
 /* Area Master */
 let addArea = (req, res) => {
-    let areaData = common.sanitize(req.body, schemas.areaMaster);
+    let areaData = common.sanitize(req.body, schemas.areaMaster, constants.moduleNames.master);
     if (schemas.validate(areaData, schemas.areaMaster)) {
         master.addAreaDetails(areaData).then((response) => {
             res.status(200).send({
@@ -503,10 +499,77 @@ let updateArea = function (req, res) {
     }
 }
 
+// Bank EMI Master 
+let addBankEmi = function (req, res) {
+    let bankData = common.sanitize(req.body, schemas.bankEmiMaster);
+    if (schemas.validate(bankData, schemas.bankEmiMaster)) {
+        master.addBankDetails(bankData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getBankEmi = function (req, res) {
+    master.getBankEmiList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateBankEmi = function (req, res) {
+    let bankData = req.body;
+    if (schemas.validate(bankData, schemas.updateBankEmiMaster)) {
+        master.updateBankemiDetails(bankData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
 
 /* Lookup Master */
 let addLookup = (req, res) => {
-    let lookupData = common.sanitize(req.body, schemas.addLookupRqst);
+    let lookupData = common.sanitize(req.body, schemas.addLookupRqst, constants.moduleNames.master);
     if (schemas.validate(lookupData, schemas.addLookupRqst)) {
         master.addLookupDetails(lookupData).then((response) => {
             res.status(200).send({
@@ -574,7 +637,7 @@ let updateLookup = function (req, res) {
 
 /* From To Price */
 let addFromToPrice = (req, res) => {
-    let fromToPriceData = common.sanitize(req.body, schemas.addFromToPriceRqst);
+    let fromToPriceData = common.sanitize(req.body, schemas.addFromToPriceRqst, constants.moduleNames.master);
     if (schemas.validate(fromToPriceData, schemas.addFromToPriceRqst)) {
         master.addFromToPriceDetails(fromToPriceData).then((response) => {
             res.status(200).send({
@@ -728,7 +791,7 @@ let updateEmailDetails = function (req, res) {
 
 /* Km master */
 let addKmMaster = (req, res) => {
-    let kmData = common.sanitize(req.body, schemas.addKmRqst);
+    let kmData = common.sanitize(req.body, schemas.addKmRqst, constants.moduleNames.master);
     if (schemas.validate(kmData, schemas.addKmRqst)) {
         master.addKmDetails(kmData).then((response) => {
             res.status(200).send({
@@ -839,7 +902,7 @@ let updateStockDetails = function (req, res) {
 
 /* Social Media Master */
 let addSocialLinks = (req, res) => {
-    let socialData = common.sanitize(req.body, schemas.addSocialRqst);
+    let socialData = common.sanitize(req.body, schemas.addSocialRqst, constants.moduleNames.master);
     if (schemas.validate(socialData, schemas.addSocialRqst)) {
         master.addSocialDetails(socialData).then((response) => {
             res.status(200).send({
@@ -907,7 +970,7 @@ let updateSocialLinks = function (req, res) {
 
 /* Notifications Master */
 let addNotification = (req, res) => {
-    let notifyData = common.sanitize(req.body, schemas.addNotifyRqst);
+    let notifyData = common.sanitize(req.body, schemas.addNotifyRqst, constants.moduleNames.master);
     if (schemas.validate(notifyData, schemas.addNotifyRqst)) {
         master.addNotifyDetails(notifyData).then((response) => {
             res.status(200).send({
@@ -973,9 +1036,9 @@ let updateNotification = function (req, res) {
     }
 }
 
-//Accessory Category Master
+/* Merchandise Category Master */
 let addMerchandiseCat = function (req, res) {
-    let merchandiseCatData = common.sanitize(req.body, schemas.addMerchandiseCatRqst);
+    let merchandiseCatData = common.sanitize(req.body, schemas.addMerchandiseCatRqst, constants.moduleNames.master);
     if (schemas.validate(merchandiseCatData, schemas.addMerchandiseCatRqst)) {
         master.addMerchandiseCategory(merchandiseCatData).then((response) => {
             res.status(200).send({
@@ -1041,6 +1104,280 @@ let updateMerchandiseCat = function (req, res) {
     }
 }
 
+/* Autoline Color Master */
+let getAutolineColor = function (req, res) {
+    master.getAutolineColorList().then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
+/* CEM Color Master */
+let addColor = function (req, res) {
+    let colorData = common.sanitize(req.body, schemas.addColorRqst, constants.moduleNames.master);
+    if (schemas.validate(colorData, schemas.addColorRqst)) {
+        master.addColorDetail(colorData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getColor = function (req, res) {
+    master.getColorList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateColor = function (req, res) {
+    let colorData = req.body;
+    if (schemas.validate(colorData, schemas.updateColorRqst)) {
+        master.updateColorDetail(colorData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Autoline Color Mapping */
+let addColorMap = function (req, res) {
+    let colorMapData = common.sanitize(req.body, schemas.mapColorRqst, constants.moduleNames.master);
+    if (schemas.validate(colorMapData, schemas.mapColorRqst)) {
+        master.addColorMapDetail(colorMapData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let updateColorMap = function (req, res) {
+    let colorMapData = req.body;
+    if (schemas.validate(colorMapData, schemas.mapColorRqst)) {
+        master.updateColorMapDetail(colorMapData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Monthly News Master */
+let addMonthlyNews = function (req, res) {
+    let newsData = common.sanitize(req.body, schemas.addNewsRqst, constants.moduleNames.master);
+    if (schemas.validate(newsData, schemas.addNewsRqst)) {
+        master.addNewsDetail(newsData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getMonthlyNews = function (req, res) {
+    master.getNewsList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateMonthlyNews = function (req, res) {
+    let newsData = req.body;
+    if (schemas.validate(newsData, schemas.updateNewsRqst)) {
+        master.updateNewsDetail(newsData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+/* Monthly Magazine Master */
+let addMonthlyMagazine = function (req, res) {
+    let magazineData = common.sanitize(req.body, schemas.addMagazineRqst, constants.moduleNames.master);
+    if (schemas.validate(magazineData, schemas.addMagazineRqst)) {
+        master.addMagazineDetail(magazineData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getMonthlyMagazine = function (req, res) {
+    master.getMagazineList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateMonthlyMagazine = function (req, res) {
+    let magazineData = req.body;
+    if (schemas.validate(magazineData, schemas.updateMagazineRqst)) {
+        master.updateMagazineDetail(magazineData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
 module.exports = {
     addDesignation: addDesignation,
     getDesignation: getDesignation,
@@ -1063,6 +1400,9 @@ module.exports = {
     addArea: addArea,
     getArea: getArea,
     updateArea: updateArea,
+    addBankEmi: addBankEmi,
+    getBankEmi: getBankEmi,
+    updateBankEmi: updateBankEmi,
     addLookup: addLookup,
     getLookup: getLookup,
     updateLookup: updateLookup,
@@ -1086,5 +1426,17 @@ module.exports = {
     updateNotification: updateNotification,
     addMerchandiseCat: addMerchandiseCat,
     getMerchandiseCat: getMerchandiseCat,
-    updateMerchandiseCat: updateMerchandiseCat
+    updateMerchandiseCat: updateMerchandiseCat,
+    getAutolineColor: getAutolineColor,
+    addColor: addColor,
+    getColor: getColor,
+    updateColor: updateColor,
+    addColorMap: addColorMap,
+    updateColorMap: updateColorMap,
+    addMonthlyNews: addMonthlyNews,
+    getMonthlyNews: getMonthlyNews,
+    updateMonthlyNews: updateMonthlyNews,
+    addMonthlyMagazine: addMonthlyMagazine,
+    getMonthlyMagazine: getMonthlyMagazine,
+    updateMonthlyMagazine: updateMonthlyMagazine
 }

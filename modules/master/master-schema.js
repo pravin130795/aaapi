@@ -50,19 +50,15 @@ schemas.specsHeading = {
             'required': true,
             'unique': true
         },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
         'is_active': {
             'type': 'boolean',
             'required': true
         },
         'sequence': {
-            'type': 'number',
-            'required': true
-        },
-        'created_by': {
-            'type': 'number',
-            'required': true
-        },
-        'updated_by': {
             'type': 'number',
             'required': true
         }
@@ -82,6 +78,10 @@ schemas.updateSpecsHeading = {
             'type': 'string',
             'required': false
         },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
         'is_active': {
             'type': 'boolean',
             'required': false
@@ -89,10 +89,6 @@ schemas.updateSpecsHeading = {
         'sequence': {
             'type': 'number',
             'required': false
-        },
-        'updated_by': {
-            'type': 'number',
-            'required': true
         }
     }
 }
@@ -117,6 +113,18 @@ schemas.specsDetails = {
         'value': {
             'type': 'string',
             'required': true
+        },
+        'value_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'is_model_overview': {
+            'type': 'boolean',
+            'required': true,
+        },
+        'is_variant_overview': {
+            'type': 'boolean',
+            'required': true,
         }
     }
 }
@@ -145,6 +153,18 @@ schemas.updateSpecs = {
         'value': {
             'type': 'string',
             'required': false
+        },
+        'value_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'is_model_overview': {
+            'type': 'boolean',
+            'required': false,
+        },
+        'is_variant_overview': {
+            'type': 'boolean',
+            'required': false,
         }
     }
 }
@@ -347,6 +367,51 @@ schemas.updateAreaRqst = {
         'updated_by': {
             'type': 'number',
             'required': true
+        }
+    }
+}
+
+schemas.bankEmiMaster = {
+    'name': '/bankEmiMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+            'unique': true
+        },
+        'emi': {
+            'type': 'float',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateBankEmiMaster = {
+    'name': '/updateBankEmiMaster',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'bank_id' : {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+            'unique': true
+        },
+        'emi': {
+            'type': 'float',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
         }
     }
 }
@@ -794,7 +859,305 @@ schemas.updateMerchandiseCatRqst = {
     }
 }
 
-_validator.addSchema(schemas.pageDetails, '/pageDetails');
+schemas.addColorRqst = {
+    'name': '/addColorRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'color_code': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'created_by': {
+            'type': 'number',
+            'required': true
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+schemas.updateColorRqst = {
+    'name': '/updateColorRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'color_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'color_code': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'updated_by': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.mapColorRqst = {
+    'name': '/mapColorRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'color_id': {
+            'type': 'number',
+            'required': true,
+        },
+        'autoline_colors': {
+            'type': 'array',
+            'items': {
+                '$ref': '/autolineColors'
+            },
+            'required': true
+        }
+    }
+}
+
+schemas.updateMapColorRqst = {
+    'name': '/updateMapColorRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'color_id': {
+            'type': 'number',
+            'required': true,
+        },
+        'autoline_colors': {
+            'type': 'array',
+            'items': {
+                '$ref': '/autolineColors'
+            },
+            'required': true
+        },
+        'prev_autoline_id' : {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.autolineColors = {
+    'id': '/autolineColors',
+    'type': 'object',
+    'properties': {
+        'autoline_color_id': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.addNewsRqst = {
+    'name': '/addNewsRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+        },
+        'description': {
+            'type': 'string',
+            'required': false
+        },
+        'url': {
+            'type': 'string',
+            'required': true
+        },
+        'update_date': {
+            'type': 'string',
+            'required': true
+        },
+        'start_date': {
+            'type': 'string',
+            'required': true
+        },
+        'end_date': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateNewsRqst = {
+    'name': '/updateNewsRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'news_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+        },
+        'description': {
+            'type': 'string',
+            'required': false
+        },
+        'url': {
+            'type': 'string',
+            'required': false
+        },
+        'update_date': {
+            'type': 'string',
+            'required': false
+        },
+        'start_date': {
+            'type': 'string',
+            'required': false
+        },
+        'end_date': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+schemas.addMagazineRqst = {
+    'name': '/addMagazineRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'description': {
+            'type': 'string',
+            'required': false
+        },
+        'description_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'upload_date': {
+            'type': 'string',
+            'required': true
+        },
+        'start_date': {
+            'type': 'string',
+            'required': true
+        },
+        'end_date': {
+            'type': 'string',
+            'required': true
+        },
+        'file_type': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateMagazineRqst = {
+    'name': '/updateMagazineRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'news_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false,
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'description': {
+            'type': 'string',
+            'required': false
+        },
+        'description_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'upload_date': {
+            'type': 'string',
+            'required': false
+        },
+        'start_date': {
+            'type': 'string',
+            'required': false
+        },
+        'end_date': {
+            'type': 'string',
+            'required': false
+        },
+        'file_type': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+_validator.addSchema(schemas.autolineColors, '/autolineColors');
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

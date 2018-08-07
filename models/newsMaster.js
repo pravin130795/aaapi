@@ -1,31 +1,48 @@
 module.exports = function (sequelize, DataTypes) {
-    const specsHeadingMaster = sequelize.define("specsHeadingMaster", {
-        specs_heading_id: {
+    const newsMaster = sequelize.define("newsMaster", {
+        news_id: {
             type: DataTypes.INTEGER,
-            primaryKey: true,
             autoIncrement: true,
+            primaryKey: true,
             allowNull: false
         },
         name: {
             type: DataTypes.STRING(40),
             allowNull: false
         },
-        name_arabic: {
+        description: {
+            type: DataTypes.STRING(140),
+            allowNull: false
+        },
+        url: {
             type: DataTypes.STRING(40),
             allowNull: true
         },
-        sequence: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+        update_date: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        start_date: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        end_date: {
+            type: DataTypes.DATE,
+            allowNull: false,
         },
         is_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
+        is_approved: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:07
+            defaultValue: 07
         },
         created_at: {
             type: DataTypes.DATE,
@@ -35,17 +52,17 @@ module.exports = function (sequelize, DataTypes) {
         updated_by: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:07
+            defaultValue: 07
         },
         updated_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW
         }
     }, {
-        tableName: 'specification_heading',
+        tableName: 'master_news',
         timestamps: false,
         classMethods: {}
     });
-    return specsHeadingMaster;
+    return newsMaster;
 };

@@ -23,12 +23,12 @@ module.exports = function (app) {
     //Specs Master
     app.post('/master/addspecsmaster', service.addSpecs);
     app.get('/master/getspecsmaster', service.getSpecs);
-    app.put('/master/specsMaster/update', service.updateSpecs);
+    app.put('/master/updatespecsmaster', service.updateSpecs);
+
     //Year Master
     app.post('/master/addyear', service.addYear);
     app.get('/master/getyear', service.getYear);
     app.put('/master/updateyear', service.updateYear);
-    //Color Master
 
     //Accessory Category Master
     app.post('/master/addaccessorycategory', service.addAccessoryCat);
@@ -46,9 +46,9 @@ module.exports = function (app) {
     app.put('/master/updatearea', service.updateArea);
 
     // Bank master
-    /* app.post('/master/addbankemi', service.addBankEmi);
+    app.post('/master/addbankemi', service.addBankEmi);
     app.get('/master/getbankemi', service.getBankEmi);
-    app.put('/master/updatebankemi', service.updateBankEmi) */
+    app.put('/master/updatebankemi', service.updateBankEmi)
 
     /* Lookup master  */
     app.post('/master/addlookup', service.addLookup);
@@ -99,4 +99,26 @@ module.exports = function (app) {
     /* app.post('/master/addstatuslisting', service.addStatusListing);
     app.get('/master/getstatuslisting', service.getStatusListing);
     app.put('/master/updatestatuslisting', service.updateStatusListing); */
+
+    /* Autoline Color Master */
+    app.get('/master/getautolinecolor', service.getAutolineColor);
+
+    /* CEM Color Master */
+    app.post('/master/addcolor', service.addColor);
+    app.get('/master/getcolor', service.getColor);
+    app.put('/master/updatecolor', service.updateColor);
+
+    /* Autoline Color Map */
+    app.post('/master/addcolormap', service.addColorMap);
+    app.put('/master/updatecolormap', service.updateColorMap);
+
+    /* Monthly News Master */
+    app.post('/master/addmonthlynews', service.addMonthlyNews);
+    app.get('/master/getmonthlynews', service.getMonthlyNews);
+    app.put('/master/updatemonthlynews', service.updateMonthlyNews)
+
+    /* Monthly Magazine Master */
+    app.post('/master/addmagazine', service.addMonthlyMagazine);
+    app.get('/master/getmagazine', service.getMonthlyMagazine);
+    app.put('/master/updatemagazine', service.updateMonthlyMagazine)
 }

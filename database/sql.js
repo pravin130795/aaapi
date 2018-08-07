@@ -10,14 +10,12 @@ let db = {};
 sequelizeTransforms(sequelize);
 //To Read All Files from the database directory and we will exclude index.js from the directory
 fs.readdirSync('./' + constants.moduleNames.model + '/')
-    .filter(function (file) {
-        return (file.indexOf(".") !== 0 && file !== "index.js")
-    })
     .forEach(function (file) {
         let model = sequelize.import('../' + constants.moduleNames.model + '/' + file);
     });
 
 Object.keys(db).forEach(function (modelName) {
+
     if ("associate" in db[modelName]) {
         db[modelName].associate(db);
     }

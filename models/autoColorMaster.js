@@ -1,10 +1,10 @@
-module.exports = function (sequelize, DataTypes) {
-    const specsHeadingMaster = sequelize.define("specsHeadingMaster", {
-        specs_heading_id: {
+module.exports = function(sequelize, DataTypes) {   
+    const colorMaster = sequelize.define("colorMaster", {
+        color_id: {
             type: DataTypes.INTEGER,
+            allowNull: false,
             primaryKey: true,
-            autoIncrement: true,
-            allowNull: false
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING(40),
@@ -14,18 +14,17 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(40),
             allowNull: true
         },
-        sequence: {
-            type: DataTypes.INTEGER,
+        color_code: {
+            type: DataTypes.STRING(20),
             allowNull: false
         },
         is_active: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: false
         },
         created_by: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue:07
+            allowNull: false
         },
         created_at: {
             type: DataTypes.DATE,
@@ -34,18 +33,18 @@ module.exports = function (sequelize, DataTypes) {
         },
         updated_by: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue:07
+            allowNull: false
         },
         updated_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW
         }
-    }, {
-        tableName: 'specification_heading',
+    }, 
+    {
+        tableName: 'colors',
         timestamps: false,
         classMethods: {}
     });
-    return specsHeadingMaster;
+    return colorMaster;
 };

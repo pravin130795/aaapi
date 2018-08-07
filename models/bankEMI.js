@@ -27,11 +27,13 @@ module.exports = function(sequelize, DataTypes) {
         },
         created_by:{
             type:DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 07
         },
         updated_by:{
             type:DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 07
         },
         is_active:{
             type:DataTypes.BOOLEAN,

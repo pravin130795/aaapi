@@ -22,6 +22,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(40),
             allowNull: true
         },
+        is_model_overview: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+        is_variant_overview: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
         is_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
@@ -29,7 +37,7 @@ module.exports = function (sequelize, DataTypes) {
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:7
+            defaultValue: 07
         },
         created_at: {
             type: DataTypes.DATE,
@@ -38,7 +46,8 @@ module.exports = function (sequelize, DataTypes) {
         },
         updated_by: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: false,
+            defaultValue: 07
         },
         updated_at: {
             type: DataTypes.DATE,

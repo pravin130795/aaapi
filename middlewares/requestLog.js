@@ -1,11 +1,11 @@
 ﻿module.exports = function (app) {
-	var _ = require('lodash');
-	var logger = require('../utils/logger');
-	var util = require('util');
+	const _ = require('lodash');
+	const logger = require('../utils/logger');
+	const util = require('util');
 	
 	app.use(function (req, res, next) {
 		// User may not be logged in so pass on the request
-		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		logger.info(util.format('%s request from:- %s', req.url, ip));
 
 		if (req.method.toLowerCase() === 'get') {

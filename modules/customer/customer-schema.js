@@ -32,7 +32,7 @@ schemas.customerDetails = {
             'items': {
                 '$ref': 'contactNumbers'
             },
-            'required': 'true'
+            'required': true
         }
     }
 }

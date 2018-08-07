@@ -1,15 +1,15 @@
 ﻿module.exports = function(app) {
-	var passport = require('passport');
-	var user = require('../user/user-model');
-	var localStrategy = require('passport-local').Strategy;
-	var common = require('../utils/common');
+	const passport = require('passport');
+	const user = require('../user/user-model');
+	const localStrategy = require('passport-local').Strategy;
+	const common = require('../utils/common');
 
 	// instialize passport middleware
 	app.use(passport.initialize());
 	app.use(passport.session());
 
 	// define local strategy
-	var strategy = new localStrategy({
+	let strategy = new localStrategy({
 		usernameField : 'userName',
 		passwordField : 'password'
 	}, function(username, password, next) {

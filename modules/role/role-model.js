@@ -103,7 +103,7 @@ role.updateRoleDetails = function (options) {
                             //console.log("permissionData",permissionExist);
                             if (!_.isEmpty(permissionExist)) {
                                 //exist permission, so update here
-                                var upObj = {};
+                                let upObj = {};
                                 upObj.updated_by = 0 //req.currentUser.id;
                                 upObj.can_create = page.add; // 1- true, 0- false
                                 upObj.can_view = page.view; // 1- true, 0- false
@@ -122,7 +122,7 @@ role.updateRoleDetails = function (options) {
                                 });
                             } else {
                                 //create permissions here
-                                var inObj = {};
+                                let inObj = {};
                                 inObj.created_by = 0 //req.currentUser.id;
                                 inObj.updated_by = 0 //req.currentUser.id;
                                 inObj.role_id = options.role_id;

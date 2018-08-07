@@ -1282,7 +1282,7 @@ master.updateNewsDetail = function (options) {
         sqlInstance.newsMaster.update(options, {
             where: { news_id: options.news_id }
         }).then(response => {
-            resolve(response)
+            resolve({ message: 'News Details Updated successfully..!!' });
         }).catch(error => {
             reject(error);
         })
@@ -1345,9 +1345,9 @@ master.updateMagazineDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
         sqlInstance.magazineMaster.update(options, {
-            where: { news_id: options.news_id }
+            where: { magazine_id: options.magazine_id }
         }).then(response => {
-            resolve(response)
+            resolve({ message: 'Magazine Details Updated successfully..!!' });
         }).catch(error => {
             reject(error);
         })

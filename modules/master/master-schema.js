@@ -1111,7 +1111,7 @@ schemas.updateMagazineRqst = {
     'type': 'object',
     'required': true,
     'properties': {
-        'news_id': {
+        'magazine_id': {
             'type': 'number',
             'required': true
         },

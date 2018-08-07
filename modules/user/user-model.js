@@ -1,6 +1,6 @@
 const _ = require('lodash');
-
-
+const util = require('util');
+const logger = require('../../utils/logger');
 const Op = global.sqlInstance.sequelize.Op;
 const constants = require('../../utils/constants');
 
@@ -16,10 +16,11 @@ let user = function () {
  * @param {string} password - Represents the User password.
  * @param {string} mobile_no - Represents the User mobile number.
  * @param {string} approver_person - Represents the approver person.
- * @param {string} designation_id - Represents the designation.
+ * @param {integer} designation_id - Represents the designation.
  * @param {string} module_name - Represents the module name.
- * @param {string} updated_by - Represents the current user id.
- * @param {string} created_by - Represents the current user id.
+ * @param {integer} updated_by - Represents the current user id.
+ * @param {integer} created_by - Represents the current user id.
+ * @param {boolean} is_active - Represents the status.
  * @returns {object} response - User details
  */
 user.addUserDetail = function (options) {
@@ -35,8 +36,9 @@ user.addUserDetail = function (options) {
                 approver_person: options.approver_person,
                 designation_id: options.designation_id,
                 module_name: options.module_name,
-                updated_by: options.current_user_id,
-                created_by: options.current_user_id
+                is_active: options.is_active,
+                updated_by: 1,//options.current_user_id,
+                created_by: 1//options.current_user_id
             }
         })
         .spread((user, created) => {
@@ -58,10 +60,11 @@ user.addUserDetail = function (options) {
  * @param {string} password - Represents the User password.
  * @param {string} mobile_no - Represents the User mobile number.
  * @param {string} approver_person - Represents the approver person.
- * @param {string} designation_id - Represents the designation.
+ * @param {integer} designation_id - Represents the designation.
  * @param {string} module_name - Represents the module name.
- * @param {string} updated_by - Represents the current user id.
- * @param {string} created_by - Represents the current user id.
+ * @param {integer} updated_by - Represents the current user id.
+ * @param {integer} created_by - Represents the current user id.
+ * @param {boolean} is_active - Represents the status.
  * @returns {object} response - Updated User details
  */
 user.updateUserDetails = function (options) {
@@ -72,18 +75,18 @@ user.updateUserDetails = function (options) {
             }
         }).then(userExist => {
             if (!_.isEmpty(userExist)) {
-                options.updated_a= new Date();
-                options.updated_by= options.current_user_id;
+                options.updated_at= new Date();
+                options.updated_by= 1;//options.current_user_id;
                 userExist.update(options)
                     .then((response) => {
                        return resolve(response)
                     })
                     .catch((error) => {
-                       logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+                       logger.error(util.format("EXCEPTION OF UPDATE USER DETAILS. %j",error))
                        return reject(error)
                     })
             } else {
-                return resolve('designation does not exist')
+                return resolve('user does not exist')
             }
         })
     });
@@ -138,7 +141,7 @@ user.getUserLists = function (options) {
             return resolve(response)
          })
          .catch((error) => {
-            logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+            logger.error(util.format("EXCEPTION OF USER LIST. %j",error))
             return reject(error)
          })
     });

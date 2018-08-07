@@ -18,8 +18,8 @@ schemas.roleDetails = {
             'type': 'string',
             'required': true
         },
-        'current_user_id': {
-            'type': 'integer',
+        'is_active': {
+            'type': 'boolean',
             'required': true
         },
         'page_access': {
@@ -70,6 +70,87 @@ schemas.pageDetails = {
         },
         'export': {
             'type': 'bit',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+    }
+}
+
+schemas.updateRoleDetails = {
+    'id': '/roleDetails',
+    'type': 'object',
+    'properties': {
+        'role_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'role_name': {
+            'type': 'string',
+            'required': false
+        },
+        'role_description': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'page_access': {
+            'type': 'array',
+            'item': {
+                '$ref': '/updatePageDetails',
+            },
+            'required': false
+        }
+    }
+}
+
+schemas.updatePageDetails = {
+    'id': '/updatePageDetails',
+    'type': 'object',
+    'properties': {
+        'menu_item_id': {
+            'type': 'string',
+            'required': false
+        },
+        'view': {
+            'type': 'bit',
+            'required': false
+        },
+        'add': {
+            'type': 'bit',
+            'required': false
+        },
+        'edit': {
+            'type': 'bit',
+            'required': false
+        },
+        'delete': {
+            'type': 'bit',
+            'required': true
+        },
+        'report': {
+            'type': 'bit',
+            'required': false
+        },
+        'reject': {
+            'type': 'bit',
+            'required': false
+        },
+        'process_approval': {
+            'type': 'bit',
+            'required': false
+        },
+        'export': {
+            'type': 'bit',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
             'required': true
         },
     }

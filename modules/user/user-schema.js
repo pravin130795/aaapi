@@ -38,12 +38,56 @@ schemas.userDetails = {
             'type': 'integer',
             'required': true
         },
-        'current_user_id': {
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+},
+
+schemas.updateUserDetails = {
+    'id': '/updateUserDetails',
+    'type': 'object',
+    'properties': {
+        'user_id': {
             'type': 'integer',
             'required': true
         },
+        'user_name': {
+            'type': 'string',
+            'required': true
+        },
+        'email': {
+            'type': 'string',
+            'required': true
+        },
+        'password': {
+            'type': 'string',
+            'required': true
+        },
+        'mobile_no': {
+            'type': 'string',
+            'required': true
+        },
+        'approver_person': {
+            'type': 'string',
+            'required': true
+        },
+        'module_name': {
+            'type': 'string',
+            'required': true
+        },
+        'designation_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
     }
 }
+
 
 
 schemas.validate = function (object, schema) {

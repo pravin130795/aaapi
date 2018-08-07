@@ -4,7 +4,7 @@ const master = require('./master-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
 
-
+//Designation Heading Master
 let addDesignation = function (req, res) {
     let designationData = common.sanitize(req.body, schemas.designationDetail);
     if (schemas.validate(designationData, schemas.designationDetail)) {
@@ -31,8 +31,6 @@ let addDesignation = function (req, res) {
         });
     }
 }
-
-
 let getDesignation = function (req, res) {
     let filter = {
         search: req.query.search,
@@ -53,7 +51,6 @@ let getDesignation = function (req, res) {
         });
     });
 }
-
 let updateDesignation = function (req, res) {
     let updateDesignationData = common.sanitize(req.body, schemas.updateDesignationDetail);
     if (schemas.validate(updateDesignationData, schemas.updateDesignationDetail)) {
@@ -366,7 +363,6 @@ let updateAccessoryCat = function (req, res) {
     }
 }
 
-
 /* Response Status Master */
 let addResponseStatus = function (req, res) {
     let rspStatusData = common.sanitize(req.body, schemas.responseStatus);
@@ -435,75 +431,8 @@ let updateResponseStatus = function (req, res) {
     }
 }
 
-/* Bank EMI Master */
-let addBankEmi = function (req, res) {
-    let bankData = common.sanitize(req.body, schemas.bankEmiMaster);
-    if (schemas.validate(bankData, schemas.bankEmiMaster)) {
-        master.addBankDetails(bankData).then((response) => {
-            res.status(200).send({
-                code: 2000,
-                messageKey: constants.messageKeys.code_2000,
-                data: response
-            });
-        }).catch((error) => {
-            return res.status(500).send({
-                code: 5000,
-                messageKey: constants.messageKeys.code_5000,
-                data: error
-            });
-        });
-    } else {
-        // Incomplete Data
-        return res.status(400).send({
-            code: 4001,
-            messageKey: constants.messageKeys.code_4001,
-            data: {}
-        });
-    }
-}
-let getBankEmi = function (req, res) {
-    master.getBankEmiList(req.query).then((response) => {
-        res.status(200).send({
-            code: 2000,
-            messageKey: constants.messageKeys.code_2000,
-            data: response
-        });
-    }).catch((error) => {
-        logger.info(error);
-        return res.status(500).send({
-            code: 5000,
-            messageKey: constants.messageKeys.code_5000,
-            data: error
-        });
-    });
-}
-let updateBankEmi = function (req, res) {
-    let bankData = req.body;
-    if (schemas.validate(bankData, schemas.updateBankEmiMaster)) {
-        master.updateBankemiDetails(bankData).then((response) => {
-            res.status(200).send({
-                code: 2000,
-                messageKey: constants.messageKeys.code_2000,
-                data: response
-            });
-        }).catch((error) => {
-            return res.status(500).send({
-                code: 5000,
-                messageKey: constants.messageKeys.code_5000,
-                data: error
-            });
-        });
-    } else {
-        // Incomplete Data
-        return res.status(400).send({
-            code: 4001,
-            messageKey: constants.messageKeys.code_4001,
-            data: {}
-        });
-    }
-}
 
-/* Lookup Master */
+// Lookup Master 
 let addLookup = function (req, res) {
     let lookupData = common.sanitize(req.body, schemas.addLookupRqst);
     if (schemas.validate(lookupData, schemas.addLookupRqst)) {
@@ -530,6 +459,162 @@ let addLookup = function (req, res) {
     }
 }
 
+//Service Type Master
+let addServiceType = function (req, res) {
+    let serviceTypeData = common.sanitize(req.body, schemas.addServiceTypeDetail,constants.moduleNames.master);
+    if (schemas.validate(serviceTypeData, schemas.addServiceTypeDetail)) {
+        master.addServiceTypeDetails(serviceTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+
+let updateServiceType = function (req, res) {
+    let updateServiceTypeData = common.sanitize(req.body, schemas.updateServiceTypeDetail, constants.moduleNames.master);
+    if (schemas.validate(updateServiceTypeData, schemas.updateServiceTypeDetail)) {
+        master.updateServiceTypeDetails(updateServiceTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+let getServiceType = function (req, res) {
+    let filter = {
+        search: req.query.search,
+        status: req.query.status
+    };
+    master.getServiceTypeLists(filter).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
+// Service Master
+
+let addService = function (req, res) {
+    let serviceData = common.sanitize(req.body, schemas.addServiceDetail,constants.moduleNames.master);
+    if (schemas.validate(serviceData, schemas.addServiceDetail)) {
+        master.addServiceDetails(serviceData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
+let updateService = function (req, res) {
+    let updateServiceData = common.sanitize(req.body, schemas.updateServiceDetail,constants.moduleNames.master);
+    if (schemas.validate(updateServiceData, schemas.updateServiceDetail)) {
+        master.updateServiceDetails(updateServiceData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+let getServices = function (req, res) {
+    let filter = {
+        search: req.query.search,
+        status: req.query.status,
+        service_type_id:req.query.service_type_id
+    };
+    master.getServiceLists(filter).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
 module.exports = {
     addDesignation: addDesignation,
     getDesignation: getDesignation,
@@ -549,8 +634,11 @@ module.exports = {
     addResponseStatus: addResponseStatus,
     getResponseStatus: getResponseStatus,
     updateResponseStatus: updateResponseStatus,
-    addBankEmi: addBankEmi,
-    getBankEmi: getBankEmi,
-    updateBankEmi: updateBankEmi,
-    addLookup: addLookup
+    addLookup: addLookup,
+    addServiceType: addServiceType,
+    updateServiceType: updateServiceType,
+    getServiceType: getServiceType,
+    addService: addService,
+    updateService: updateService,
+    getServices:getServices
 }

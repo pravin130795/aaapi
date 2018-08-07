@@ -3,21 +3,21 @@ let service = require('./master-service');
 module.exports = function (app) {
     // To Insert Designation Details To Database
 
-    /* To Insert into Designation Master */
+    // To Insert into Designation Master
     app.post('/master/adddesignation', service.addDesignation);
 
-    /* To Get details from Designation Master */
+    // To Get details from Designation Master 
     app.get('/master/getdesignation', service.getDesignation);
 
-    /* To Update designations Master  */
+    // To Update designations Master 
     app.put('/master/updatedesignation', service.updateDesignation)
     
-    /* Specs Heading Master */
-    /* To Insert into Specification Heading Master */
+    // Specs Heading Master
+    // To Insert into Specification Heading Master
     app.post('/master/addspecsheading', service.addSpecsHeading);
-    /* To Get details from Specification Heading Master */
+    // To Get details from Specification Heading Master
     app.get('/master/getspecsheading', service.getSpecsHeading);
-    /* To Update Specification Heading Master  */
+    // To Update Specification Heading Master 
     app.put('/master/updatespecsheading', service.updateSpecsHeading);
 
     //Specs Master
@@ -35,7 +35,7 @@ module.exports = function (app) {
     app.get('/master/getaccessorycategory', service.getAccessoryCat);
     app.put('/master/updateaccessorycategory', service.updateAccessoryCat);
 
-    /* Response status master */
+    // Response status master 
     app.post('/master/addresponsestatus', service.addResponseStatus);
     app.get('/master/getresponsestatus', service.getResponseStatus);
     app.put('/master/updateresponsestatus', service.updateResponseStatus);

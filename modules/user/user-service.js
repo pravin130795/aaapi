@@ -5,6 +5,34 @@ const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
 
 
+let userLogin = function(req, res){
+    let userLoginData = common.sanitize(req.body, schemas.userLoginDetails,constants.moduleNames.user);
+    if (schemas.validate(userLoginData, schemas.userLoginDetails)) {
+        user.checkUserLoginDetail(userLoginData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            logger.info(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }  
+}
+
+
 let addUser = function (req, res) {
     let userData = common.sanitize(req.body, schemas.userDetails,constants.moduleNames.user);
     if (schemas.validate(userData, schemas.userDetails)) {
@@ -33,20 +61,30 @@ let addUser = function (req, res) {
 }
 
 let updateUser = function (req, res) {
-    user.updateUserDetails(req.body).then((response) => {
-        res.status(200).send({
-            code: 2000,
-            messageKey: constants.messageKeys.code_2000,
-            data: response
+    let updateUserData = common.sanitize(req.body, schemas.updateUserDetails, constants.moduleNames.user);
+    if (schemas.validate(updateUserData, schemas.updateUserDetails)) {
+        user.updateUserDetails(updateUserData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            logger.info(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
         });
-    }).catch((error) => {
-        logger.info(error);
-        return res.status(500).send({
-            code: 5000,
-            messageKey: constants.messageKeys.code_5000,
-            data: error
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
         });
-    });
+    }
 }
 
 let getUsers = function (req, res) {
@@ -75,5 +113,6 @@ let getUsers = function (req, res) {
 module.exports = {
     addUser: addUser,
     getUsers: getUsers,
-    updateUser: updateUser
+    updateUser: updateUser,
+    userLogin: userLogin
 }

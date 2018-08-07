@@ -4,7 +4,7 @@ const master = require('./master-model');
 const constants = require('../../utils/constants');
 const logger = require('../../utils/logger')
 
-
+//Designation Heading Master
 let addDesignation = function (req, res) {
     let designationData = common.sanitize(req.body, schemas.designationDetail, constants.moduleNames.master);
     if (schemas.validate(designationData, schemas.designationDetail)) {
@@ -31,8 +31,6 @@ let addDesignation = function (req, res) {
         });
     }
 }
-
-
 let getDesignation = function (req, res) {
     let filter = {
         search: req.query.search,
@@ -53,7 +51,6 @@ let getDesignation = function (req, res) {
         });
     });
 }
-
 let updateDesignation = function (req, res) {
     let updateDesignationData = common.sanitize(req.body, schemas.updateDesignationDetail);
     if (schemas.validate(updateDesignationData, schemas.updateDesignationDetail)) {
@@ -362,7 +359,6 @@ let updateAccessoryCat = function (req, res) {
     }
 }
 
-
 /* Response Status Master */
 let addResponseStatus = function (req, res) {
     let rspStatusData = common.sanitize(req.body, schemas.responseStatus, constants.moduleNames.master);
@@ -578,6 +574,7 @@ let addLookup = (req, res) => {
                 data: response
             });
         }).catch((error) => {
+            console.log(error);
             return res.status(500).send({
                 code: 5000,
                 messageKey: constants.messageKeys.code_5000,
@@ -1378,6 +1375,28 @@ let updateMonthlyMagazine = function (req, res) {
     }
 }
 
+/* let getServices = function (req, res) {
+    let filter = {
+        search: req.query.search,
+        status: req.query.status,
+        service_type_id:req.query.service_type_id
+    };
+    master.getServiceLists(filter).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+} */
+
 module.exports = {
     addDesignation: addDesignation,
     getDesignation: getDesignation,
@@ -1438,5 +1457,11 @@ module.exports = {
     updateMonthlyNews: updateMonthlyNews,
     addMonthlyMagazine: addMonthlyMagazine,
     getMonthlyMagazine: getMonthlyMagazine,
-    updateMonthlyMagazine: updateMonthlyMagazine
+    updateMonthlyMagazine: updateMonthlyMagazine,
+    /* addServiceType: addServiceType,
+    updateServiceType: updateServiceType,
+    getServiceType: getServiceType,
+    addService: addService,
+    updateService: updateService,
+    getServices:getServices */
 }

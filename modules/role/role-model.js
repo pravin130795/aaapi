@@ -20,8 +20,9 @@ role.addRoleDetail = function (options) {
         let iObject = {
             role_name: options.role_name,
             role_description: options.role_description,
-            created_by: 0,
-            updated_by: 0
+            created_by: 1,
+            updated_by: 1,
+            is_active: options.is_active,
         };
         global.sqlInstance.sequelize.models.role.findOne({where: {
             role_name: options.role_name.trim()
@@ -37,13 +38,14 @@ role.addRoleDetail = function (options) {
                             dataObj.can_view = page.view;
                             dataObj.can_create = page.add;
                             dataObj.can_update = page.edit
+                            dataObj.can_report = page.report;
                             dataObj.can_delete = page.delete;
                             dataObj.can_approve = page.process_approval;
                             dataObj.can_export = page.export;
                             dataObj.can_reject = page.reject;
-                            dataObj.created_by = options.current_user_id;
-                            dataObj.updated_by = options.current_user_id;
-                            
+                            dataObj.created_by = 1;//options.current_user_id;
+                            dataObj.updated_by = 1;//options.current_user_id;
+                            dataObj.is_active = page.is_active;
                         return callback(null,global.sqlInstance.sequelize.models.role_permission.create(dataObj))
                         }, function(err, results) {
                             return resolve('Role create successfully');
@@ -84,7 +86,7 @@ role.updateRoleDetails = function (options) {
                 let obj = {
                     role_name: options.role_name,
                     role_description: options.role_description,
-                    updated_by: 0
+                    updated_by: 1
                 }
                 roleExist.update(obj).then(function (roleUpdated) {
 
@@ -111,9 +113,10 @@ role.updateRoleDetails = function (options) {
                                 upObj.can_approve = page.process_approval; // 1- true, 0- false
                                 upObj.can_reject = page.reject; // 1- true, 0- false
                                 upObj.can_export = page.export; // 1- true, 0- false
-                                upObj.updated_by = options.current_user_id;
+                                upObj.updated_by = 1;//options.current_user_id;
                                 upObj.updated_at = new Date();
-                                upObj.is_active = 1;
+                                upObj.is_active = page.is_active
+                                ;
                                 permissionExist.update(upObj).then(updatedPage => {
                                     return callback(updatedPage);
                                 });
@@ -132,8 +135,9 @@ role.updateRoleDetails = function (options) {
                                 inObj.can_approve = page.approve; // 1- true, 0- false
                                 inObj.can_reject = page.reject; // 1- true, 0- false
                                 inObj.can_export = page.export; // 1- true, 0- false
-                                inObj.created_by = options.current_user_id;
-                                inObj.updated_by = options.current_user_id;
+                                inObj.created_by = 1;//options.current_user_id;
+                                inObj.updated_by = 1;//options.current_user_id;
+                                inObj.is_active = page.is_active;
                                 global.sqlInstance.sequelize.models.role_permission.create(inObj).then(newPermissions => {
                                     return callback(newPermissions);
                                 });
@@ -165,51 +169,46 @@ role.updateRoleDetails = function (options) {
 
 role.getRoleLists = function (options) {
     return new Promise((resolve, reject) => {
-        let Condition = {};
+        let Condition ="";
         let { status, search } = options;
+        if (typeof status != 'undefined' && status != '') {
+            Condition +='rol.is_active =' +Number(status);
+        }else{
+            Condition +="rol.is_active =" +"''";
+        }
 
-        if (typeof status != 'undefined') {
-            if (status != '') {
-                Condition['is_active'] = status;
-            }
+        if (typeof search != 'undefined' && search != '') {
+            Condition += " AND rol.role_name LiKE '%"+search+"%'" ;
+            Condition += " OR rol.role_description LiKE '%"+search+"%'" ;
+
         }
-        if (search != '') {
-            let whereCondition = {
-                [Op.and]: new Array()
-            };
-            if (typeof search != 'undefined') {
-                let orCondition = {
-                    [Op.or]: new Array({
-                        'role_name': { [Op.like]: '%' + search + '%' }
-                    },
-                        {
-                            'role_description': { [Op.like]: '%' + search + '%' }
-                        }
-                    )
-                };
-                whereCondition[Op.and].push(orCondition, { is_active: status });
-                Condition = whereCondition;
-            }
-        }
-        global.sqlInstance.sequelize.models.role_permission.findAll({
-            include: [
-                {
-                    model: global.sqlInstance.sequelize.models.role, as: 'role_details', required: true,
-                    attributes: ['role_name', 'role_description', 'is_active'],
-                    where: Condition
-                }]
-        })
-        .then((response) => {
-            return resolve(response)
-         })
-         .catch((error) => {
-            logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+        let query = "";
+        query = "select rol.*,STUFF(( \n"
+            +"SELECT ',' + mi.menu_item_name \n" 
+            +"FROM menu_item as mi \n"
+            +"left join role_permission as role_p on mi.menu_item_id = role_p.menu_item_id \n"
+            +"WHERE rol.role_id = role_p.role_id \n"
+            +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS menu  \n"
+            +"from role as rol \n"
+            +"WHERE "+Condition
+        global.sqlInstance.sequelize.query(query,{ type:  global.sqlInstance.sequelize.QueryTypes.SELECT}).then(function(users) {
+                resolve(users);
+          })
+          .catch((error) => {
+            logger.error(util.format("EXCEPTION FOR GET ROLE LIST %j",error))
             return reject(error)
          })
+       
+
     });
 }
 
-
+/**
+ * API To Map User to Role
+ * @param {integer} user_id - Represents the user id.
+ * @param {array} roles - Represents the role ids.
+ * @returns {iObject} - Role map response message
+ */
 role.RoleMapToUser = function (options) {
     return new Promise((resolve, reject) => {
 
@@ -233,7 +232,7 @@ role.RoleMapToUser = function (options) {
             })
         }, function (err, results) {
             if (err) {
-                logger.error(util.format("TYPE THE EXCEPTION. %j",err))
+                logger.error(util.format("EXCEPTION FOR MAP ROLE TO USER. %j",err))
                 return reject(err);
             } else {
                 return resolve('Role map to user successfully');
@@ -243,7 +242,11 @@ role.RoleMapToUser = function (options) {
     })
 }
 
-
+/**
+ * API To List  User Role Details and Role Permissions
+ * @param {integer} user_id - Represents the user id.
+ * @returns {Array} - User Role Details
+ */
 role.getUserRoleLists = function (options) {
     return new Promise((resolve, reject) => {
         let Condition = {};

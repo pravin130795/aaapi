@@ -14,8 +14,8 @@ schemas.designationDetail = {
             'type': 'string',
             'required': true
         },
-        'current_user_id': {
-            'type': 'integer',
+        'is_active': {
+            'type': 'boolean',
             'required': true
         },
     }
@@ -33,8 +33,8 @@ schemas.updateDesignationDetail = {
             'type': 'string',
             'required': true
         },
-        'current_user_id': {
-            'type': 'integer',
+        'is_active': {
+            'type': 'boolean',
             'required': true
         }
     }
@@ -319,7 +319,7 @@ schemas.addAreaRqst = {
     'type': 'object',
     'required': true,
     'properties': {
-        'name': {
+        'body_name': {
             'type': 'string',
             'required': true,
             'unique': true
@@ -333,7 +333,7 @@ schemas.addAreaRqst = {
             'required': true
         },
         'created_by': {
-            'type': 'number',
+            'type': 'boolean',
             'required': true
         },
         'updated_by': {
@@ -394,20 +394,45 @@ schemas.bankEmiMaster = {
 schemas.updateBankEmiMaster = {
     'name': '/updateBankEmiMaster',
     'type': 'object',
-    'required': true,
     'properties': {
-        'bank_id' : {
-            'type': 'number',
+        'service_type_english': {
+            'type': 'string',
             'required': true
         },
-        'name': {
+        'service_type_arabic': {
             'type': 'string',
-            'required': false,
-            'unique': true
+            'required': true
         },
-        'emi': {
-            'type': 'float',
+        'show_price': {
+            'type': 'bit',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
             'required': false
+        }
+    }
+}
+
+schemas.updateServiceTypeDetail = {
+    'id': '/updateServiceTypeDetail',
+    'type': 'object',
+    'properties': {
+        'service_type_id': {
+            'type': 'integer',
+            'required': true
+        },
+        'service_type_english': {
+            'type': 'string',
+            'required': true
+        },
+        'service_type_arabic': {
+            'type': 'string',
+            'required': true
+        },
+        'show_price': {
+            'type': 'bit',
+            'required': true
         },
         'is_active': {
             'type': 'boolean',
@@ -436,7 +461,7 @@ schemas.addLookupRqst = {
             'required': true
         },
         'created_by': {
-            'type': 'number',
+            'type': 'boolean',
             'required': true
         },
         'updated_by': {
@@ -480,6 +505,10 @@ schemas.addFromToPriceRqst = {
     'type': 'object',
     'required': true,
     'properties': {
+        'from_to_price_id': {
+            'type': 'number',
+            'required': true
+        },
         'from_price': {
             'type': 'decimal',
             'required': true,
@@ -497,10 +526,6 @@ schemas.addFromToPriceRqst = {
         },
         'is_active': {
             'type': 'boolean',
-            'required': true
-        },
-        'created_by': {
-            'type': 'number',
             'required': true
         },
         'updated_by': {
@@ -940,30 +965,6 @@ schemas.mapColorRqst = {
         }
     }
 }
-
-schemas.updateMapColorRqst = {
-    'name': '/updateMapColorRqst',
-    'type': 'object',
-    'required': true,
-    'properties': {
-        'color_id': {
-            'type': 'number',
-            'required': true,
-        },
-        'autoline_colors': {
-            'type': 'array',
-            'items': {
-                '$ref': '/autolineColors'
-            },
-            'required': true
-        },
-        'prev_autoline_id' : {
-            'type': 'number',
-            'required': true
-        }
-    }
-}
-
 schemas.autolineColors = {
     'id': '/autolineColors',
     'type': 'object',

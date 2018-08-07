@@ -1,12 +1,55 @@
 const _ = require('lodash');
-
+const util = require('util');
+const logger = require('../../utils/logger');
+const bcrypt = require('bcrypt');
+const constants = require('../../utils/constants');
+const config = require('../../configurations/config');
 
 const Op = global.sqlInstance.sequelize.Op;
-const constants = require('../../utils/constants');
 
 /** @namespace */
 let user = function () {
 
+};
+
+
+/**
+ * API To check User login Details to the Database
+ * @param {string} user_name - Represents the User Name.
+ * @param {string} password - Represents the User password.
+ * @returns {object} response - User details
+ */
+user.checkUserLoginDetail = function (options){
+    return new Promise ((resolve, reject) => {
+        global.sqlInstance.sequelize.models.users.findOne({
+            where: {
+                user_name: options.user_name
+            }
+        }).then(userExist => {
+            if (!_.isEmpty(userExist)) {
+                let current_password =getEncryptedPasswordWithSalt(options.password);
+                let db_password = userExist.password;
+                if(current_password === db_password){
+                    resolve(userExist)
+                }else{
+                    return resolve("paswword does not match please enter correct password");
+                }
+            } else {
+                return resolve('user does not exist')
+            }
+        })
+        .catch((error) => {
+            logger.error(util.format("EXCEPTION OF LOGIN USER DETAILS. %j",error))
+            return reject(error)
+         })
+    })
+}
+
+let getEncryptedPasswordWithSalt = function (password) {
+    let salt = config.get('salt');
+    let passwordHashWithSalt = bcrypt.hashSync(password, salt);
+    let passwordHash = passwordHashWithSalt.substring(29);
+    return passwordHash;
 };
 
 /**
@@ -16,32 +59,33 @@ let user = function () {
  * @param {string} password - Represents the User password.
  * @param {string} mobile_no - Represents the User mobile number.
  * @param {string} approver_person - Represents the approver person.
- * @param {string} designation_id - Represents the designation.
+ * @param {integer} designation_id - Represents the designation.
  * @param {string} module_name - Represents the module name.
- * @param {string} updated_by - Represents the current user id.
- * @param {string} created_by - Represents the current user id.
+ * @param {integer} updated_by - Represents the current user id.
+ * @param {integer} created_by - Represents the current user id.
+ * @param {boolean} is_active - Represents the status.
  * @returns {object} response - User details
  */
 user.addUserDetail = function (options) {
     return new Promise((resolve, reject) => {
-
         global.sqlInstance.sequelize.models.users.findOrCreate({
-            where: { mobile_no: options.mobile_no },
+            where: { user_name: options.user_name },
             defaults: {
                 user_name: options.user_name,
                 email: options.email,
-                password: options.password,
+                password: getEncryptedPasswordWithSalt(options.password),
                 mobile_no: options.mobile_no,
                 approver_person: options.approver_person,
                 designation_id: options.designation_id,
                 module_name: options.module_name,
-                updated_by: options.current_user_id,
-                created_by: options.current_user_id
+                is_active: options.is_active,
+                updated_by: 1,//options.current_user_id,
+                created_by: 1//options.current_user_id
             }
         })
         .spread((user, created) => {
             if (created) {
-                return resolve(user);
+                return resolve("user create successfully");
             } else {
                 return resolve('user already in use, retry with new.');
             }
@@ -58,10 +102,11 @@ user.addUserDetail = function (options) {
  * @param {string} password - Represents the User password.
  * @param {string} mobile_no - Represents the User mobile number.
  * @param {string} approver_person - Represents the approver person.
- * @param {string} designation_id - Represents the designation.
+ * @param {integer} designation_id - Represents the designation.
  * @param {string} module_name - Represents the module name.
- * @param {string} updated_by - Represents the current user id.
- * @param {string} created_by - Represents the current user id.
+ * @param {integer} updated_by - Represents the current user id.
+ * @param {integer} created_by - Represents the current user id.
+ * @param {boolean} is_active - Represents the status.
  * @returns {object} response - Updated User details
  */
 user.updateUserDetails = function (options) {
@@ -72,18 +117,18 @@ user.updateUserDetails = function (options) {
             }
         }).then(userExist => {
             if (!_.isEmpty(userExist)) {
-                options.updated_a= new Date();
-                options.updated_by= options.current_user_id;
+                options.updated_at= new Date();
+                options.updated_by= 1;//options.current_user_id;
                 userExist.update(options)
                     .then((response) => {
                        return resolve(response)
                     })
                     .catch((error) => {
-                       logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+                       logger.error(util.format("EXCEPTION OF UPDATE USER DETAILS. %j",error))
                        return reject(error)
                     })
             } else {
-                return resolve('designation does not exist')
+                return resolve('user does not exist')
             }
         })
     });
@@ -138,7 +183,7 @@ user.getUserLists = function (options) {
             return resolve(response)
          })
          .catch((error) => {
-            logger.error(util.format("TYPE THE EXCEPTION. %j",error))
+            logger.error(util.format("EXCEPTION OF USER LIST. %j",error))
             return reject(error)
          })
     });

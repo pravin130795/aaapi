@@ -1,9 +1,11 @@
 const _ = require('lodash');
 const sequelize = require('sequelize');
+const util = require('util');
 const models = require('../../database/sql');
-const Op = global.sqlInstance.sequelize.Op;
-
+const logger = require('../../utils/logger');
 const constants = require('../../utils/constants');
+const Op = global.sqlInstance.sequelize.Op;
+const sqlInstance = global.sqlInstance.sequelize.models;
 
 /** @namespace */
 let master = function () {
@@ -11,18 +13,22 @@ let master = function () {
 };
 
 //
-const sqlInstance = global.sqlInstance.sequelize.models;
 //
 /**
  * API To Insert Designation Details to the Database
  * @param {string} designation_name - Represents the Designation Name.
+ * @param {string} is_active - Represents the Designation status.
  * @returns {object} response - Designation details
  */
 master.addDesignationDetail = function (options) {
     return new Promise((resolve, reject) => {
         global.sqlInstance.sequelize.models.designation.findOrCreate({
             where: { designation_name: options.designation_name },
-            defaults: { designation_name: options.designation_name, created_by: options.current_user_id, updated_by: options.current_user_id }
+            defaults: { designation_name: options.designation_name, 
+                created_by: 1,//options.current_user_id, 
+                updated_by:1 ,//options.current_user_id 
+                is_active:options.is_active
+            }
         })
             .spread((user, created) => {
                 if (created) {
@@ -39,6 +45,7 @@ master.addDesignationDetail = function (options) {
  * API To Update Designation Details to the Database
  * @param {string} designation_id - Represents the Designation ID.
  * @param {string} designation_name - Represents the Designation Name.
+ * @param {string} is_active - Represents the Designation status.
  * @returns {object} response - Designation details
  */
 master.updateDesignationDetail = function (options) {
@@ -52,7 +59,8 @@ master.updateDesignationDetail = function (options) {
                 designationExist.update({
                     designation_name: options.designation_name,
                     updated_at: new Date(),
-                    updated_by: options.current_user_id
+                    updated_by: 1,//options.current_user_id
+                    is_active:options.is_active
                 })
                     .then(response => resolve(response))
                     .catch(error => reject(error))
@@ -315,8 +323,6 @@ master.updateYearDetail = function (options) {
     });
 }
 
-/* Color Master */
-
 /* Accessory Category Master */
 /**
  * API To Insert Accessory Category Master Details to the Database
@@ -517,11 +523,7 @@ master.addBankDetails = (options) => {
         sqlInstance.bankMaster.create(options).then(response => {
             resolve(response)
         }).catch(error => {
-            if (error.name === "SequelizeUniqueConstraintError") {
-                reject({ message: 'Bank Name should be unique' })
-            } else {
-                reject(error);
-            }
+            reject(error);
         })
     });
 }
@@ -533,12 +535,12 @@ master.addBankDetails = (options) => {
 master.getBankEmiList = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let { status, search } = options;
+        let { status, name } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
-        if (typeof search != 'undefined' && search != '') {
-            Condition['name'] = { [Op.like]: '%' + search + '%' };
+        if (typeof name != 'undefined' && name != '') {
+            Condition['name'] = { $like: '%' + name + '%' };
         }
         sqlInstance.bankMaster.findAll({ where: Condition })
             .then((response) => {
@@ -561,7 +563,7 @@ master.updateBankemiDetails = function (options) {
         sqlInstance.bankMaster.update(options, {
             where: { bank_id: options.bank_id }
         }).then(response => {
-            resolve({ message: 'Bank Detail Updated successfully..!!' });
+            resolve(response)
         }).catch(error => {
             reject(error);
         })
@@ -1072,8 +1074,6 @@ master.getAutolineColorList = () => {
 }
 
 /* CEM Color Master */
-
-/* CEM Color Master */
 /**
  * API To Insert Accessory Category Master Details to the Database
  * @param {string} name - Represents the name of the Category.
@@ -1245,7 +1245,6 @@ master.addNewsDetail = (options) => {
         })
     });
 }
-
 /**
  * API To Get News Master Details from the Database
  * @param {string} name - Represents the name of the News for Filter.
@@ -1311,7 +1310,6 @@ master.addMagazineDetail = (options) => {
         })
     });
 }
-
 /**
  * API To Get Magazine Master Details from the Database
  * @param {string} name - Represents the name of the Magazine for Filter.

@@ -6,7 +6,7 @@ const logger = require('../../utils/logger')
 
 
 let addRole = function (req, res) {
-    let roleData = common.sanitize(req.body, schemas.roleDetails,constants.moduleNames.role);
+    let roleData = common.sanitize(req.body, schemas.roleDetails, constants.moduleNames.role);
     if (schemas.validate(roleData, schemas.roleDetails)) {
         role.addRoleDetail(roleData).then((response) => {
             res.status(200).send({
@@ -33,20 +33,30 @@ let addRole = function (req, res) {
 }
 
 let updateRole = function (req, res) {
-    role.updateRoleDetails(req.body).then((response) => {
-        res.status(200).send({
-            code: 2000,
-            messageKey: constants.messageKeys.code_2000,
-            data: response
+    let updateRoleData = common.sanitize(req.body, schemas.updateRoleDetails, constants.moduleNames.role);
+    if (schemas.validate(updateRoleData, schemas.updateRoleDetails)) {
+        role.updateRoleDetails(updateRoleData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            logger.info(error);
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
         });
-    }).catch((error) => {
-        logger.info(error);
-        return res.status(500).send({
-            code: 5000,
-            messageKey: constants.messageKeys.code_5000,
-            data: error
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
         });
-    });
+    }
 }
 
 let getRolesLists = function (req, res) {
@@ -72,7 +82,7 @@ let getRolesLists = function (req, res) {
 
 
 let mappingUser = function (req, res) {
-    let roleMapData = common.sanitize(req.body, schemas.roleMapUserDetails,constants.moduleNames.role);
+    let roleMapData = common.sanitize(req.body, schemas.roleMapUserDetails, constants.moduleNames.role);
     if (schemas.validate(roleMapData, schemas.roleMapUserDetails)) {
         role.RoleMapToUser(req.body).then((response) => {
             res.status(200).send({
@@ -88,7 +98,7 @@ let mappingUser = function (req, res) {
                 data: error
             });
         });
-    }else{
+    } else {
         // Incomplete Data
         return res.status(400).send({
             code: 4001,

@@ -13,4 +13,6 @@ module.exports = function (app) {
     //To update user details
      app.put('/updateuser', service.updateUser);
 
+    // User login 
+    app.post('/login',service.userLogin);
 }

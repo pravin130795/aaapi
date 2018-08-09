@@ -131,4 +131,17 @@ module.exports = function (app) {
     app.post('/master/addservicetype', service.addServiceType);
     app.get('/master/getservicetype', service.getServiceType);
     app.put('/master/updateservicetype', service.updateServiceType)
+
+    //Autoline status master
+    app.get('/master/getautolinestatus', service.getAutolineStatus);
+    
+    //CEM Status Master
+    app.post('/master/addstatus', service.addStatus);
+    app.get('/master/getstatus', service.getStatus);
+    app.put('/master/updatestatus', service.updateStatus);
+
+    //ON-OFF Master
+    app.get('/master/getsubmenuitems', service.getSubMenu);
+    app.get('/master/getactions', service.getActions);
+    app.post('/master/mapactions', service.mapActions);
 }

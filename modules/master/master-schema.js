@@ -1153,7 +1153,6 @@ schemas.addServiceTypeDetail = {
         }
     }
 }
-
 schemas.updateServiceTypeDetail = {
     'id': '/updateServiceTypeDetail',
     'type': 'object',
@@ -1214,7 +1213,6 @@ schemas.addServiceDetail = {
         }
     }
 }
-
 schemas.locationDetails = {
     'name': '/locationDetails',
     'type': 'object',
@@ -1226,7 +1224,6 @@ schemas.locationDetails = {
         }
     }
 }
-
 
 schemas.updateServiceDetail = {
     'id': '/addServiceDetail',
@@ -1265,7 +1262,6 @@ schemas.updateServiceDetail = {
         }
     }
 }
-
 schemas.updateLocationDetails = {
     'name': '/updateLocationDetails',
     'type': 'object',
@@ -1282,9 +1278,107 @@ schemas.updateLocationDetails = {
     }
 }
 
+schemas.addStatusRqst = {
+    'name': '/addStatusRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'autoline_status': {
+            'type': 'array',
+            'items': {
+                '$ref': '/autolineStatus'
+            },
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateStatusRqst = {
+    'name': '/updateStatusRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'status_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false
+        },
+        'name_arabic': {
+            'type': 'string',
+            'required': false
+        },
+        'autoline_status': {
+            'type': 'array',
+            'items': {
+                '$ref': '/autolineStatus'
+            },
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+schemas.autolineStatus = {
+    'id': '/autolineStatus',
+    'type': 'object',
+    'properties': {
+        'autoline_status_id': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
+schemas.mapActionRqst = {
+    'name': '/mapActionRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'menu_item_id': {
+            'type': 'number',
+            'required': true,
+        },
+        'actions': {
+            'type': 'array',
+            'items': {
+                '$ref': '/actions'
+            },
+            'required': true
+        }
+    }
+}
+schemas.actions = {
+    'id': '/actions',
+    'type': 'object',
+    'properties': {
+        'action_id': {
+            'type': 'number',
+            'required': true
+        }
+    }
+}
+
 _validator.addSchema(schemas.autolineColors, '/autolineColors');
 _validator.addSchema(schemas.locationDetails, '/locationDetails');
 _validator.addSchema(schemas.updateLocationDetails, '/updateLocationDetails');
+_validator.addSchema(schemas.autolineStatus, '/autolineStatus');
+_validator.addSchema(schemas.actions, '/actions');
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

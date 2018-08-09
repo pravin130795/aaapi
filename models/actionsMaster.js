@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
         }
     },
     {
-        tableName: 'actions_master',
+        tableName: 'action_master',
         timestamps: false,
         classMethods: {}
     });

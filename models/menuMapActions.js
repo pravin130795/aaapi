@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {}
     });
-    //actionMap.belongsTo(sequelize.menuItem, {'as': 'menu_item', targetKey: 'menu_item_id', foreignKey: 'menu_item_id'}),
-    //actionMap.belongsTo(sequelize.actionMaster, {'as': 'action', targetKey: 'action_id', foreignKey: 'action_id'})
+    actionMap.belongsTo(sequelize.models.menu_item, {'as': 'menu_item', targetKey: 'menu_item_id', foreignKey: 'menu_item_id'}),
+    actionMap.belongsTo(sequelize.models.actionMaster, {'as': 'action', targetKey: 'action_id', foreignKey: 'action_id'})
     return actionMap;
 };

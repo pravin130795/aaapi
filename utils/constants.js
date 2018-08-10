@@ -13,8 +13,8 @@ let constants = {
 		user: 'user',
 		role: 'role',
 		master: 'master',
-		accessories: 'accessories'
-
+		accessories: 'accessories',
+		merchandise: 'merchandise'
 	}
 };
 

@@ -88,6 +88,8 @@ role.updateRoleDetails = function (options) {
                 let obj = {
                     role_name: options.role_name,
                     role_description: options.role_description,
+                    updated_at:new Date(),
+                    is_active:options.is_active, 
                     updated_by: 1
                 }
                 roleExist.update(obj).then(function (roleUpdated) {

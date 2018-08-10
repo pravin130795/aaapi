@@ -4,5 +4,6 @@
 	require('../modules/role/index')(app);
 	require('../modules/user/index')(app);
 	require('../modules/accessories/index')(app);
+	require('../modules/merchandise/index')(app);
 
 };

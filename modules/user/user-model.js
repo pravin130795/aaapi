@@ -68,28 +68,34 @@ let getEncryptedPasswordWithSalt = function (password) {
  */
 user.addUserDetail = function (options) {
     return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.users.findOrCreate({
-            where: { user_name: options.user_name },
-            defaults: {
-                user_name: options.user_name,
-                email: options.email,
-                password: getEncryptedPasswordWithSalt(options.password),
-                mobile_no: options.mobile_no,
-                approver_person: options.approver_person,
-                designation_id: options.designation_id,
-                module_name: options.module_name,
-                is_active: options.is_active,
-                updated_by: 1,//options.current_user_id,
-                created_by: 1//options.current_user_id
-            }
-        })
-        .spread((user, created) => {
-            if (created) {
-                return resolve("user create successfully");
-            } else {
-                return resolve('user already in use, retry with new.');
-            }
-        })
+        let user_name = new RegExp("^[a-zA-Z0-9._-]*$");
+        let pass_word =new RegExp("^(?=.*\\d)(?=.*[@#$%^&+=!*])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+        if(user_name.test(options.username) && pass_word.test(options.password)){
+            global.sqlInstance.sequelize.models.users.findOrCreate({
+                where: { user_name: options.user_name },
+                defaults: {
+                    user_name: options.user_name,
+                    email: options.email,
+                    password: getEncryptedPasswordWithSalt(options.password),
+                    mobile_no: options.mobile_no,
+                    approver_person: options.approver_person,
+                    designation_id: options.designation_id,
+                    module_name: options.module_name,
+                    is_active: options.is_active,
+                    updated_by: 1,//options.current_user_id,
+                    created_by: 1//options.current_user_id
+                }
+            })
+            .spread((user, created) => {
+                if (created) {
+                    return resolve("user create successfully");
+                } else {
+                    return resolve('user already in use, retry with new.');
+                }
+            })
+        }else{
+            return resolve('enter valid username or password.');
+        }
     })
 },
 

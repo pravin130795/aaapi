@@ -1375,6 +1375,7 @@ let updateMonthlyMagazine = function (req, res) {
     }
 }
 
+//Service Type Master
 let addServiceType = function (req, res) {
     let addServiceTypeData = common.sanitize(req.body, schemas.addServiceTypeDetail, constants.moduleNames.master);
     if (schemas.validate(addServiceTypeData, schemas.addServiceTypeDetail)) {
@@ -1400,7 +1401,6 @@ let addServiceType = function (req, res) {
         });
     }
 }
-
 let updateServiceType = function (req, res) {
     let updateServiceTypeData = common.sanitize(req.body, schemas.updateServiceTypeDetail, constants.moduleNames.master);
     if (schemas.validate(updateServiceTypeData, schemas.updateServiceTypeDetail)) {
@@ -1426,7 +1426,6 @@ let updateServiceType = function (req, res) {
         });
     }
 }
-
 let getServiceType = function (req, res) {
     let filter = {
         search: req.query.search,
@@ -1448,7 +1447,7 @@ let getServiceType = function (req, res) {
     });
 } 
 
-
+//Service Master
 let addService = function (req, res) {
     let addServiceData = common.sanitize(req.body, schemas.addServiceDetail, constants.moduleNames.master);
     if (schemas.validate(addServiceData, schemas.addServiceDetail)) {
@@ -1475,8 +1474,6 @@ let addService = function (req, res) {
         });
     }
 }
-
-
 let updateService = function (req, res) {
     let updateServiceData = common.sanitize(req.body, schemas.updateServiceDetail, constants.moduleNames.master);
     if (schemas.validate(updateServiceData, schemas.updateServiceDetail)) {
@@ -1502,8 +1499,6 @@ let updateService = function (req, res) {
         });
     }
 }
-
-
  let getServices = function (req, res) {
     let filter = {
         search: req.query.search,
@@ -1524,7 +1519,154 @@ let updateService = function (req, res) {
             data: error
         });
     });
-} 
+}
+
+//Autoline Status Master
+let getAutolineStatus = function (req, res) {
+    master.getAutolineStatusList().then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
+//CEM Status Master
+let addStatus = function (req, res) {
+    let statusData = common.sanitize(req.body, schemas.addStatusRqst, constants.moduleNames.master);
+    if (schemas.validate(statusData, schemas.addStatusRqst)) {
+        master.addStatusDetail(statusData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getStatus = function (req, res) {
+    master.getStatusList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateStatus = function (req, res) {
+    let statusData = req.body;
+    if (schemas.validate(statusData, schemas.updateStatusRqst)) {
+        master.updateStatusDetail(statusData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+//ON-OFF Status Master
+let getSubMenu = function (req, res) {
+    master.getSubMenuList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
+let getActions = function (req, res) {
+    master.getActionList(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+
+let mapActions = function (req, res) {
+    let actionsMapData = common.sanitize(req.body, schemas.mapActionRqst, constants.moduleNames.master);
+    if (schemas.validate(actionsMapData, schemas.mapActionRqst)) {
+        master.addActionMapDetail(actionsMapData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
 
 module.exports = {
     addDesignation: addDesignation,
@@ -1592,5 +1734,12 @@ module.exports = {
     getServiceType: getServiceType,
     addService: addService,
     updateService: updateService,
-    getServices:getServices
+    getServices:getServices,
+    getAutolineStatus: getAutolineStatus,
+    addStatus: addStatus,
+    getStatus: getStatus,
+    updateStatus: updateStatus,
+    getSubMenu: getSubMenu,
+    getActions: getActions,
+    mapActions: mapActions
 }

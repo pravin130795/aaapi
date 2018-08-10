@@ -1064,7 +1064,7 @@ master.updateMerchandiseCategory = function (options) {
  */
 master.getAutolineColorList = () => {
     return new Promise((resolve, reject) => {
-        sqlInstance.autolinenewsMaster.findAll()
+        sqlInstance.autolineColorMaster.findAll({where:{is_active:true}})
         .then((response) => {
             resolve(response);
         }).catch((error) => {
@@ -1155,10 +1155,13 @@ master.addColorMapDetail = (options) => {
     return new Promise((resolve, reject) => {
         mapColorDetails(options.autoline_colors, options.color_id).then((result) => {
             if (!_.isEmpty(result)) {
-                resolve("Color mapped successfully");
+                resolve(result);
             } else {
                 reject("something went worng..!");
             }
+        })
+        .catch(error =>{
+            reject(error);
         })
     })
 }
@@ -1180,6 +1183,7 @@ let mapColorDetails = function (autoline_colors, color_id, finalResult = {}) {
                     });
                 })
                 .catch((error) => {
+                    console.log('eee=> '+error);
                     reject(error);
                 })
         } else {
@@ -1203,11 +1207,11 @@ master.updateColorMapDetail = function (options) {
                     color_id: options.color_id
                 },
                 transaction: t
-            },{transaction: t}).then((result) => {
+            }).then((result) => {
                 mapColorDetails(options.autoline_colors, options.color_id).then((result) => {
                     if (!_.isEmpty(result)) {
                         t.commit();
-                        resolve("Color mapping changed successfully");
+                        resolve(result);
                     } else {
                         t.rollback();
                         reject("something went worng..!");
@@ -1354,9 +1358,6 @@ master.updateMagazineDetail = function (options) {
     });
 }
 
-
-
-
 /* Service Type Master */
 /**
  * API To Insert Service Type Master Details to the Database
@@ -1392,7 +1393,6 @@ master.addServiceTypeDetails = function (options) {
  * @return {object} - service type details
  */
 master.updateServiceTypeDetails = function (options) {
-
     return new Promise((resolve, reject) => {
         global.sqlInstance.sequelize.models.service_type.findOne({
             where: {
@@ -1539,7 +1539,6 @@ let insertServiceLocation = function (locations, service_id, finalResult = {}) {
     });
 }
 
-
 /**
  * API To Update Service Master Details to the Database
  * @param {integer} service_id - Represents the service id.
@@ -1664,5 +1663,259 @@ master.getServiceLists = function (options) {
        
     });
 }
+
+/* Autoline Status Master */
+/**
+ * API To Get Autoline Status Master Details from the Database
+ */
+master.getAutolineStatusList = () => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.autolineStatusMaster.findAll({where:{is_active:true}})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+/* CEM Status Master */
+/**
+ * API To Insert Status Master Details to the Database
+ * @param {string} name - Represents the name of the Status.
+ * @param {string} name_arabic - Represents the name of the Status in arabic
+ * @param {number} sequence - Represents the sequence of the Status
+ * @param {bit} is_active - Represents the Status of the Status
+ */
+master.addStatusDetail = (options) => {
+    let statusObj = {};
+    return new Promise((resolve, reject) => {
+        return models.sequelize.transaction({autocommit: false}).then((t) => {
+            statusObj.name = options.name;
+            statusObj.is_active = options.is_active;
+            sqlInstance.statusMaster.create(statusObj,{transaction:t}).then((result) => {
+                mapStatusDetails(options.autoline_status, result.status_id).then((result) => {
+                    if (!_.isEmpty(result)) {
+                        t.commit();
+                        resolve(result);
+                    } else {
+                        t.rollback();
+                        reject("something went worng..!");
+                    }
+                })
+                .catch(error => {
+                    t.rollback();
+                    reject(error);
+                })
+            })
+            .catch((err) => {
+                if (err.name === "SequelizeUniqueConstraintError") {
+                    reject({ message: 'Status name should be unique' })
+                } else {
+                    reject(err);
+                }
+            });
+        })
+        .catch((err) => {
+            reject(err);
+        });
+    });
+}
+let mapStatusDetails = function (autoline_status, status_id, finalResult = {}) {
+    return new Promise((resolve, reject) => {
+        let dataObj ={};
+        if (autoline_status.length > 0) {
+            let object = autoline_status.pop();
+            dataObj.autoline_status_id = object.autoline_status_id;
+            dataObj.status_id = status_id;
+            console.log('recurssive loop=>');
+            sqlInstance.autolineStatusMap.create(dataObj)
+            .then((response) => {
+                console.log('1737=>', response);
+                finalResult.result = response;
+                mapStatusDetails(autoline_status, status_id, finalResult).then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    console.log('map error=> '+error);
+                    reject(error);
+                });
+            })
+            .catch((error) => {
+                console.log('eee=> '+error);
+                reject(error);
+            })
+        } else {
+            console.log('undefined');
+            resolve(finalResult);
+        }
+    });
+}
+/**
+ * API To Get Merchandise Category Master Details from the Database
+ * @param {string} name - Represents the name of the Category for Filter.
+ * @param {bit} is_active - Represents the Status of the Category for Filter
+ */
+master.getStatusList = (options) => {
+    return new Promise((resolve, reject) => {
+        let Condition = '';
+        let { status, search } = options;
+        if (typeof search != 'undefined' && search != '') {
+            Condition += "and sta.name like '%" + search + "%'";
+        }
+        if (typeof status != 'undefined' && status != '') {
+            Condition += 'and sta.is_active='+Number(status);
+        }
+        global.sqlInstance.sequelize.query("select  sta.status_id, sta.name as CEM_status, sta.name_arabic, sta.is_active, STUFF(("
+            +"SELECT ',' + ats.name FROM autoline_status_master as ats "
+            +"left join autoline_status_map as asm on asm.status_id = sta.status_id "
+            +"WHERE ats.autoline_status_id = asm.autoline_status_id "
+            +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS autoline_status "
+            +"from status_master AS sta where 1=1 "+Condition, {type: global.sqlInstance.sequelize.QueryTypes.SELECT})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+/**
+ * API To Update Merchandise Category Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Category
+ * @param {string} name - Represents the name of the Category.
+ * @param {string} name_arabic - Represents the name of the Category in arabic
+ * @param {number} sequence - Represents the sequence of the Category
+ * @param {bit} is_active - Represents the Status of the Category
+ */
+master.updateStatusDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        if(options.autoline_status != undefined && options.autoline_status.length > 0) {
+            return models.sequelize.transaction({autocommit: false}).then((t) => {
+                sqlInstance.statusMaster.update(options, {
+                    where: {
+                        status_id: options.status_id
+                    },
+                    transaction:t
+                }).then((result) => {
+                    sqlInstance.autolineStatusMap.destroy({
+                        where: {
+                            status_id: options.status_id
+                        },
+                        transaction: t
+                    }).then(result => {
+                        mapStatusDetails(options.autoline_status, options.status_id).then((result) => {
+                            if (!_.isEmpty(result)) {
+                                t.commit();
+                                resolve(result);
+                            } else {
+                                t.rollback();
+                                reject("something went worng..!");
+                            }
+                        }).catch(error => {
+                            t.rollback();
+                            reject(error);
+                        })
+                    }).catch(error => {
+                        t.rollback();
+                        reject(error);
+                    })
+                }).catch((err) => {
+                    if (err.name === "SequelizeUniqueConstraintError") {
+                        reject({ message: 'Status name should be unique' })
+                    } else {
+                        reject(err);
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log("error=> "+JSON.stringify(err));
+                reject(err);
+            });
+        }
+        else {
+            sqlInstance.statusMaster.update(options, {
+                where: { status_id: options.status_id }
+            }).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            })
+        }
+    });
+}
+
+/* ON-OFF Status Master */
+// API to Get Menu Items 
+master.getSubMenuList = () => {
+    return new Promise((resolve, reject) => {
+        //sqlInstance.menu_item.findAll({where:{is_active:true}})
+        global.sqlInstance.sequelize.query("select  sta.status_id, sta.name as CEM_status, sta.name_arabic, sta.is_active, STUFF(("
+            +"SELECT ',' + ats.name FROM autoline_status_master as ats "
+            +"left join autoline_status_map as asm on asm.status_id = sta.status_id "
+            +"WHERE ats.autoline_status_id = asm.autoline_status_id "
+            +"FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS autoline_status "
+            +"from status_master AS sta where 1=1 "+Condition, {type: global.sqlInstance.sequelize.QueryTypes.SELECT})
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+//API to Get Actions
+master.getActionList = () => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.actionMaster.findAll()
+        .then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+//Map Actions to Menu Items
+master.addActionMapDetail = (options) => {
+    return new Promise((resolve, reject) => {
+        mapActionDetails(options.actions, options.menu_item_id).then((result) => {
+            if (!_.isEmpty(result)) {
+                resolve(result);
+            } else {
+                reject("something went worng..!");
+            }
+        })
+        .catch(error =>{
+            reject(error);
+        })
+    })
+}
+
+let mapActionDetails = function (actions, menu_item_id, finalResult = {}) {
+    return new Promise((resolve, reject) => {
+        let dataObj ={};
+        if (actions.length > 0) {
+            let object = actions.pop();
+            dataObj.action_id = object.action_id;
+            dataObj.menu_item_id = menu_item_id;
+            sqlInstance.actionMap.create(dataObj)
+                .then((response) => {
+                    finalResult.result = response;
+                    mapColorDetails(actions, menu_item_id, finalResult).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                })
+                .catch((error) => {
+                    console.log('eee=> '+error);
+                    reject(error);
+                })
+        } else {
+           resolve(finalResult);
+        }
+    });
+}
+
 
 module.exports = master;

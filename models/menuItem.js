@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("menu_item", {
-        id: {//menu_item_id
+    const menu_item = sequelize.define("menu_item", {
+        menu_item_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
@@ -10,14 +10,9 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.INTEGER,
             allowNull:false
         },
-        name: {
-            type: DataTypes.STRING(50),
+        menu_item_name: {
+            type: DataTypes.STRING(40),
             allowNull: false,
-            trim: true
-        },
-        image: {
-            type: DataTypes.TEXT,
-            allowNull: true,
             trim: true
         },
         created_at:{
@@ -40,6 +35,16 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false
+        },
+        always_shown:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false
+        },
+        is_shown:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false
         }
     }, {
         tableName: 'menu_item',
@@ -49,4 +54,5 @@ module.exports = function(sequelize, DataTypes) {
     menu_item.belongsTo(sequelize.models.menu, {
         foreignKey: 'menu_id'
     });
+    return menu_item;
 };

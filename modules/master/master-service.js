@@ -1458,6 +1458,7 @@ let addService = function (req, res) {
                 data: response
             });
         }).catch((error) => {
+            console.log(error);
             return res.status(500).send({
                 code: 5000,
                 messageKey: constants.messageKeys.code_5000,

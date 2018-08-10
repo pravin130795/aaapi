@@ -8,10 +8,10 @@ module.exports = function (app) {
     app.get('/roles', service.getRolesLists);
 
     // To add new role with role permission
-    app.post('/role/add', service.addRole);
+    app.post('/role/addrole', service.addRole);
 
     // To update role details and role permission
-    app.put('/role/update', service.updateRole);
+    app.put('/role/updaterole', service.updateRole);
 
     // To Map roles to User
     app.post('/role/mappinguser',service.mappingUser);

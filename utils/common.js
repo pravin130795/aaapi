@@ -1,4 +1,6 @@
 const _ = require('lodash');
+let fs = require('fs');
+let mkdirp = require('mkdirp');
 const constants = require('../utils/constants');
 
 /**
@@ -43,6 +45,61 @@ let sanitize = function (object, schema, modelName) {
 	return object;
 };
 
+
+let uploadFile = function(fileObj, file_type, file_path, id, file_name) {
+	let result;
+	// var file = fileObj;
+	let fileMime = fileObj.mimetype;
+	let type = fileMime.split('/')[0];
+	let format = fileMime.split('/')[1];
+	mkdirp(file_path + id, function(err) {
+		if (err) {
+			fs.unlink(fileObj.path);
+			result = 'error_occured';
+		} else {
+			fs.readFile(fileObj.path, function(err, data) {
+				let newPath = file_path + id + '/' + file_name;
+				fs.writeFile(newPath, data, function(err) {
+					//delete the temporary file
+					fs.unlink(fileObj.path);
+					if (err) {
+						// console.log(err);
+						result = 'error_occured';
+					} else {
+						result = true;
+					}
+				});
+			});
+		}
+	});
+	while (result === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return result;
+}
+
+let unlink_file = function(path) {
+	let result;
+	fs.unlink(path, function(err) {
+		if (err) {
+			result = 'error_occured';
+		} else {
+			result = true;
+		}
+	});
+	while (result === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return result;
+}
+
+
+
+
+
+
 module.exports = {
-	sanitize: sanitize
+	sanitize: sanitize,
+	unlink_file:unlink_file,
+	uploadFile:uploadFile
 };

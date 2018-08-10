@@ -172,7 +172,11 @@ master.updateSpecsHeadingDetail = function (options) {
         sqlInstance.specsHeadingMaster.update(options, {
             where: { specs_heading_id: options.specs_heading_id }
         }).then((response) => {
-            resolve({ message: 'Specification Heading Updated successfully..!!' });
+            if (response[0] > 0) {
+                resolve({ message: 'Specification Heading Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch((error) => {
             reject(error);
         })
@@ -191,7 +195,7 @@ master.updateSpecsHeadingDetail = function (options) {
  */
 master.addSpecsDetail = (options) => {
     return new Promise((resolve, reject) => {
-        sqlInstance.specsMaster.create(options).then(response => {
+        sqlInstance.paymentMatrixMaster.create(options).then(response => {
             resolve(response)
         }).catch(error => {
             if (error.name === "SequelizeUniqueConstraintError") {
@@ -203,7 +207,7 @@ master.addSpecsDetail = (options) => {
     });
 }
 /**
- * API To Insert Specifications Master Details to the Database
+ * API To Get Specifications Master Details from the Database
  * @param {string} name - Represents the Specification Name for Filter.
  * @param {number} specs_heading_id - Represents the Id of Specification Heading Master Type for Filter
  * @param {bit} is_active - Represents the Status of the Specification Heading for Filter
@@ -223,7 +227,7 @@ master.getSpecificationDetails = (options) => {
         }
         sqlInstance.specsMaster.findAll({
             where: Condition,
-            attributes: ['name', 'value', 'value_arabic', 'is_active'],
+            attributes: ['specs_id', 'name', 'value', 'value_arabic', 'is_active', 'is_model_overview', 'is_variant_overview'],
             include: [{
                 model: sqlInstance.specsHeadingMaster,
                 as: 'specs_heading',
@@ -253,7 +257,11 @@ master.updateSpecsDetail = (options) => {
         sqlInstance.specsMaster.update(options, {
             where: { specs_id: options.specs_id }
         }).then(response => {
-            resolve({ message: 'Specification Master Updated successfully..!!' });
+            if (response[0]> 0) {
+                resolve({ message: 'Specification Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -316,7 +324,11 @@ master.updateYearDetail = function (options) {
         sqlInstance.yearMaster.update(options, {
             where: { year_id: options.year_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Year Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -352,12 +364,12 @@ master.addAccessoryCategory = (options) => {
 master.getAccessoryCatDetails = (options) => {
     return new Promise((resolve, reject) => {
         let Condition = {};
-        let { status, name } = options;
+        let { status, search } = options;
         if (typeof status != 'undefined' && status != '') {
             Condition['is_active'] = Number(status);
         }
-        if (typeof name != 'undefined' && name != '') {
-            Condition['name'] = { [Op.like]: '%' + name + '%' };
+        if (typeof search != 'undefined' && search != '') {
+            Condition['name'] = { [Op.like]: '%' + search + '%' };
         }
         sqlInstance.accessoryCatMaster.findAll({ where: Condition })
             .then((response) => {
@@ -381,7 +393,11 @@ master.updateAccessoryCategory = function (options) {
         sqlInstance.accessoryCatMaster.update(options, {
             where: { accessory_cat_id: options.accessory_cat_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Accessory Category Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -441,7 +457,11 @@ master.updateResponseStatus = function (options) {
         sqlInstance.responseStatusMaster.update(options, {
             where: { rsp_status_id: options.rsp_status_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Response Status Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -502,7 +522,11 @@ master.updateAreaDetail = function (options) {
         options.updated_at = new Date();
         sqlInstance.areaMaster.update(options,{where: {area_id: options.area_id}
     }).then(response => {
-            resolve(response)
+        if (response[0]> 0) {
+            resolve({ message: 'Area Master Updated successfully..!!' });
+        } else {
+            resolve({ message: 'Row does not exist' });
+        }
         }).catch(error => {
             reject(error);
         })
@@ -563,7 +587,11 @@ master.updateBankemiDetails = function (options) {
         sqlInstance.bankMaster.update(options, {
             where: { bank_id: options.bank_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Bank EMI Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -622,9 +650,12 @@ master.getLookupList = (options) => {
 master.updateLookupdetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.lookupMaster.update(options,{where: {lookup_id: options.lookup_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.lookupMaster.update(options,{where: {lookup_id: options.lookup_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Lookup Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -684,9 +715,12 @@ master.getFromToPriceList = (options) => {
 master.updateFromToPriceDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.fromToPriceMaster.update(options,{where: {from_to_price_id: options.from_to_price_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.fromToPriceMaster.update(options,{where: {from_to_price_id: options.from_to_price_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'From to Price Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -722,9 +756,12 @@ master.getContactsList = (options) => {
 master.updateContactDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.contactsMaster.update(options,{where: {contact_id: options.contact_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.contactsMaster.update(options,{where: {contact_id: options.contact_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Contact Details Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -762,9 +799,12 @@ master.getEmailsList = (options) => {
 master.updateEmailDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.emailMaster.update(options,{where: {email_id: options.email_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.emailMaster.update(options,{where: {email_id: options.email_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Email Details Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -822,9 +862,12 @@ master.getKmList = (options) => {
 master.updateKmDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.kmMaster.update(options,{where: {km_id: options.km_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.kmMaster.update(options,{where: {km_id: options.km_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'KM Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -862,9 +905,12 @@ master.getStockList = (options) => {
 master.updateStockDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.stockMaster.update(options,{where: {stock_id: options.stock_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.stockMaster.update(options,{where: {stock_id: options.stock_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Stock Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -923,9 +969,12 @@ master.getSocialList = (options) => {
 master.updateSocialDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.socialMediaMaster.update(options,{where: {social_id: options.social_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.socialMediaMaster.update(options,{where: {social_id: options.social_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Social Media Links Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -984,9 +1033,12 @@ master.getNotifyList = (options) => {
 master.updateNotifyDetail = function (options) {
     return new Promise((resolve, reject) => {
         options.updated_at = new Date();
-        sqlInstance.notifyMaster.update(options,{where: {notify_id: options.notify_id}
-    }).then(response => {
-            resolve(response)
+        sqlInstance.notifyMaster.update(options,{where: {notify_id: options.notify_id}}).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Notification Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -1051,7 +1103,11 @@ master.updateMerchandiseCategory = function (options) {
         sqlInstance.merchandiseCatMaster.update(options, {
             where: { merchandise_cat_id: options.merchandise_cat_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Merchandise Category Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -1136,7 +1192,11 @@ master.updateColorDetail = function (options) {
         sqlInstance.colorMaster.update(options, {
             where: { color_id: options.color_id }
         }).then(response => {
-            resolve(response)
+            if (response[0]> 0) {
+                resolve({ message: 'Color Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -1286,7 +1346,11 @@ master.updateNewsDetail = function (options) {
         sqlInstance.newsMaster.update(options, {
             where: { news_id: options.news_id }
         }).then(response => {
-            resolve({ message: 'News Details Updated successfully..!!' });
+            if (response[0]> 0) {
+                resolve({ message: 'News Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -1351,7 +1415,11 @@ master.updateMagazineDetail = function (options) {
         sqlInstance.magazineMaster.update(options, {
             where: { magazine_id: options.magazine_id }
         }).then(response => {
-            resolve({ message: 'Magazine Details Updated successfully..!!' });
+            if (response[0]> 0) {
+                resolve({ message: 'Magazine Master Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
         }).catch(error => {
             reject(error);
         })
@@ -1917,5 +1985,77 @@ let mapActionDetails = function (actions, menu_item_id, finalResult = {}) {
     });
 }
 
+//Payment Matrix
+/**
+ * API To Insert Payment Matrix Master Details to the Database
+ * @param {string} name - Represents the Notification name
+ * @param {number} expiry - Represents the expiry time in hrs
+ * @param {bit} is_active - Represents the status of the Lookup
+ * @param {number} created_by - Represents the User Id for user who created lookup
+ * @param {number} updated_by - Represents the User Id for user who updated lookup
+ */
+master.addPaymentMtrxDetails = (options) => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.paymentMatrixMaster.create(options).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
+/**
+ * API To Get Specifications Master Details to the Database
+ * @param {string} name - Represents the Specification Name for Filter.
+ * @param {number} specs_heading_id - Represents the Id of Specification Heading Master Type for Filter
+ * @param {bit} is_active - Represents the Status of the Specification Heading for Filter
+ */
+master.getPaymentMtrxDetails = () => {
+    return new Promise((resolve, reject) => {
+        sqlInstance.paymentMatrixMaster.findAll({
+            attributes: ['payment_mtrx_id', 'price', 'is_active'],
+            include: [
+                {
+                    model: sqlInstance.areaMaster,
+                    as: 'from_area_map',
+                    attributes: ['name']
+                },
+                {
+                    model: sqlInstance.areaMaster,
+                    as: 'to_area_map',
+                    attributes: ['name']
+                }
+            ]
+        })
+            .then((response) => {
+                resolve(response);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+/**
+ * API To Update Magazine Master Details to the Database
+ * @param {number} merchandise_cat_id - Represents the Id of the Magazine
+ * @param {string} name - Represents the name of the Magazine.
+ * @param {string} name_arabic - Represents the name of the Magazine in arabic
+ * @param {number} sequence - Represents the sequence of the Magazine
+ * @param {bit} is_active - Represents the Status of the Magazine
+ */
+master.updatePaymentMtrxDetail = function (options) {
+    return new Promise((resolve, reject) => {
+        options.updated_at = new Date();
+        sqlInstance.paymentMatrixMaster.update(options, {
+            where: { payment_mtrx_id: options.payment_mtrx_id }
+        }).then(response => {
+            if (response[0]> 0) {
+                resolve({ message: 'Payment Matrix Updated successfully..!!' });
+            } else {
+                resolve({ message: 'Row does not exist' });
+            }
+        }).catch(error => {
+            reject(error);
+        })
+    });
+}
 
 module.exports = master;

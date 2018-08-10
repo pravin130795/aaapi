@@ -429,8 +429,8 @@ let updateResponseStatus = function (req, res) {
 
 /* Area Master */
 let addArea = (req, res) => {
-    let areaData = common.sanitize(req.body, schemas.areaMaster, constants.moduleNames.master);
-    if (schemas.validate(areaData, schemas.areaMaster)) {
+    let areaData = common.sanitize(req.body, schemas.addAreaRqst, constants.moduleNames.master);
+    if (schemas.validate(areaData, schemas.addAreaRqst)) {
         master.addAreaDetails(areaData).then((response) => {
             res.status(200).send({
                 code: 2000,
@@ -1623,7 +1623,6 @@ let getSubMenu = function (req, res) {
         });
     });
 }
-
 let getActions = function (req, res) {
     master.getActionList(req.query).then((response) => {
         res.status(200).send({
@@ -1640,11 +1639,78 @@ let getActions = function (req, res) {
         });
     });
 }
-
 let mapActions = function (req, res) {
     let actionsMapData = common.sanitize(req.body, schemas.mapActionRqst, constants.moduleNames.master);
     if (schemas.validate(actionsMapData, schemas.mapActionRqst)) {
         master.addActionMapDetail(actionsMapData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+//Payment Matrix Master
+let addPaymentMatrix = (req, res) => {
+    let matrixData = common.sanitize(req.body, schemas.addPaymentMtrxRqst, constants.moduleNames.master);
+    if (schemas.validate(matrixData, schemas.addPaymentMtrxRqst)) {
+        master.addPaymentMtrxDetails(matrixData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getPaymentMatrix = function (req, res) {
+    master.getPaymentMtrxDetails().then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updatePaymentMatrix = function (req, res) {
+    let matrixData = req.body;
+    if (schemas.validate(matrixData, schemas.updatePaymentMtrxRqst)) {
+        master.updatePaymentMtrxDetail(matrixData).then((response) => {
             res.status(200).send({
                 code: 2000,
                 messageKey: constants.messageKeys.code_2000,
@@ -1740,5 +1806,8 @@ module.exports = {
     updateStatus: updateStatus,
     getSubMenu: getSubMenu,
     getActions: getActions,
-    mapActions: mapActions
+    mapActions: mapActions,
+    addPaymentMatrix: addPaymentMatrix,
+    getPaymentMatrix: getPaymentMatrix,
+    updatePaymentMatrix: updatePaymentMatrix
 }

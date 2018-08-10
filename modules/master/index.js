@@ -92,14 +92,6 @@ module.exports = function (app) {
     app.get('/master/getmerchandisecategory', service.getMerchandiseCat);
     app.put('/master/updatemerchandisecategory', service.updateMerchandiseCat);
 
-    /* Autoline Status Master */
-    /* app.get('/master/getautolinestatus', service.getAutoLineStatus); */
-
-    /* Status Listing Master */
-    /* app.post('/master/addstatuslisting', service.addStatusListing);
-    app.get('/master/getstatuslisting', service.getStatusListing);
-    app.put('/master/updatestatuslisting', service.updateStatusListing); */
-
     /* Autoline Color Master */
     app.get('/master/getautolinecolor', service.getAutolineColor);
 
@@ -144,4 +136,9 @@ module.exports = function (app) {
     app.get('/master/getsubmenuitems', service.getSubMenu);
     app.get('/master/getactions', service.getActions);
     app.post('/master/mapactions', service.mapActions);
+
+    // Payment Matrix Master
+    app.post('/master/addpaymentmatrix', service.addPaymentMatrix);
+    app.get('/master/getpaymentmatrix', service.getPaymentMatrix);
+    app.put('/master/updatepaymentmatrix', service.updatePaymentMatrix);
 }

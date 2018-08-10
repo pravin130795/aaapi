@@ -1,18 +1,23 @@
 module.exports = function(sequelize, DataTypes) {   
-    let areaMaster = sequelize.define("areaMaster", {
-        area_id: {
+    let paymentMatrixMaster = sequelize.define("paymentMatrixMaster", {
+        payment_mtrx_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        name:{
-            type:DataTypes.STRING(40),
+        from_area: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true
+        },
+        to_area: {
+            type:DataTypes.INTEGER,
             allowNull:false,
             unique: true
         },
-        type:{
-            type:DataTypes.STRING(40),
+        price:{
+            type:DataTypes.DECIMAL,
             allowNull:false
         },
         created_at:{
@@ -42,9 +47,11 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'master_area',
+        tableName: 'payment_matrix',
         timestamps: false,
         classMethods: {}
     });
-    return areaMaster;
+    paymentMatrixMaster.belongsTo(sequelize.models.areaMaster, {'as': 'from_area_map', targetKey: 'area_id', foreignKey: 'from_area'});
+    paymentMatrixMaster.belongsTo(sequelize.models.areaMaster, {'as': 'to_area_map', targetKey: 'area_id', foreignKey: 'to_area'});
+    return paymentMatrixMaster;
 };

@@ -36,11 +36,13 @@ module.exports = function (sequelize, DataTypes) {
         },
         updated_by: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: false,
+            defaultValue:7
         },
         updated_at: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         }
     }, {
         tableName: 'accessory_category',

@@ -315,11 +315,11 @@ schemas.updateResponseStatus = {
 }
 
 schemas.addAreaRqst = {
-    'name': '/areaMaster',
+    'name': '/addAreaRqst',
     'type': 'object',
     'required': true,
     'properties': {
-        'body_name': {
+        'name': {
             'type': 'string',
             'required': true,
             'unique': true
@@ -330,14 +330,6 @@ schemas.addAreaRqst = {
         },
         'is_active': {
             'type': 'boolean',
-            'required': true
-        },
-        'created_by': {
-            'type': 'boolean',
-            'required': true
-        },
-        'updated_by': {
-            'type': 'number',
             'required': true
         }
     }
@@ -363,10 +355,6 @@ schemas.updateAreaRqst = {
         'is_active': {
             'type': 'boolean',
             'required': false
-        },
-        'updated_by': {
-            'type': 'number',
-            'required': true
         }
     }
 }
@@ -1370,6 +1358,57 @@ schemas.actions = {
         'action_id': {
             'type': 'number',
             'required': true
+        }
+    }
+}
+
+schemas.addPaymentMtrxRqst = {
+    'name': '/addPaymentMtrxRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'from_area': {
+            'type': 'number',
+            'required': true
+        },
+        'to_area': {
+            'type': 'number',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'price': {
+            'type': 'decimal',
+            'required': true,
+        }
+    }
+}
+schemas.updatePaymentMtrxRqst = {
+    'name': '/updatePaymentMtrxRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'payment_mtrx_id': {
+            'type': 'number',
+            'required': true
+        },
+        'from_area': {
+            'type': 'number',
+            'required': false
+        },
+        'to_area': {
+            'type': 'number',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'price': {
+            'type': 'decimal',
+            'required': false,
         }
     }
 }

@@ -50,24 +50,26 @@ master.addDesignationDetail = function (options) {
  */
 master.updateDesignationDetail = function (options) {
     return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.designation.findOne({
-            where: {
-                designation_id: options.designation_id
-            }
-        }).then(designationExist => {
-            if (!_.isEmpty(designationExist)) {
-                designationExist.update({
-                    designation_name: options.designation_name,
-                    updated_at: new Date(),
-                    updated_by: 1,//options.current_user_id
-                    is_active:options.is_active
+
+            let dataObj ={
+                designation_name: options.designation_name,
+                updated_at: new Date(),
+                updated_by: 1,//options.current_user_id
+                is_active:options.is_active
+            };
+                global.sqlInstance.sequelize.models.designation.update(dataObj,{
+                    where:{designation_id: options.designation_id}
                 })
-                    .then(response => resolve(response))
-                    .catch(error => reject(error))
-            } else {
-                return resolve('designation does not exist')
-            }
-        })
+                .then(response => {
+                if(response[0] > 0){
+                    resolve({message:"designation data update successfully"})
+                } else {
+                    return resolve('designation does not exist')
+                }
+                })
+                .catch(error => {
+                    reject(error)
+                })
     });
 }
 
@@ -1394,24 +1396,20 @@ master.addServiceTypeDetails = function (options) {
  */
 master.updateServiceTypeDetails = function (options) {
     return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.service_type.findOne({
-            where: {
-                service_type_id: options.service_type_id
-            }
-        }).then(serviceTypeExist => {
-            if (!_.isEmpty(serviceTypeExist)) {
-                options.updated_at = new Date(),
-                    options.updated_by = 1;//options.current_user_id
-                serviceTypeExist.update(options)
-                    .then((response) => {
-                        return resolve(response)
-                    })
-                    .catch((error) => {
-                        return reject(error)
-                    })
+        options.updated_at = new Date(),
+            options.updated_by = 1;//options.current_user_id
+        global.sqlInstance.sequelize.models.service_type.update(options, {
+            where: { service_type_id: options.service_type_id }
+        })
+        .then((response) => {
+            if (response[0] > 0) {
+                return resolve({ message: "service type update successfully" })
             } else {
                 return resolve('Service Type does not exist')
             }
+        })
+        .catch((error) => {
+            return reject(error)
         })
     });
 }
@@ -1552,34 +1550,32 @@ let insertServiceLocation = function (locations, service_id, finalResult = {}) {
 master.updateServiceDetails = function (options) {
 
     return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.service_master.findOne({
-            where: {
-                service_id: options.service_id
-            }
-        }).then(serviceExist => {
-            if (!_.isEmpty(serviceExist)) {
-                options.updated_at = new Date();
-                options.updated_by = 1;//options.current_user_id
-                serviceExist.update(options)
-                    .then((response) => {
-                        return updateServiceLocation(options.locations, options.service_id).then((result) => {
-                            if (!_.isEmpty(result)) {
-                                return resolve("service update successfully");
-                            } else {
-                                return reject("something went worng in location updation");
-                            }
-                        })
-                            .catch((error) => {
-                                return reject(error);
-                            })
-                    })
+
+        options.updated_at = new Date();
+        options.updated_by = 1;//options.current_user_id
+        global.sqlInstance.sequelize.models.service_master.update(options,{
+            where:{service_id:options.service_id}
+        })
+        .then((response) => {
+            if (response[0] > 0) {
+                return updateServiceLocation(options.locations, options.service_id).then((result) => {
+                    if (!_.isEmpty(result)) {
+                        return resolve({message:"service update successfully"});
+                    } else {
+                        return reject("something went worng in location updation");
+                    }
+                })
                     .catch((error) => {
-                        return reject(error)
+                        return reject(error);
                     })
             } else {
                 return resolve('Service does not exist')
             }
         })
+        .catch((error) => {
+            return reject(error)
+        })
+
     });
 }
 

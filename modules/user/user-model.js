@@ -115,30 +115,29 @@ user.addUserDetail = function (options) {
  * @param {boolean} is_active - Represents the status.
  * @returns {object} response - Updated User details
  */
-user.updateUserDetails = function (options) {
-    return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.users.findOne({
-            where: {
-                user_id: options.user_id
-            }
-        }).then(userExist => {
-            if (!_.isEmpty(userExist)) {
-                options.updated_at= new Date();
-                options.updated_by= 1;//options.current_user_id;
-                userExist.update(options)
-                    .then((response) => {
-                       return resolve(response)
-                    })
-                    .catch((error) => {
-                       logger.error(util.format("EXCEPTION OF UPDATE USER DETAILS. %j",error))
-                       return reject(error)
-                    })
-            } else {
-                return resolve('user does not exist')
-            }
-        })
-    });
-},
+    user.updateUserDetails = function (options) {
+        return new Promise((resolve, reject) => {
+
+            options.updated_at = new Date();
+            options.updated_by = 1;//options.current_user_id;
+            global.sqlInstance.sequelize.models.users.update(options,{
+                where: { user_id: options.user_id }
+            })
+                .then((response) => {
+                    if (response[0] > 0) {
+                        return resolve(response)
+                    } else {
+                        return resolve('user does not exist')
+                    }
+                })
+                .catch((error) => {
+                    logger.error(util.format("EXCEPTION OF UPDATE USER DETAILS. %j", error))
+                    return reject(error)
+                })
+
+
+        });
+    },
 
 
 

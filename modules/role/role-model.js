@@ -77,23 +77,21 @@ role.addRoleDetail = function (options) {
  * @param {Array} page_access - Represents the array of page access.
  * @returns {message} - Role update successfully
  */
-role.updateRoleDetails = function (options) {
-    return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.role.findOne({
-            where: {
-                role_id: options.role_id
-            }
-        }).then(roleExist => {
-            if (!_.isEmpty(roleExist)) {
-                let obj = {
-                    role_name: options.role_name,
-                    role_description: options.role_description,
-                    updated_at:new Date(),
-                    is_active:options.is_active, 
-                    updated_by: 1
-                }
-                roleExist.update(obj).then(function (roleUpdated) {
+    role.updateRoleDetails = function (options) {
+        return new Promise((resolve, reject) => {
 
+
+            let obj = {
+                role_name: options.role_name,
+                role_description: options.role_description,
+                updated_at: new Date(),
+                is_active: options.is_active,
+                updated_by: 1
+            }
+            global.sqlInstance.sequelize.models.role.update(obj,{
+                where:{role_id: options.role_id}
+            }).then((roleUpdated) =>{
+                if (roleUpdated[0] > 0) {
                     let dataObj = {};
 
                     async.map(options.page_access, function (page, callback) {
@@ -120,7 +118,7 @@ role.updateRoleDetails = function (options) {
                                 upObj.updated_by = 1;//options.current_user_id;
                                 upObj.updated_at = new Date();
                                 upObj.is_active = page.is_active
-                                ;
+                                    ;
                                 permissionExist.update(upObj).then(updatedPage => {
                                     return callback(updatedPage);
                                 });
@@ -148,21 +146,20 @@ role.updateRoleDetails = function (options) {
                             }
                         });
                     }, function (err, results) {
-                        return resolve('Role update successfully');
+                         resolve('Role update successfully');
                     });
-
+                } else {
+                    // role is not exist
+                     reject("role is not exist");
+                }
+            })
+                .catch((error) => {
+                    logger.error(util.format("TYPE THE EXCEPTION. %j", error))
+                     reject(error)
                 })
-                 .catch((error) => {
-                    logger.error(util.format("TYPE THE EXCEPTION. %j",error))
-                    return reject(error)
-                 })
-            } else {
-                // role is not exist
-                return reject("role is not exist");
-            }
+
         })
-    })
-},
+    },
 
 /**
  * API To List Role Details and Role Permissions
@@ -200,7 +197,7 @@ role.getRoleLists = function (options) {
           })
           .catch((error) => {
             logger.error(util.format("EXCEPTION FOR GET ROLE LIST %j",error))
-            return reject(error)
+             reject(error)
          })
        
 
@@ -231,15 +228,15 @@ role.RoleMapToUser = function (options) {
 
                     return callback(null, global.sqlInstance.sequelize.models.user_role.create(dataObj))
                 } else {
-                    return resolve('Role is already assign to current user');
+                     resolve('Role is already assign to current user');
                 }
             })
         }, function (err, results) {
             if (err) {
                 logger.error(util.format("EXCEPTION FOR MAP ROLE TO USER. %j",err))
-                return reject(err);
+                 reject(err);
             } else {
-                return resolve('Role map to user successfully');
+                 resolve('Role map to user successfully');
             }
         });
 
@@ -269,11 +266,11 @@ role.getUserRoleLists = function (options) {
                 }]
         })
         .then((response) => {
-            return resolve(response)
+             resolve(response)
          })
          .catch((error) => {
             logger.error(util.format("TYPE THE EXCEPTION. %j",error))
-            return reject(error)
+             reject(error)
          })
     });
 }

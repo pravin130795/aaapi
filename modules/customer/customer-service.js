@@ -1,10 +1,10 @@
 const common = require('../../utils/common');
-const schemas = require('../../validator/schemas');
+const schemas = require('./customer-schema');
 const customer = require('./customer-model');
 const constants = require('../../utils/constants');
 
 let addCustomerDetails = function (req, res) {
-    let customerData = common.sanitize(req.body, schemas.customerDetails);
+    let customerData = common.sanitize(req.body, schemas.customerDetails, constants.moduleNames.customer);
     if (schemas.validate(customerData, schemas.customerDetails)) {
         customer.addCustomerDetails(customerData).then((response) => {
             res.status(200).send({

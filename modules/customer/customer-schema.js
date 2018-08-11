@@ -24,16 +24,35 @@ schemas.customerDetails = {
             'required': true
         },
         'address': {
-            'type':'object',
+            'type': 'object',
             '$ref': '/addressDetails',
-            'required' : true
+            'required': true
+        },
+        'contactNumbers': {
+            'type': 'array',
+            'items': {
+                '$ref': 'contactNumbers'
+            },
+            'required': true
         }
     }
 }
+
+schemas.contactNumbers = {
+    'id': 'contactNumbers',
+    'type': 'object',
+    'properties': {
+        'homeNumber': {
+            'type': 'String',
+            'required': true
+        }
+    }
+}
+
 schemas.addressDetails = {
     'id': '/addressDetails',
     'type': 'object',
-    'required':true,
+    'required': true,
     'properties': {
         'homeAddress': {
             'type': 'string',
@@ -43,18 +62,8 @@ schemas.addressDetails = {
 }
 
 _validator.addSchema(schemas.addressDetails, '/addressDetails');
+_validator.addSchema(schemas.contactNumbers, '/contactNumbers');
 
-
-schemas.designationDetail = {
-    'id': '/designationDetail',
-    'type': 'object',
-    'properties': {
-        'designation_name': {
-            'type': 'string',
-            'required': true
-        }
-    }
-}
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

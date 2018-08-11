@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("user", {
-        id: {
+    let users = sequelize.define("users", {
+        user_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
@@ -14,10 +14,6 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.INTEGER,
             allowNull:false
         },
-        role_id:{
-            type:DataTypes.INTEGER,
-            allowNull:false
-        },
         email:{
             type:DataTypes.STRING,
             allowNull:false
@@ -26,12 +22,17 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.STRING,
             allowNull:false
         },
-        mobile:{
+        mobile_no:{
             type:DataTypes.STRING,
-            allowNull:false
+            allowNull:false,
+            unique:true
         },
         approver_person:{
             type:DataTypes.STRING,
+            allowNull:false
+        },
+        module_name:{
+            type:DataTypes.ENUM('New Car', 'CPOV', 'After sale'),
             allowNull:false
         },
         created_at:{
@@ -43,12 +44,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,
@@ -57,8 +58,14 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
-        tableName: 'user',
+        tableName: 'users',
         timestamps: false,
         classMethods: {}
     });
+    users.belongsTo(sequelize.models.designation, {
+        as: 'designation_details', 
+        targetKey:'designation_id',
+        foreignKey: 'designation_id'
+    });
+    return users;
 };

@@ -1,17 +1,13 @@
 module.exports = function(sequelize, DataTypes) {   
-    let MasterBank = sequelize.define("bank_EMI", {
-        id: {
+    return sequelize.define("designation", {
+        designation_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        bank_name:{
+        designation_name:{
             type:DataTypes.STRING,
-            allowNull:false
-        },
-        emi:{
-            type:DataTypes.DECIMAL(10,2),
             allowNull:false
         },
         created_at:{
@@ -23,12 +19,12 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,
@@ -37,8 +33,8 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     }, {
+        tableName: 'designation',
         timestamps: false,
         classMethods: {}
     });
-    return MasterBank;
 };

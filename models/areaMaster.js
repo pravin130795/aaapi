@@ -1,39 +1,50 @@
 module.exports = function(sequelize, DataTypes) {   
-    return sequelize.define("menu_item", {
-        id: {
+    let areaMaster = sequelize.define("areaMaster", {
+        area_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        menu_item:{
-            type:DataTypes.STRING,
+        name:{
+            type:DataTypes.STRING(40),
+            allowNull:false,
+            unique: true
+        },
+        type:{
+            type:DataTypes.STRING(40),
             allowNull:false
         },
         created_at:{
             type:DataTypes.DATE,
+            allowNull:false,
             defaultValue: DataTypes.NOW
         },
         updated_at:{
             type:DataTypes.DATE,
+            allowNull:false,
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            allowNull:false,
+            defaultValue: 07
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            allowNull:false,
+            defaultValue: 07
         },
         is_active:{
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false
         }
+
     }, {
-        tableName: 'menu_item',
+        tableName: 'master_area',
         timestamps: false,
         classMethods: {}
     });
+    return areaMaster;
 };

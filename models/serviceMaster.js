@@ -1,13 +1,27 @@
 module.exports = function(sequelize, DataTypes) {   
-    let MasterResponseStatus = sequelize.define("master_response_status", {
-        id: {
+    const service_master = sequelize.define("service_master", {
+        service_id: {
             type: DataTypes.INTEGER,
             primaryKey:true,
             autoIncrement:true,
             allowNull: false
         },
-        response_name:{
+        service_english:{
             type:DataTypes.STRING,
+            unique:true,
+            allowNull:false
+        },
+        service_arabic:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        service_type_id:{
+            type:DataTypes.INTEGER,
+            allowNull:false
+        },
+        price:{
+            type:DataTypes.DECIMAL(10, 2),
+            defaultValue: 0,
             allowNull:false
         },
         created_at:{
@@ -19,22 +33,23 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.NOW
         },
         created_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         updated_by:{
-            type:DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            type:DataTypes.INTEGER,
+            defaultValue: 0
         },
         is_active:{
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false
         }
-
     }, {
+        tableName: 'master_service',
         timestamps: false,
         classMethods: {}
     });
-    return MasterResponseStatus;
+
+    return service_master;
 };

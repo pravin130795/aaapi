@@ -72,9 +72,26 @@ let getMerchandiseLists = function (req, res) {
     });
 }
 
+let mapCategory = function (req, res) {
+    merchandise.mapCategoryToMerchandise(req.body).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
 
 module.exports = {
     addMerchandise: addMerchandise,
     getMerchandiseLists: getMerchandiseLists,
-    updateMerchandise: updateMerchandise
+    updateMerchandise: updateMerchandise,
+    mapCategory: mapCategory
 }

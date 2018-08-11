@@ -346,4 +346,27 @@ merchandise.getMerchandises = function (options) {
             })
     });
 }
+
+
+merchandise.mapCategoryToMerchandise = function(options){
+    return new Promise((resolve, reject) => {
+
+        options.category_ids.forEach(singleObj =>{
+            let dataObj ={
+                merchandise_cat_id:singleObj.category_id
+            }
+            global.sqlInstance.sequelize.models.merchandise_stock.update(dataObj, {
+                where: { merchandise_id: singleObj.merchandise_id }
+            }).then(response => {
+                if (response[0]> 0) {
+                    resolve({ message: 'category map with merchandise successfully.' });
+                } else {
+                    resolve({ message: 'Row does not exist' });
+                }
+            }).catch(error => {
+                reject(error);
+            })
+        })
+    })
+}
 module.exports = merchandise;

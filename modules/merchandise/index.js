@@ -19,4 +19,7 @@ module.exports = function (app) {
     // To update merchandise details 
     app.put('/merchandise/updatemerchandise',upload.any(), service.updateMerchandise);
 
+    // To map category to merchandise
+    app.put('/merchandise/mapcategory', service.mapCategory);
+
 }

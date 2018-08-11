@@ -1,5 +1,6 @@
 const _ = require('lodash');
-const schemas = require('../validator/schemas');
+let fs = require('fs');
+let mkdirp = require('mkdirp');
 const constants = require('../utils/constants');
 
 /**
@@ -10,7 +11,6 @@ const constants = require('../utils/constants');
  * @param schema
  *            schema for the object to compare fields
  */
-
 let sanitize = function (object, schema, modelName) {
 	let schemaKeys = _.keys(schema.properties);
 	let objectKeys = _.keys(object);
@@ -34,6 +34,7 @@ let sanitize = function (object, schema, modelName) {
 			for (let index = 0; index < propertyList.length; index++) {
 				if (propertyList[index] === '$ref') {
 					let refValue = schema.properties[objectKeys[key]];
+					let schemas = require('../modules/' + modelName + '/' + modelName + '-schema');
 					let refSchema = refValue.$ref.substring(1, refValue.$ref.length);
 					sanitize(object[objectKeys[key]], schemas[refSchema]);
 				}

@@ -154,7 +154,7 @@ user.getUserLists = function (options) {
 
         if (typeof status != 'undefined') {
             if (status != '') {
-                Condition['is_active'] = status;
+                Condition['is_active'] = Number(status);
             }
         }
         if (search != '') {
@@ -176,6 +176,8 @@ user.getUserLists = function (options) {
                 Condition = whereCondition;
             }
         }
+        console.log("----->",Condition);
+
         global.sqlInstance.sequelize.models.users.findAll({
             where: Condition,
             include: [

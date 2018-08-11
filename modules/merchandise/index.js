@@ -11,12 +11,12 @@ module.exports = function (app) {
     // APIs for Merchandise Management
     
     // To get list of merchandise details
-    //app.get('/merchandise/getmerchandises', service.getMerchandiseLists);
+    app.get('/merchandise/getmerchandises', service.getMerchandiseLists);
 
     // To add new merchandise
     app.post('/merchandise/addmerchandise',upload.any(), service.addMerchandise);
 
     // To update merchandise details 
-    //app.put('/merchandise/updatemerchandise', service.updateMerchandise);
+    app.put('/merchandise/updatemerchandise',upload.any(), service.updateMerchandise);
 
 }

@@ -1,7 +1,6 @@
 const util = require('util');
 const Validator = require('jsonschema').Validator;
-const logger = require('../utils/logger');
-const constants = require('../utils/constants');
+const logger = require('../../utils/logger');
 const _validator = new Validator();
 
 let schemas = function () {

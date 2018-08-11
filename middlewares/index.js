@@ -1,3 +1,4 @@
+const path = require('path');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');

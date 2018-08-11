@@ -6,6 +6,15 @@ let constants = {
 	},
 	tables: {
 		userTable: 'user'
+	},
+	moduleNames: {
+		customer: 'customer',
+		model: 'models',
+		user: 'user',
+		role: 'role',
+		master: 'master',
+		accessories: 'accessories',
+		merchandise: 'merchandise'
 	}
 };
 

@@ -15,7 +15,7 @@ exports = module.exports = function(app) {
 		// }
 	});
 
-	app.options('*', function(req, res) {
+	app.options('*', function (req, res) {
 		res.status(200).end();
 	});
 };

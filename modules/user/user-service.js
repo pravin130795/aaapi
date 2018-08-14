@@ -66,11 +66,6 @@ let getResponseStructure = function(options){
     let respData ={
         "user_id": options.user_id,
         "user_name": options.user_name,
-        "designation_id": options.designation_id,
-        "email": options.email,
-        "mobile_no": options.mobile_no,
-        "approver_person": options.approver_person,
-        "module_name": options.module_name,
         "is_active": options.is_active,
         "isVerifiedUser": options.isVerifiedUser,
         "userType": options.userType,

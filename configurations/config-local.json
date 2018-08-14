@@ -41,5 +41,13 @@
 		"logging": false,
 		"operatorsAliases": false
 	},
-	"salt":"$2b$10$HdG2qlMBMefM8nMdENE22O"
+	"salt":"$2b$10$HdG2qlMBMefM8nMdENE22O",
+	"COOKIE": {
+		"cookieName": "session",
+		"secret": "abc",
+		"duration": 43200000,
+		"activeDuration": 300000,
+		"httpOnly": true
+	},
+	"webAppUrl": "http://localhost:8081/"
 }

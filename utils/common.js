@@ -2,6 +2,10 @@ const _ = require('lodash');
 let fs = require('fs');
 let mkdirp = require('mkdirp');
 const constants = require('../utils/constants');
+const uuid = require('uuid');
+const moment = require('moment');
+const sqlInstance = global.sqlInstance.sequelize.models;
+const jwt = require("jsonwebtoken");
 
 /**
  * This function will remove all the fields which is not included in schema.
@@ -45,21 +49,20 @@ let sanitize = function (object, schema, modelName) {
 	return object;
 };
 
-
-let uploadFile = function(fileObj, file_type, file_path, id, file_name) {
+let uploadFile = function (fileObj, file_type, file_path, id, file_name) {
 	let result;
 	// var file = fileObj;
 	let fileMime = fileObj.mimetype;
 	let type = fileMime.split('/')[0];
 	let format = fileMime.split('/')[1];
-	mkdirp(file_path + id, function(err) {
+	mkdirp(file_path + id, function (err) {
 		if (err) {
 			fs.unlink(fileObj.path);
 			result = 'error_occured';
 		} else {
-			fs.readFile(fileObj.path, function(err, data) {
+			fs.readFile(fileObj.path, function (err, data) {
 				let newPath = file_path + id + '/' + file_name;
-				fs.writeFile(newPath, data, function(err) {
+				fs.writeFile(newPath, data, function (err) {
 					//delete the temporary file
 					fs.unlink(fileObj.path);
 					if (err) {
@@ -78,9 +81,9 @@ let uploadFile = function(fileObj, file_type, file_path, id, file_name) {
 	return result;
 }
 
-let unlink_file = function(path) {
+let unlink_file = function (path) {
 	let result;
-	fs.unlink(path, function(err) {
+	fs.unlink(path, function (err) {
 		if (err) {
 			result = 'error_occured';
 		} else {
@@ -93,13 +96,41 @@ let unlink_file = function(path) {
 	return result;
 }
 
-
-
-
-
+let generateToken = function (userId, userType) {
+	return new Promise((resolve, reject) => {
+		// Session Object To be Stored in the User Session Tables
+		let sessionObject = {
+			user_id: userId,
+			user_type: userType,
+			uid: uuid.v4(),
+			ttl: moment().utc().toDate().getTime() + constants.ttl
+		}
+		// Function Call To Insert User Session Details To Database
+		sqlInstance.userSession.create(sessionObject).then((response) => {
+			jwt.sign({
+				uuid: sessionObject.uid,
+				userId: userId,
+				userType: userType
+			}, constants.JWT_TOKEN.SECRET, {
+					algorithm: constants.JWT_TOKEN.ALGORITHM,
+					expiresIn: constants.JWT_TOKEN.expireTime
+				}, function (error, token) {
+					if (error) {
+						reject(error);
+					} else {
+						sessionObject.token = token;
+						resolve(sessionObject);
+					}
+				});
+		}).catch((error) => {
+			reject(error);
+		});
+	});
+}
 
 module.exports = {
 	sanitize: sanitize,
-	unlink_file:unlink_file,
-	uploadFile:uploadFile
-};
+	unlink_file: unlink_file,
+	uploadFile: uploadFile,
+	generateToken: generateToken
+}

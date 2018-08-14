@@ -72,7 +72,7 @@ merchandise.addMerchandiseDetail = function (options) {
                                     .then((updateResponse) => {
                                         return insertMerchandiseImages(options.files, response.merchandise_id).then((result) => {
                                             //t.commit();
-                                            resolve(response);
+                                            resolve({message:"merchandise is create successfully"});
                                         }).catch((error) => {
                                             //t.rollback();
                                             reject(error);
@@ -326,6 +326,7 @@ merchandise.getMerchandises = function (options) {
         }
         global.sqlInstance.sequelize.models.merchandise_stock.findAll({
             where: Condition,
+            attributes:['merchandise_id','autoline_id','merchandise_cat_id','merchandise_name','merchandise_name_arabic','merchandise_description','merchandise_specification','is_new_arrivals','default_image','quantity','item_no','price','is_active'],
             include: [
                 {
                     model: global.sqlInstance.sequelize.models.merchandise_image, as: 'merchandise_images', required: true,

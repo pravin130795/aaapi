@@ -1,18 +1,19 @@
 let service = require('./user-service');
+let verifier = require('../../middlewares/sessionMidleware');
 
 module.exports = function (app) {
-   
+
     // APIs for User Management
-    
     // To Add user details
-    app.post('/adduser', service.addUser);
-    
+    app.post('/user/adduser', verifier.verifyToken, service.addUser);
+
     // To get Users Lists
-     app.get('/users', service.getUsers);
+    app.get('/user/getuser', verifier.verifyToken, service.getUsers);
 
     //To update user details
-     app.put('/updateuser', service.updateUser);
+    app.put('/user/updateuser', verifier.verifyToken, service.updateUser);
 
     // User login 
-    app.post('/login',service.userLogin);
+    app.post('/user/login', service.userLogin);
+    
 }

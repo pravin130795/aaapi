@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const async = require('async');
 const util = require('util');
+const models = require('../../database/sql');
 const logger = require('../../utils/logger');
 const constants = require('../../utils/constants');
 const Op = global.sqlInstance.sequelize.Op;
@@ -19,6 +20,8 @@ let role = function () {
  */
 role.addRoleDetail = function (options) {
     return new Promise((resolve, reject) => {
+        return models.sequelize.transaction().then((tran) => {
+
         let iObject = {
             role_name: options.role_name,
             role_description: options.role_description,
@@ -26,48 +29,69 @@ role.addRoleDetail = function (options) {
             updated_by: 1,
             is_active: options.is_active,
         };
-        global.sqlInstance.sequelize.models.role.findOne({where: {
-            role_name: options.role_name.trim()
-        }}).then(roleExist => {
-            if(_.isEmpty(roleExist)){
-                global.sqlInstance.sequelize.models.role.create(iObject).then((roleCreated) => {
-                    if (!_.isEmpty(roleCreated)) {
-                        let dataObj ={};
-
-                        async.map(options.page_access, function(page, callback) {
-                            dataObj.role_id = roleCreated.role_id;
-                            dataObj.menu_item_id = page.menu_item_id;
-                            dataObj.can_view = page.view;
-                            dataObj.can_create = page.add;
-                            dataObj.can_update = page.edit
-                            dataObj.can_report = page.report;
-                            dataObj.can_delete = page.delete;
-                            dataObj.can_approve = page.process_approval;
-                            dataObj.can_export = page.export;
-                            dataObj.can_reject = page.reject;
-                            dataObj.created_by = 1;//options.current_user_id;
-                            dataObj.updated_by = 1;//options.current_user_id;
-                            dataObj.is_active = page.is_active;
-                        return callback(null,global.sqlInstance.sequelize.models.role_permission.create(dataObj))
-                        }, function(err, results) {
-                            return resolve('Role create successfully');
-                        });
+        global.sqlInstance.sequelize.models.role.create(iObject,{ transaction:tran })
+        .then((roleCreated) => {
+            if (!_.isEmpty(roleCreated)) {
+                return createRole(options.page_access,roleCreated.role_id, tran).then((result) => {
+                    if (!_.isEmpty(result)) {
+                        tran.commit();
+                        resolve({ message: "role create successfully" });
                     } else {
-                       return reject('Role creation Failed');
+                        tran.rollback();
+                        reject("something went worng in role permission");
                     }
                 })
-                 .catch((error) => {
-                    logger.error(util.format("TYPE THE EXCEPTION. %j",error))
-                    return reject(error)
-                 })
-            }else{
-               return reject('Role name already in use, retry with new.');
+            } else {
+                tran.rollback();
+                return reject('Role creation Failed');
             }
         })
+        .catch((error) => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'role name should be unique' })
+            } else {
+                logger.error(util.format("ROLE CREATE EXCEPTION. %j", error))
+                reject(error);
+            }
+        })
+        })
+
     })
 
-},
+}
 
+let createRole = function(roles,role_id, tran, finalResult = {}){
+    return new Promise((resolve, reject) => {
+        if(roles.length > 0){
+            let page = roles.pop();
+            let dataObj = {};
+                dataObj.role_id = role_id;
+                dataObj.menu_item_id = page.menu_item_id;
+                dataObj.can_view = page.view;
+                dataObj.can_create = page.add;
+                dataObj.can_update = page.edit
+                dataObj.can_report = page.report;
+                dataObj.can_delete = page.delete;
+                dataObj.can_approve = page.process_approval;
+                dataObj.can_export = page.export;
+                dataObj.can_reject = page.reject;
+                dataObj.created_by = 1;//options.current_user_id;
+                dataObj.updated_by = 1;//options.current_user_id;
+                dataObj.is_active = page.is_active;
+                return global.sqlInstance.sequelize.models.role_permission.create(dataObj,{transaction:tran})
+                .then((createResp) =>{
+                    finalResult.result = createResp;
+                    createRole(roles,role_id, tran, finalResult).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                })
+        }else{
+            resolve(finalResult);
+        }
+    })
+}
 
 /**
  * API To Update Role Details and Role Permission to the Database
@@ -77,89 +101,112 @@ role.addRoleDetail = function (options) {
  * @param {Array} page_access - Represents the array of page access.
  * @returns {message} - Role update successfully
  */
-    role.updateRoleDetails = function (options) {
-        return new Promise((resolve, reject) => {
-
-
-            let obj = {
-                role_name: options.role_name,
-                role_description: options.role_description,
-                updated_at: new Date(),
-                is_active: options.is_active,
-                updated_by: 1
+role.updateRoleDetails = function (options) {
+    return new Promise((resolve, reject) => {
+        return models.sequelize.transaction().then((tran) => {
+        let obj = {
+            role_name: options.role_name,
+            role_description: options.role_description,
+            updated_at: new Date(),
+            is_active: options.is_active,
+            updated_by: 1
+        }
+        global.sqlInstance.sequelize.models.role.update(obj, {
+            where: { role_id: options.role_id }
+        },{ transaction:tran }).then((roleUpdated) => {
+            if (roleUpdated[0] > 0) {
+                return updateRole(options.page_access, options.role_id, tran).then((result) => {
+                    if (!_.isEmpty(result)) {
+                        tran.commit();
+                        resolve({ message: "role update successfully" });
+                    } else {
+                        tran.rollback();
+                        reject("something went worng in role permission");
+                    }
+                })
+            } else {
+                tran.rollback();
+                // role is not exist
+                reject("role is not exist");
             }
-            global.sqlInstance.sequelize.models.role.update(obj,{
-                where:{role_id: options.role_id}
-            }).then((roleUpdated) =>{
-                if (roleUpdated[0] > 0) {
-                    let dataObj = {};
+        })
+        .catch((error) => {
+            tran.rollback();
+            logger.error(util.format("TYPE THE EXCEPTION. %j", error))
+            reject(error)
+        })
+     })
+    })
+}
 
-                    async.map(options.page_access, function (page, callback) {
+let updateRole = function (roles,role_id ,tran ,finalResult = {}) {
 
-                        global.sqlInstance.sequelize.models.role_permission.findOne({
-                            where: {
-                                menu_item_id: page.menu_item_id,
-                                role_id: options.role_id
-                            }
-                        }).then(function (permissionExist) {
-                            //console.log("permissionData",permissionExist);
-                            if (!_.isEmpty(permissionExist)) {
-                                //exist permission, so update here
-                                let upObj = {};
-                                upObj.updated_by = 0 //req.currentUser.id;
-                                upObj.can_create = page.add; // 1- true, 0- false
-                                upObj.can_view = page.view; // 1- true, 0- false
-                                upObj.can_update = page.edit; // 1- true, 0- false
-                                upObj.can_delete = page.delete; // 1- true, 0- false
-                                upObj.can_report = page.report; // 1- true, 0- false
-                                upObj.can_approve = page.process_approval; // 1- true, 0- false
-                                upObj.can_reject = page.reject; // 1- true, 0- false
-                                upObj.can_export = page.export; // 1- true, 0- false
-                                upObj.updated_by = 1;//options.current_user_id;
-                                upObj.updated_at = new Date();
-                                upObj.is_active = page.is_active
-                                    ;
-                                permissionExist.update(upObj).then(updatedPage => {
-                                    return callback(updatedPage);
-                                });
-                            } else {
-                                //create permissions here
-                                let inObj = {};
-                                inObj.created_by = 0 //req.currentUser.id;
-                                inObj.updated_by = 0 //req.currentUser.id;
-                                inObj.role_id = options.role_id;
-                                inObj.menu_item_id = page.menu_item_id;
-                                inObj.can_view = page.view; // 1- true, 0- false
-                                inObj.can_create = page.add; // 1- true, 0- false
-                                inObj.can_report = page.report; // 1- true, 0- false
-                                inObj.can_update = page.edit; // 1- true, 0- false
-                                inObj.can_delete = page.delete; // 1- true, 0- false
-                                inObj.can_approve = page.approve; // 1- true, 0- false
-                                inObj.can_reject = page.reject; // 1- true, 0- false
-                                inObj.can_export = page.export; // 1- true, 0- false
-                                inObj.created_by = 1;//options.current_user_id;
-                                inObj.updated_by = 1;//options.current_user_id;
-                                inObj.is_active = page.is_active;
-                                global.sqlInstance.sequelize.models.role_permission.create(inObj).then(newPermissions => {
-                                    return callback(newPermissions);
-                                });
-                            }
+    return new Promise((resolve, reject) => {
+        if (role.length > 0) {
+            let page = roles.pop();
+            global.sqlInstance.sequelize.models.role_permission.findOne({
+                where: {
+                    menu_item_id: page.menu_item_id,
+                    role_id: role_id
+                }
+            }).then(function (permissionExist) {
+                //console.log("permissionData",permissionExist);
+                if (!_.isEmpty(permissionExist)) {
+                    //exist permission, so update here
+                    let upObj = {};
+                    upObj.updated_by = 0 //req.currentUser.id;
+                    upObj.can_create = page.add; // 1- true, 0- false
+                    upObj.can_view = page.view; // 1- true, 0- false
+                    upObj.can_update = page.edit; // 1- true, 0- false
+                    upObj.can_delete = page.delete; // 1- true, 0- false
+                    upObj.can_report = page.report; // 1- true, 0- false
+                    upObj.can_approve = page.process_approval; // 1- true, 0- false
+                    upObj.can_reject = page.reject; // 1- true, 0- false
+                    upObj.can_export = page.export; // 1- true, 0- false
+                    upObj.updated_by = 1;//options.current_user_id;
+                    upObj.updated_at = new Date();
+                    upObj.is_active = page.is_active;
+                    return permissionExist.update(upObj,{ transaction:tran }).then(updatedPage => {
+                        finalResult.result = updatedPage;
+                        updateRole(roles, role_id, tran, finalResult).then((result) => {
+                            resolve(result);
+                        }).catch((error) => {
+                            reject(error);
                         });
-                    }, function (err, results) {
-                         resolve('Role update successfully');
                     });
                 } else {
-                    // role is not exist
-                     reject("role is not exist");
+                    //create permissions here
+                    let inObj = {};
+                    inObj.created_by = 0 //req.currentUser.id;
+                    inObj.updated_by = 0 //req.currentUser.id;
+                    inObj.role_id = options.role_id;
+                    inObj.menu_item_id = page.menu_item_id;
+                    inObj.can_view = page.view; // 1- true, 0- false
+                    inObj.can_create = page.add; // 1- true, 0- false
+                    inObj.can_report = page.report; // 1- true, 0- false
+                    inObj.can_update = page.edit; // 1- true, 0- false
+                    inObj.can_delete = page.delete; // 1- true, 0- false
+                    inObj.can_approve = page.approve; // 1- true, 0- false
+                    inObj.can_reject = page.reject; // 1- true, 0- false
+                    inObj.can_export = page.export; // 1- true, 0- false
+                    inObj.created_by = 1;//options.current_user_id;
+                    inObj.updated_by = 1;//options.current_user_id;
+                    inObj.is_active = page.is_active;
+                    return global.sqlInstance.sequelize.models.role_permission.create(inObj,{ transaction:tran }).then(newPermissions => {
+                        finalResult.result = newPermissions;
+                        updateRole(roles, role_id, tran, finalResult).then((result) => {
+                            resolve(result);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    });
                 }
-            })
-                .catch((error) => {
-                    logger.error(util.format("TYPE THE EXCEPTION. %j", error))
-                     reject(error)
-                })
-
-        })
-    },
+            });
+        } else {
+            resolve(finalResult);
+        }
+    });
+}
 
 /**
  * API To List Role Details and Role Permissions
@@ -182,7 +229,7 @@ role.getRoleLists = function (options) {
 
         }
         let query = "";
-        query = "select rol.*,STUFF(( \n"
+        query = "select rol.role_id,rol.role_name,rol.role_description,STUFF(( \n"
             +"SELECT ',' + mi.menu_item_name \n" 
             +"FROM menu_item as mi \n"
             +"left join role_permission as role_p on mi.menu_item_id = role_p.menu_item_id \n"

@@ -22,21 +22,16 @@ let master = function () {
  */
 master.addDesignationDetail = function (options) {
     return new Promise((resolve, reject) => {
-        global.sqlInstance.sequelize.models.designation.findOrCreate({
-            where: { designation_name: options.designation_name },
-            defaults: { designation_name: options.designation_name, 
-                created_by: 1,//options.current_user_id, 
-                updated_by:1 ,//options.current_user_id 
-                is_active:options.is_active
+        options.created_by =1;
+        global.sqlInstance.sequelize.models.designation.create(options).then((response) => {
+            resolve("designation create successfully.")
+        }).catch((error) => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                reject({ message: 'designation name should be unique' })
+            } else {
+                reject(error);
             }
         })
-            .spread((user, created) => {
-                if (created) {
-                    return resolve(user);
-                } else {
-                    return resolve('designation already in use, retry with new.');
-                }
-            })
     });
 }
 
@@ -50,25 +45,25 @@ master.addDesignationDetail = function (options) {
  */
 master.updateDesignationDetail = function (options) {
     return new Promise((resolve, reject) => {
-            let dataObj ={
-                designation_name: options.designation_name,
-                updated_at: new Date(),
-                updated_by: 1,//options.current_user_id
-                is_active:options.is_active
-            };
-                global.sqlInstance.sequelize.models.designation.update(dataObj,{
-                    where:{designation_id: options.designation_id}
-                })
-                .then(response => {
-                    if(response[0] > 0){
-                        resolve({message:"designation data update successfully"})
-                    } else {
-                        return resolve('designation does not exist')
-                    }
-                })
-                .catch(error => {
-                    reject(error)
-                })
+        let dataObj = {
+            designation_name: options.designation_name,
+            updated_at: new Date(),
+            updated_by: 1,//options.current_user_id
+            is_active: options.is_active
+        };
+        global.sqlInstance.sequelize.models.designation.update(dataObj, {
+            where: { designation_id: options.designation_id }
+        })
+            .then(response => {
+                if (response[0] > 0) {
+                    resolve({ message: "designation update successfully" })
+                } else {
+                    return resolve('designation does not exist')
+                }
+            })
+            .catch(error => {
+                reject(error)
+            })
     });
 }
 
@@ -104,7 +99,10 @@ master.getDesignationLists = function (options) {
                 Condition = whereCondition;
             }
         }
-        global.sqlInstance.sequelize.models.designation.findAll({ where: Condition })
+        global.sqlInstance.sequelize.models.designation.findAll({ 
+            attributes:['designation_id','designation_name','is_active'],
+            where: Condition 
+        })
             .then((response) => {
                 resolve(response);
             }).catch((error) => {
@@ -1605,18 +1603,15 @@ master.updateMagazineDetail = function (options) {
 master.addServiceTypeDetails = function (options) {
     return new Promise((resolve, reject) => {
         options.created_by = 1;//options.current_user_id;
-        options.updated_by = 1;//options.current_user_id;
-        global.sqlInstance.sequelize.models.service_type.findOrCreate({
-            where: { service_type_english: options.service_type_english },
-            defaults: options
+        global.sqlInstance.sequelize.models.service_type.create(options).then(response => {
+            resolve("service type create successfully")
+        }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+                resolve({ message: 'srvice type name should be unique' })
+            } else {
+                reject(error);
+            }
         })
-            .spread((service_type, created) => {
-                if (created) {
-                    return resolve(service_type);
-                } else {
-                    return resolve('service type already in use, retry with new.');
-                }
-            })
     });
 }
 
@@ -1681,12 +1676,16 @@ master.getServiceTypeLists = function (options) {
                 Condition = whereCondition;
             }
         }
-        global.sqlInstance.sequelize.models.service_type.findAll({ where: Condition})
-        .then((response) => {
-            return resolve(response);
-        }).catch((error) => {
-            return reject(error);
-        });
+        global.sqlInstance.sequelize.models.service_type.findAll({ 
+            attributes:['service_type_id','service_type_english','service_type_arabic','show_price','is_active'],
+            where: Condition 
+        })
+            .then((response) => {
+                return resolve(response);
+            }).catch((error) => {
+
+                return reject(error);
+            });
     });
 }
 
@@ -1702,60 +1701,60 @@ master.getServiceTypeLists = function (options) {
  */
 master.addServiceDetails = function (options) {
     return new Promise((resolve, reject) => {
-
-            options.created_by = 1;//options.current_user_id;
-            options.updated_by = 1;//options.current_user_id;
-            return global.sqlInstance.sequelize.models.service_master.findOne({
-                where: { service_english: options.service_english }
-            })
-                .then((service) => {
-                    if (_.isEmpty(service)) {
-                        let serviceDataObj = {};
-                        serviceDataObj.service_english = options.service_english;
-                        serviceDataObj.service_arabic = options.service_arabic;
-                        serviceDataObj.price = options.price;
-                        serviceDataObj.is_active = options.is_active;
-                        serviceDataObj.service_type_id = options.service_type_id;
-                        serviceDataObj.updated_by = 1;//options.current_user_id;
-                        serviceDataObj.created_by = 1;//options.current_user_id;
-
-                        return global.sqlInstance.sequelize.models.service_master.create(serviceDataObj)
-                            .then((serviceData) => {
-                                return insertServiceLocation(options.locations, serviceData.service_id).then((result) => {
-                                    if (!_.isEmpty(result)) {
-                                        return resolve("service create successfully");
-                                    } else {
-                                        return reject("something went worng in location creation");
-                                    }
-                                })
-                                .catch((error) => {
-                                    return reject(error);
-                                })
-                            })
-                            .catch((error) => {
-                                logger.error(util.format("Exception. %j", error))
-                                return reject(error);
-                            })
+        return models.sequelize.transaction().then((tran) => {
+            let serviceDataObj = {};
+            serviceDataObj.service_english = options.service_english;
+            serviceDataObj.service_arabic = options.service_arabic;
+            serviceDataObj.price = options.price;
+            serviceDataObj.is_active = options.is_active;
+            serviceDataObj.service_type_id = options.service_type_id;
+            serviceDataObj.updated_by = 1;//options.current_user_id;
+            serviceDataObj.created_by = 1;//options.current_user_id;
+    
+            return global.sqlInstance.sequelize.models.service_master.create(serviceDataObj,{ transaction:tran })
+                .then((serviceData) => {
+                    return insertServiceLocation(options.locations, serviceData.service_id, tran).then((result) => {
+                        if (!_.isEmpty(result)) {
+                            tran.commit();
+                            return resolve("service create successfully");
+                        } else {
+                            tran.rollback();
+                            return reject("something went worng in location creation");
+                        }
+                    })
+                    .catch((error) => {
+                        tran.rollback();
+                        return reject(error);
+                    })
+                })
+                .catch((error) => {
+                    tran.rollback();
+                    if (error.name === "SequelizeUniqueConstraintError") {
+                        logger.error(util.format("Exception. %j", error))
+                        resolve({ message: 'srvice name should be unique' })
                     } else {
-                        return resolve('service already in use, retry with new.');
+                        reject(error);
                     }
                 })
-
+        })
+        .catch((error) => {
+            reject(error);
+        })
     });
 }
 
 // function for add locations of service
-let insertServiceLocation = function (locations, service_id, finalResult = {}) {
+let insertServiceLocation = function (locations, service_id, tran,finalResult = {}) {
     return new Promise((resolve, reject) => {
         let dataObj = {};
         if (locations.length > 0) {
             let object = locations.pop();
             dataObj.location_id = object.location_id;
             dataObj.service_id = service_id;
-            global.sqlInstance.sequelize.models.service_to_location.create(dataObj)
+            global.sqlInstance.sequelize.models.service_to_location.create(dataObj,{ transaction:tran })
                 .then((response) => {
                     finalResult.result = response;
-                    insertServiceLocation(locations, service_id, finalResult).then((result) => {
+                    insertServiceLocation(locations, service_id,tran ,finalResult).then((result) => {
                         resolve(result);
                     }).catch((error) => {
                         reject(error);
@@ -1783,42 +1782,47 @@ let insertServiceLocation = function (locations, service_id, finalResult = {}) {
 master.updateServiceDetails = function (options) {
 
     return new Promise((resolve, reject) => {
-
-        options.updated_at = new Date();
-        options.updated_by = 1;//options.current_user_id
-        global.sqlInstance.sequelize.models.service_master.update(options,{
-            where:{service_id:options.service_id}
-        })
-        .then((response) => {
-            if (response[0] > 0) {
-                return updateServiceLocation(options.locations, options.service_id).then((result) => {
-                    if (!_.isEmpty(result)) {
-                        return resolve({message:"service update successfully"});
-                    } else {
-                        return reject("something went worng in location updation");
-                    }
-                })
-                    .catch((error) => {
-                        return reject(error);
+        return models.sequelize.transaction().then((tran) => {
+            options.updated_at = new Date();
+            options.updated_by = 1;//options.current_user_id
+            global.sqlInstance.sequelize.models.service_master.update(options,
+                {where:{service_id:options.service_id}},{ transaction:tran })
+            .then((response) => {
+                if (response[0] > 0) {
+                    return updateServiceLocation(options.locations, options.service_id, tran).then((result) => {
+                        if (!_.isEmpty(result)) {
+                            tran.commit();
+                             resolve({message:"service update successfully"});
+                        } else {
+                            tran.rollback();
+                             reject("something went worng in location updation");
+                        }
                     })
-            } else {
-                return resolve('Service does not exist')
-            }
+                    .catch((error) => {
+                        tran.rollback();
+                        reject(error);
+                    })
+                } else {
+                     resolve('Service does not exist')
+                }
+            })
+            .catch((error) => {
+                 reject(error)
+            })
         })
         .catch((error) => {
-            return reject(error)
+            reject(error);
         })
-
     });
 }
 
 // function for update locations of service
-let updateServiceLocation = function (locations, service_id, finalResult = {}) {
+let updateServiceLocation = function (locations, service_id,tran, finalResult = {}) {
     return new Promise((resolve, reject) => {
         let dataObj = {};
         if (locations.length > 0) {
             let object = locations.pop();
-            global.sqlInstance.sequelize.models.service_to_location.find({
+            global.sqlInstance.sequelize.models.service_to_location.findOne({
                 where: {
                     service_id: service_id,
                     location_id: object.prev_location_id
@@ -1826,22 +1830,25 @@ let updateServiceLocation = function (locations, service_id, finalResult = {}) {
             }).then(serviceLocationExist => {
                 if (!_.isEmpty(serviceLocationExist)) {
                     dataObj.location_id = object.location_id
-                    global.sqlInstance.sequelize.models.service_to_location.update({ location_id: object.location_id },
-                        { where: { service_id: service_id, location_id: object.prev_location_id } }
-                    )
+                   return global.sqlInstance.sequelize.models.service_to_location.update(dataObj,
+                        { where: { service_id: service_id, location_id: object.prev_location_id } },{ transaction:tran })
                         .then((response) => {
-                            finalResult.result = response;
-                            updateServiceLocation(locations, service_id, finalResult).then((result) => {
-                                resolve(result);
-                            }).catch((error) => {
-                                reject(error);
-                            });
+                            if (response[0] > 0) {
+                                finalResult.result = response;
+                                updateServiceLocation(locations, service_id, tran,finalResult).then((result) => {
+                                    resolve(result);
+                                }).catch((error) => {
+                                    reject(error);
+                                });     
+                            } else {
+                                return resolve('location does not exist')
+                            }
                         })
                         .catch((error) => {
-                            return reject(error)
+                             reject(error)
                         })
                 } else {
-                    return resolve('Service location does not exist')
+                     resolve('Service location does not exist')
                 }
             })
         } else {
@@ -1881,7 +1888,7 @@ master.getServiceLists = function (options) {
             +"join master_service_type as mst on mst.service_type_id = col.service_type_id \n"
             +"WHERE 1 = 1 \n"
             +Condition
-            console.log("---->",query);
+            //console.log("---->",query);
         global.sqlInstance.sequelize.query(query,{ type:  global.sqlInstance.sequelize.QueryTypes.SELECT}).then(function(users) {
                 resolve(users);
           })

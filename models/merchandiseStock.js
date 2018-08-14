@@ -81,9 +81,15 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {}
     });
 
-    merchandiseStockMaster.belongsTo(sequelize.models.merchandise_image, {
+    merchandiseStockMaster.hasMany(sequelize.models.merchandise_image, {
         as: 'merchandise_images', 
-        foreignKey: 'merchandise_id'
+        foreignKey: 'merchandise_id',
+        targetKey: 'merchandise_id'
+    });
+    merchandiseStockMaster.belongsTo(sequelize.models.merchandiseCatMaster, {
+        as: 'merchandise_category', 
+        foreignKey: 'merchandise_cat_id',
+        targetKey: 'merchandise_cat_id'
     });
     return merchandiseStockMaster;
 };

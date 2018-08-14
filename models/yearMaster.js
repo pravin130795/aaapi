@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:0
+            defaultValue:07
         },
         created_at: {
             type: DataTypes.DATE,
@@ -30,11 +30,13 @@ module.exports = function (sequelize, DataTypes) {
         },
         updated_by: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: true,
+            defaultValue:07
         },
         updated_at: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: true,
+            defaultValue: DataTypes.NOW
         }
     }, {
         tableName: 'years',

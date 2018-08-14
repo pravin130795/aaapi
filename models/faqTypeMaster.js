@@ -1,19 +1,15 @@
 module.exports = function (sequelize, DataTypes) {
-    let lookupMaster = sequelize.define("lookupMaster", {
-        lookup_id: {
+    let faqTypeMaster = sequelize.define("faqTypeMaster", {
+        faq_type_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false
         },
-        body_name: {
-            type: DataTypes.STRING(40),
+        name: {
+            type: DataTypes.DECIMAL,
             allowNull: false,
             unique: true
-        },
-        type: {
-            type: DataTypes.ENUM('CPOV', 'New Car'),
-            allowNull: false
         },
         created_at: {
             type: DataTypes.DATE,
@@ -40,11 +36,10 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             defaultValue: false
         }
-
     }, {
-        tableName: 'lookup_master',
+        tableName: 'faq_qstn_type',
         timestamps: false,
         classMethods: {}
     });
-    return lookupMaster;
+    return faqTypeMaster;
 };

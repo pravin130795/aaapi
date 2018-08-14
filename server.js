@@ -2,6 +2,7 @@
 const http = require('http');
 const express = require('express');
 const util = require('util');
+const cors = require('cors');
 const config = require('./configurations/config');
 const logger = require('./utils/logger');
 const middlewares = require('./middlewares/index');
@@ -11,6 +12,9 @@ let app = express();
 
 //Global Variable Declarations
 global.sqlInstance = db;
+
+//use cors
+app.use(cors());
 
 // set port.
 app.set('port', config.get('server.port'));

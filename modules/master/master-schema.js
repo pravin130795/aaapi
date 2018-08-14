@@ -6,6 +6,7 @@ const _validator = new Validator();
 let schemas = function () {
 };
 
+//Designation
 schemas.designationDetail = {
     'id': '/designationDetail',
     'type': 'object',
@@ -20,7 +21,6 @@ schemas.designationDetail = {
         },
     }
 }
-
 schemas.updateDesignationDetail = {
     'id': '/updateDesignationDetail',
     'type': 'object',
@@ -40,6 +40,7 @@ schemas.updateDesignationDetail = {
     }
 }
 
+//Specification Heading Master
 schemas.specsHeading = {
     'name': '/specsHeadingDetails',
     'type': 'object',
@@ -64,7 +65,6 @@ schemas.specsHeading = {
         }
     }
 }
-
 schemas.updateSpecsHeading = {
     'name': '/updateSpecsHeading',
     'type': 'object',
@@ -93,6 +93,7 @@ schemas.updateSpecsHeading = {
     }
 }
 
+//Specification Master
 schemas.specsDetails = {
     'name': '/specsDetails',
     'type': 'object',
@@ -110,13 +111,12 @@ schemas.specsDetails = {
             'type': 'boolean',
             'required': true
         },
-        'value': {
-            'type': 'string',
+        'specs_values': {
+            'type': 'array',
+            'items': {
+                '$ref': '/specsValues'
+            },
             'required': true
-        },
-        'value_arabic': {
-            'type': 'string',
-            'required': false
         },
         'is_model_overview': {
             'type': 'boolean',
@@ -128,7 +128,6 @@ schemas.specsDetails = {
         }
     }
 }
-
 schemas.updateSpecs = {
     'name': '/updateSpecs',
     'type': 'object',
@@ -146,16 +145,15 @@ schemas.updateSpecs = {
             'type': 'number',
             'required': false
         },
+        'specs_values': {
+            'type': 'array',
+            'items': {
+                '$ref': '/specsValues'
+            },
+            'required': false
+        },
         'is_active': {
             'type': 'boolean',
-            'required': false
-        },
-        'value': {
-            'type': 'string',
-            'required': false
-        },
-        'value_arabic': {
-            'type': 'string',
             'required': false
         },
         'is_model_overview': {
@@ -168,7 +166,22 @@ schemas.updateSpecs = {
         }
     }
 }
+schemas.specsValues = {
+    'id': '/specsValues',
+    'type': 'object',
+    'properties': {
+        'value': {
+            'type': 'string',
+            'required': true
+        },
+        'value_arabic': {
+            'type': 'string',
+            'required': false
+        }
+    }
+}
 
+//Year Master
 schemas.addYears = {
     'name': '/yearMasterDetails',
     'type': 'object',
@@ -188,7 +201,6 @@ schemas.addYears = {
         }
     }
 }
-
 schemas.updateYear = {
     'name': '/updateYearMaster',
     'type': 'object',
@@ -199,7 +211,7 @@ schemas.updateYear = {
             'required': true
         },
         'year': {
-            'type': 'string',
+            'type': 'number',
             'required': false
         },
         'is_active': {
@@ -213,6 +225,7 @@ schemas.updateYear = {
     }
 }
 
+//Accessory Category Master
 schemas.accessoryCat = {
     'name': '/accessoryCategory',
     'type': 'object',
@@ -236,7 +249,6 @@ schemas.accessoryCat = {
         }
     }
 }
-
 schemas.updateAccessoryCat = {
     'name': '/updateAccessoryCategory',
     'type': 'object',
@@ -265,6 +277,7 @@ schemas.updateAccessoryCat = {
     }
 }
 
+//Response Status Master
 schemas.responseStatus = {
     'name': '/responseStatus',
     'type': 'object',
@@ -275,21 +288,16 @@ schemas.responseStatus = {
             'required': true,
             'unique': true
         },
+        'comments': {
+            'type': 'string',
+            'required': false
+        },
         'is_active': {
             'type': 'boolean',
-            'required': true
-        },
-        'created_by': {
-            'type': 'number',
-            'required': true
-        },
-        'updated_by': {
-            'type': 'number',
             'required': true
         }
     }
 }
-
 schemas.updateResponseStatus = {
     'name': '/updateResponseStatus',
     'type': 'object',
@@ -303,17 +311,19 @@ schemas.updateResponseStatus = {
             'type': 'string',
             'required': false
         },
+        'comments': {
+            'type': 'string',
+            'required': false
+        },
         'is_active': {
             'type': 'boolean',
             'required': false
-        },
-        'updated_by': {
-            'type': 'number',
-            'required': true
         }
     }
 }
 
+
+//Area Master
 schemas.addAreaRqst = {
     'name': '/addAreaRqst',
     'type': 'object',
@@ -359,6 +369,7 @@ schemas.updateAreaRqst = {
     }
 }
 
+//Bank EMI Master
 schemas.bankEmiMaster = {
     'name': '/bankEmiMaster',
     'type': 'object',
@@ -402,6 +413,7 @@ schemas.updateBankEmiMaster = {
     }
 }
 
+//Lookup Master
 schemas.addLookupRqst = {
     'name': '/addLookupRqst',
     'type': 'object',
@@ -419,14 +431,6 @@ schemas.addLookupRqst = {
         },
         'is_active': {
             'type': 'boolean',
-            'required': true
-        },
-        'created_by': {
-            'type': 'boolean',
-            'required': true
-        },
-        'updated_by': {
-            'type': 'number',
             'required': true
         }
     }
@@ -453,14 +457,11 @@ schemas.updateLookupRqst = {
         'is_active': {
             'type': 'boolean',
             'required': false
-        },
-        'updated_by': {
-            'type': 'number',
-            'required': true
         }
     }
 }
 
+//From To Price Master
 schemas.addFromToPriceRqst = {
     'name': '/addFromToPriceRqst',
     'type': 'object',
@@ -530,6 +531,7 @@ schemas.updateFromToPriceRqst = {
     }
 }
 
+//Contacts Master
 schemas.updateContactsRqst = {
     'name': '/updateContactsRqst',
     'type': 'object',
@@ -554,6 +556,7 @@ schemas.updateContactsRqst = {
         }
     }
 }
+//Email Master
 schemas.updateEmailRqst = {
     'name': '/updateEmailRqst',
     'type': 'object',
@@ -591,6 +594,7 @@ schemas.updateEmailRqst = {
     }
 }
 
+//Stock Master
 schemas.updateStockRqst = {
     'name': '/updateStockRqst',
     'type': 'object',
@@ -619,6 +623,7 @@ schemas.updateStockRqst = {
     }
 }
 
+//Social Media Links Master
 schemas.addSocialRqst = {
     'name': '/addSocialRqst',
     'type': 'object',
@@ -676,6 +681,7 @@ schemas.updateSocialRqst = {
     }
 }
 
+//Notification Expiry Master
 schemas.addNotifyRqst = {
     'name': '/addNotifyRqst',
     'type': 'object',
@@ -733,6 +739,7 @@ schemas.updateNotifyRqst = {
     }
 }
 
+//KM Master
 schemas.addKmRqst = {
     'name': '/addKmRqst',
     'type': 'object',
@@ -745,14 +752,6 @@ schemas.addKmRqst = {
         },
         'is_active': {
             'type': 'boolean',
-            'required': true
-        },
-        'created_by': {
-            'type': 'number',
-            'required': true,
-        },
-        'updated_by': {
-            'type': 'number',
             'required': true
         }
     }
@@ -774,14 +773,11 @@ schemas.updateKmRqst = {
         'is_active': {
             'type': 'boolean',
             'required': false
-        },
-        'updated_by': {
-            'type': 'number',
-            'required': true
         }
     }
 }
 
+//Merchandise Category Master
 schemas.addMerchandiseCatRqst = {
     'name': '/addMerchandiseCatRqst',
     'type': 'object',
@@ -845,6 +841,7 @@ schemas.updateMerchandiseCatRqst = {
     }
 }
 
+//Color Master
 schemas.addColorRqst = {
     'name': '/addColorRqst',
     'type': 'object',
@@ -908,6 +905,7 @@ schemas.updateColorRqst = {
     }
 }
 
+//Color Mapping
 schemas.mapColorRqst = {
     'name': '/mapColorRqst',
     'type': 'object',
@@ -937,6 +935,7 @@ schemas.autolineColors = {
     }
 }
 
+//News Master
 schemas.addNewsRqst = {
     'name': '/addNewsRqst',
     'type': 'object',
@@ -1020,6 +1019,7 @@ schemas.updateNewsRqst = {
     }
 }
 
+//Magazine Master
 schemas.addMagazineRqst = {
     'name': '/addMagazineRqst',
     'type': 'object',
@@ -1119,6 +1119,7 @@ schemas.updateMagazineRqst = {
     }
 }
 
+//Service Type
 schemas.addServiceTypeDetail = {
     'id': '/addServiceTypeDetail',
     'type': 'object',
@@ -1168,6 +1169,7 @@ schemas.updateServiceTypeDetail = {
     }
 }
 
+//Service Master
 schemas.addServiceDetail = {
     'id': '/addServiceDetail',
     'type': 'object',
@@ -1201,18 +1203,6 @@ schemas.addServiceDetail = {
         }
     }
 }
-schemas.locationDetails = {
-    'name': '/locationDetails',
-    'type': 'object',
-    'required': true,
-    'properties': {
-        'location_id': {
-            'type': 'integer',
-            'required': true
-        }
-    }
-}
-
 schemas.updateServiceDetail = {
     'id': '/addServiceDetail',
     'type': 'object',
@@ -1250,6 +1240,19 @@ schemas.updateServiceDetail = {
         }
     }
 }
+
+//Location Master
+schemas.locationDetails = {
+    'name': '/locationDetails',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'location_id': {
+            'type': 'integer',
+            'required': true
+        }
+    }
+}
 schemas.updateLocationDetails = {
     'name': '/updateLocationDetails',
     'type': 'object',
@@ -1266,6 +1269,7 @@ schemas.updateLocationDetails = {
     }
 }
 
+//Status Master
 schemas.addStatusRqst = {
     'name': '/addStatusRqst',
     'type': 'object',
@@ -1333,6 +1337,7 @@ schemas.autolineStatus = {
     }
 }
 
+//Actions Mapping
 schemas.mapActionRqst = {
     'name': '/mapActionRqst',
     'type': 'object',
@@ -1362,6 +1367,7 @@ schemas.actions = {
     }
 }
 
+//Payment Matrix
 schemas.addPaymentMtrxRqst = {
     'name': '/addPaymentMtrxRqst',
     'type': 'object',
@@ -1413,11 +1419,158 @@ schemas.updatePaymentMtrxRqst = {
     }
 }
 
+//CPOV Specification Master
+schemas.addCpovSpecsRqst = {
+    'name': '/addCpovSpecsRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'specs_values': {
+            'type': 'array',
+            'items': {
+                '$ref': '/specsValues'
+            },
+            'required': true
+        },
+    }
+}
+schemas.updateCpovSpecsRqst = {
+    'name': '/updateCpovSpecsRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'cpov_specs_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'specs_values': {
+            'type': 'array',
+            'items': {
+                '$ref': '/specsValues'
+            },
+            'required': true
+        },
+    }
+}
+
+//FAQ Type Master
+schemas.addFaqTypeRqst = {
+    'name': '/addFaqTypeRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'name': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateFaqTypeRqst = {
+    'name': '/updateFaqTypeRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'faq_type_id': {
+            'type': 'number',
+            'required': true
+        },
+        'name': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
+//FAQ Master
+schemas.addFaqRqst = {
+    'name': '/addFaqRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'qstn_type_id': {
+            'type': 'number',
+            'required': true
+        },
+        'qstn': {
+            'type': 'string',
+            'required': 'true'
+        },
+        'answer': {
+            'type': 'string',
+            'required': true
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': true
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': true
+        }
+    }
+}
+schemas.updateFaqRqst = {
+    'name': '/updateFaqRqst',
+    'type': 'object',
+    'required': true,
+    'properties': {
+        'faq_id': {
+            'type': 'number',
+            'required': true
+        },
+        'qstn_type_id': {
+            'type': 'number',
+            'required': false
+        },
+        'qstn': {
+            'type': 'string',
+            'required': false
+        },
+        'answer': {
+            'type': 'string',
+            'required': false
+        },
+        'is_active': {
+            'type': 'boolean',
+            'required': false
+        },
+        'is_approved': {
+            'type': 'boolean',
+            'required': false
+        }
+    }
+}
+
 _validator.addSchema(schemas.autolineColors, '/autolineColors');
 _validator.addSchema(schemas.locationDetails, '/locationDetails');
 _validator.addSchema(schemas.updateLocationDetails, '/updateLocationDetails');
 _validator.addSchema(schemas.autolineStatus, '/autolineStatus');
 _validator.addSchema(schemas.actions, '/actions');
+_validator.addSchema(schemas.specsValues, '/specsValues');
 
 schemas.validate = function (object, schema) {
     let errors = _validator.validate(object, schema).errors;

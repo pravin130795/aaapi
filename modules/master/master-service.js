@@ -1734,25 +1734,230 @@ let updatePaymentMatrix = function (req, res) {
     }
 }
 
+//CPOV Specification Master
+let addCpovSpecs = (req, res) => {
+    let cpovSpecsData = common.sanitize(req.body, schemas.addCpovSpecsRqst, constants.moduleNames.master);
+    if (schemas.validate(cpovSpecsData, schemas.addCpovSpecsRqst)) {
+        master.addCpovSpecsDetails(cpovSpecsData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getCpovSpecs = function (req, res) {
+    master.getCpovSpecsDetails(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateCpovSpecs = function (req, res) {
+    let cpovSpecsData = req.body;
+    if (schemas.validate(cpovSpecsData, schemas.updateCpovSpecsRqst)) {
+        master.updateCpovSpecsDetail(cpovSpecsData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+//FAQ Type Master
+let addFaqType = (req, res) => {
+    let faqTypeData = common.sanitize(req.body, schemas.addFaqTypeRqst, constants.moduleNames.master);
+    if (schemas.validate(faqTypeData, schemas.addFaqTypeRqst)) {
+        master.addFaqTypeDetails(faqTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getFaqType = function (req, res) {
+    master.getFaqTypeDetails(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateFaqType = function (req, res) {
+    let faqTypeData = req.body;
+    if (schemas.validate(faqTypeData, schemas.updateFaqTypeRqst)) {
+        master.updateFaqTypeDetail(faqTypeData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+//FAQ Master
+let addFaqs = (req, res) => {
+    let faqData = common.sanitize(req.body, schemas.addFaqRqst, constants.moduleNames.master);
+    if (schemas.validate(faqData, schemas.addFaqRqst)) {
+        master.addFaqDetails(faqData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+let getFaqs = function (req, res) {
+    master.getFaqDetails(req.query).then((response) => {
+        res.status(200).send({
+            code: 2000,
+            messageKey: constants.messageKeys.code_2000,
+            data: response
+        });
+    }).catch((error) => {
+        logger.info(error);
+        return res.status(500).send({
+            code: 5000,
+            messageKey: constants.messageKeys.code_5000,
+            data: error
+        });
+    });
+}
+let updateFaqs = function (req, res) {
+    let faqData = req.body;
+    if (schemas.validate(faqData, schemas.updateFaqRqst)) {
+        master.updateFaqDetail(faqData).then((response) => {
+            res.status(200).send({
+                code: 2000,
+                messageKey: constants.messageKeys.code_2000,
+                data: response
+            });
+        }).catch((error) => {
+            return res.status(500).send({
+                code: 5000,
+                messageKey: constants.messageKeys.code_5000,
+                data: error
+            });
+        });
+    } else {
+        // Incomplete Data
+        return res.status(400).send({
+            code: 4001,
+            messageKey: constants.messageKeys.code_4001,
+            data: {}
+        });
+    }
+}
+
+
 module.exports = {
-    addDesignation: addDesignation,
-    getDesignation: getDesignation,
-    updateDesignation: updateDesignation,
-    addSpecsHeading: addSpecsHeading,
-    getSpecsHeading: getSpecsHeading,
-    updateSpecsHeading: updateSpecsHeading,
-    addYear: addYear,
-    getYear: getYear,
-    updateYear: updateYear,
-    addSpecs: addSpecs,
-    getSpecs: getSpecs,
-    updateSpecs: updateSpecs,
-    addAccessoryCat: addAccessoryCat,
-    getAccessoryCat: getAccessoryCat,
-    updateAccessoryCat: updateAccessoryCat,
-    addResponseStatus: addResponseStatus,
-    getResponseStatus: getResponseStatus,
-    updateResponseStatus: updateResponseStatus,
+    addDesignation:         addDesignation,
+    getDesignation:         getDesignation,
+    updateDesignation:      updateDesignation,
+    addSpecsHeading:        addSpecsHeading,
+    getSpecsHeading:        getSpecsHeading,
+    updateSpecsHeading:     updateSpecsHeading,
+    addYear:                addYear,
+    getYear:                getYear,
+    updateYear:             updateYear,
+    addSpecs:               addSpecs,
+    getSpecs:               getSpecs,
+    updateSpecs:            updateSpecs,
+    addAccessoryCat:        addAccessoryCat,
+    getAccessoryCat:        getAccessoryCat,
+    updateAccessoryCat:     updateAccessoryCat,
+    addResponseStatus:      addResponseStatus,
+    getResponseStatus:      getResponseStatus,
+    updateResponseStatus:   updateResponseStatus,
     addArea: addArea,
     getArea: getArea,
     updateArea: updateArea,
@@ -1810,5 +2015,14 @@ module.exports = {
     mapActions: mapActions,
     addPaymentMatrix: addPaymentMatrix,
     getPaymentMatrix: getPaymentMatrix,
-    updatePaymentMatrix: updatePaymentMatrix
+    updatePaymentMatrix: updatePaymentMatrix,
+    addCpovSpecs:addCpovSpecs,
+    getCpovSpecs: getCpovSpecs,
+    updateCpovSpecs: updateCpovSpecs,
+    addFaqType: addFaqType,
+    getFaqType: getFaqType,
+    updateFaqType: updateFaqType,
+    addFaqs: addFaqs,
+    getFaqs: getFaqs,
+    updateFaqs: updateFaqs,
 }

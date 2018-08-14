@@ -17,7 +17,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         created_by:{
             type:DataTypes.INTEGER,
-            allowNull:false
+            allowNull:false,
+            defaultValue: 07
         },
         created_at: {
             type:DataTypes.DATE,
@@ -31,7 +32,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         updated_by:{
             type:DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 07
         }
     }, {
         tableName: 'km_master',

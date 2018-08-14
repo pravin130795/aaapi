@@ -1,19 +1,23 @@
 module.exports = function (sequelize, DataTypes) {
-    let lookupMaster = sequelize.define("lookupMaster", {
-        lookup_id: {
+    let faqMaster = sequelize.define("faqMaster", {
+        faq_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false
         },
-        body_name: {
-            type: DataTypes.STRING(40),
+        qstn_type_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        qstn: {
+            type: DataTypes.STRING(140),
             allowNull: false,
             unique: true
         },
-        type: {
-            type: DataTypes.ENUM('CPOV', 'New Car'),
-            allowNull: false
+        answer: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
         },
         created_at: {
             type: DataTypes.DATE,
@@ -39,12 +43,17 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
+        },
+        is_approved: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         }
-
     }, {
-        tableName: 'lookup_master',
+        tableName: 'faq_master',
         timestamps: false,
         classMethods: {}
     });
-    return lookupMaster;
+    faqMaster.belongsTo(sequelize.models.faqTypeMaster, {'as': 'qstn_type', targetKey: 'faq_type_id', foreignKey: 'qstn_type_id'})
+    return faqMaster;
 };

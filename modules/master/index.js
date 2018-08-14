@@ -82,7 +82,7 @@ module.exports = function (app) {
     app.get('/master/getsocialmedialinks', service.getSocialLinks);
     app.put('/master/updatesocialmedialinks', service.updateSocialLinks);
 
-    /* Social Media Links Master */
+    /* Notification Master */
     app.post('/master/addnotification', service.addNotification);
     app.get('/master/getnotification', service.getNotification);
     app.put('/master/updatenotification', service.updateNotification);
@@ -141,4 +141,19 @@ module.exports = function (app) {
     app.post('/master/addpaymentmatrix', service.addPaymentMatrix);
     app.get('/master/getpaymentmatrix', service.getPaymentMatrix);
     app.put('/master/updatepaymentmatrix', service.updatePaymentMatrix);
+
+    //CPOV Specification Master
+    app.post('/master/addcpovspecs', service.addCpovSpecs);
+    app.get('/master/getcpovspecs', service.getCpovSpecs);
+    app.put('/master/updatecpovspecs', service.updateCpovSpecs);
+
+    //FAQ Type Master
+    app.post('/master/addfaqtype', service.addFaqType);
+    app.get('/master/getfaqtype', service.getFaqType);
+    app.put('/master/updatefaqtype', service.updateFaqType);
+
+    //FAQ Master
+    app.post('/master/addfaqs', service.addFaqs);
+    app.get('/master/getfaqs', service.getFaqs);
+    app.put('/master/updatefaqs', service.updateFaqs);
 }

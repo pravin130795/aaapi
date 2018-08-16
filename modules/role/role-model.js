@@ -142,7 +142,7 @@ role.updateRoleDetails = function (options) {
 let updateRole = function (roles,role_id ,tran ,finalResult = {}) {
 
     return new Promise((resolve, reject) => {
-        if (role.length > 0) {
+        if (roles.length > 0) {
             let page = roles.pop();
             global.sqlInstance.sequelize.models.role_permission.findOne({
                 where: {
